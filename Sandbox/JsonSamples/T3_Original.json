@@ -1,0 +1,343 @@
+{
+    "fileName": "00003.png",
+    "summary": "",
+    "components": [
+        {
+            "id": 1,
+            "title": "",
+            "sub_blocks": [
+                "id": 24,
+                "title": "이용고객(Caller)",
+                "blocks": [
+                    {
+                        "id": 2,
+                        "title": "착신(지능망)콜",
+                        "text": "이용 고객이 가게 유선전화로 발신 -> 지능망 착신콜, AI통화비서연결"
+                    },
+                    {
+                        "id": 3,
+                        "title": "AI통화비서 인트로",
+                        "text": "AI통화비서 인사말 + 통화연결음 -> 이용고객과 전화통화 시작"
+                    },
+                    {
+                        "id": 4,
+                        "title": "발신자 의도 분류",
+                        "text": "이용 고객의 발신 의도를 파악 -> 문의(시간, 위치, 주차)/예약/주문 등"
+                    },
+                    {
+                        "id": 5,
+                        "title": "대화 시나리오",
+                        "text": "해당 시나리오로 기용고객과 대화 -> 예약/주문은 전용링크 문자전송"
+                    },
+                    {
+                        "id": 6,
+                        "title": "가게연결 또는 자유발화",
+                        "text": "가게연결 요청 시 유선전화 착신음 -> 착신불가(통화중, 부재중) 자유발화"
+                    }
+                ]
+            ],
+            "sub_blocks": [
+                "id": 25,
+                "title": "",
+                "blocks": [
+                    {
+                        "id": 7,
+                        "title": "이용고객",
+                    },
+                    {
+                        "id": 8,
+                        "title": "통화연결음",
+                    },
+                    {
+                        "id": 9,
+                        "title": "가게연결",
+                    },
+                    {
+                        "id": 10,
+                        "title": "일반문의(시간,위치)",
+                    },
+                    {
+                        "id": 11,
+                        "title": "예약",
+                    },
+                    {
+                        "id": 12,
+                        "title": "주문",
+                    },
+                    {
+                        "id": 13,
+                        "title": "앱알림", //이름 중복
+                    },
+                    {
+                        "id": 14,
+                        "title": "앱알림", //이름 중복
+                    },
+                    {
+                        "id": 15,
+                        "title": "소상공인", //이미지의 경우 아래쪽 텍스트를 이름으로 넣어야 할까 설명으로 넣어야 할까
+                    },
+                    {
+                        "id": 16,
+                        "title": "통화불가 안내",
+                    },
+                    {
+                        "id": 17,
+                        "title": "고객 자유발화",
+                    },
+                    {
+                        "id": 18,
+                        "title": "통화종료",
+                    },
+                    {
+                        "id": 19,
+                        "title": "확인 후 콜백(문자/전화)",
+                    },
+                    {
+                        "id": 20,
+                        "title": "앱알림", //컬러 다른데 이름은 중복
+                    },
+                ]
+            ],
+            "sub_blocks": [
+                "id": 26,
+                "title": "가게점주(Receiver)", //소그룹 타이틀
+                "blocks": [
+                    {
+                        "id": 21,
+                        "title": "통화비서 부가서비스",
+                        "text": "착신유선번호 AI통화비서 App 설치(점주 지정 모바일) -> 모상품:일반전화(홈), 인터넷전화(홈,기업)"
+                    },
+                    {
+                        "id": 22,
+                        "title": "AI통화비서 App 설정",
+                        "text": "AI 통화비서 App 설정 -> 동작 on/off, 인트로, 영업시간, 가게정보, 예약/메뉴 등"
+                    }
+                {
+                        "id": 23,
+                        "title": "대화결과 업무처리",
+                        "text": "대화결과/특화웹에따라 App내 처리할 업무 list-up -> 예약확인, 주문확인, 자유발화 회신 등"
+                    }
+                ]
+            ]
+        },
+    ],
+    "connections": [
+        { //이용고객 to 통화연결음
+            "from": 7,
+            "to": 8,
+            "text": "",
+            "type": "line",
+            "color": "red",
+            "direction": "line",
+            "thickness": "bold"
+        },
+        { //가게연결
+            "from": 8,
+            "to": 9,
+            "text": "",
+            "type": "line",
+            "color": "red",
+            "direction": "directional",
+            "thickness": "bold"
+        },
+        { //일반문의(시간/위치)
+            "from": 8,
+            "to": 10,
+            "text": "",
+            "type": "line",
+            "color": "red",
+            "direction": "directional",
+            "thickness": "bold"
+        },
+        { //예약
+            "from": 8,
+            "to": 11,
+            "text": "",
+            "type": "line",
+            "color": "red",
+            "direction": "directional",
+            "thickness": "bold"
+        },
+        { //주문
+            "from": 8,
+            "to": 12,
+            "text": "",
+            "type": "line",
+            "color": "red",
+            "direction": "directional",
+            "thickness": "bold"
+        },
+        { //??? from somewhere to 통화종료
+            "from": 8,
+            "to": 12,
+            "text": "",
+            "type": "line",
+            "color": "red",
+            "direction": "directional",
+            "thickness": "bold"
+        },
+        { //가게연결 to 소상공인
+            "from": 9,
+            "to": 15,
+            "text": "통화연결",
+            "type": "line",
+            "color": "red",
+            "direction": "directional",
+            "thickness": "bold"
+        },
+        { //예약 to 앱알림
+            "from": 11,
+            "to": 13,
+            "text": "",
+            "type": "dotted-line",
+            "color": "blue",
+            "direction": "line",
+            "thickness": "bold"
+        },
+        { //주문 to 앱알림
+            "from": 12,
+            "to": 14,
+            "text": "",
+            "type": "dotted-line",
+            "color": "blue",
+            "direction": "line",
+            "thickness": "bold"
+        },
+        { //앱알림 to 앱알림
+            "from": 13,
+            "to": 14,
+            "text": "",
+            "type": "dotted-line",
+            "color": "blue",
+            "direction": "line",
+            "thickness": "bold"
+        },
+        { //앱알림 to 소상공인
+            "from": 13,
+            "to": 15,
+            "text": "",
+            "type": "dotted-line",
+            "color": "blue",
+            "direction": "directional",
+            "thickness": "bold"
+        },
+        { //소상공인 to 통화불가 안내
+            "from": 15,
+            "to": 16,
+            "text": "연결불가(통화중/부재중)",
+            "type": "line",
+            "color": "blue",
+            "direction": "directional",
+            "thickness": "bold"
+        },
+        { //통화불가 안내 to 고객 자유발화
+            "from": 16,
+            "to": 17,
+            "text": "",
+            "type": "line",
+            "color": "blue",
+            "direction": "directional",
+            "thickness": "bold"
+        },
+        { //고객 자유발화 to 통화종료
+            "from": 17,
+            "to": 18,
+            "text": "",
+            "type": "line",
+            "color": "blue",
+            "direction": "directional",
+            "thickness": "bold"
+        },
+        { //확인 후 콜백(문자/전화) to 이용고객
+            "from": 19,
+            "to": 7,
+            "text": "자유발화 회신, 예약확인, 주문확인",
+            "type": "line",
+            "color": "grey",
+            "direction": "directional",
+            "thickness": "bold"
+        },
+        { //앱알림 to 확인 후 콜백(문자/전화)
+            "from": 20,
+            "to": 19,
+            "text": "",
+            "type": "dotted-line",
+            "color": "blue",
+            "direction": "directional",
+            "thickness": "bold"
+        },
+        { //고객 자유발화 to 앱알림
+            "from": 17,
+            "to": 20,
+            "text": "",
+            "type": "dotted-line",
+            "color": "blue",
+            "direction": "line",
+            "thickness": "bold"
+        },
+        { //주문 to 이용고객
+            "from": 12,
+            "to": 7,
+            "text": "전용링크",
+            "type": "dotted-line",
+            "color": "red",
+            "direction": "line",
+            "thickness": "light"
+        }
+         
+        { //caller 1 to 2 - text box가 연결정보를 포함하는 경우
+            "from": 2,
+            "to": 3,
+            "text": "",
+            "type": "textbox",
+            "color": "grey",
+            "direction": "directional",
+            "thickness": ""
+        },
+        { //caller 2 to 3
+            "from": 3,
+            "to": 4,
+            "text": "textbox",
+            "type": "",
+            "color": "grey",
+            "direction": "directional",
+            "thickness": ""
+        },
+        { //caller 3 to 4
+            "from": 4,
+            "to": 5,
+            "text": "",
+            "type": "textbox",
+            "color": "grey",
+            "direction": "directional",
+            "thickness": ""
+        },
+        { //caller 4 to 5
+            "from": 5,
+            "to": 6,
+            "text": "",
+            "type": "textbox",
+            "color": "grey",
+            "direction": "directional",
+            "thickness": ""
+        },
+        { //Receiver 1 to 2
+            "from": 21,
+            "to": 22,
+            "text": "",
+            "type": "textbox",
+            "color": "grey",
+            "direction": "directional",
+            "thickness": ""
+        },
+        { //Receiver 2 to 3
+            "from": 22,
+            "to": 23,
+            "text": "",
+            "type": "textbox",
+            "color": "grey",
+            "direction": "directional",
+            "thickness": ""
+        }
+    ]
+}

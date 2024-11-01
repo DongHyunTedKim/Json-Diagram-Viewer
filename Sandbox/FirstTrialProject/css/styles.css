@@ -1,0 +1,53 @@
+/* css/styles.css */
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #f9f9f9;
+}
+
+h1, h2 {
+    color: #333;
+}
+
+.top-section, .bottom-section {
+    margin-bottom: 40px;
+}
+
+.top-section .mermaid {
+    border: 1px solid #ddd;
+    padding: 10px;
+    background-color: #fff;
+}
+
+.bottom-section {
+    display: flex;
+    gap: 20px; /* 좌우 패널 간 간격 */
+}
+
+.left-panel, .right-panel {
+    flex: 1; /* 두 패널이 동일한 너비를 가지도록 설정 */
+}
+
+.left-panel pre, .right-panel pre {
+    background-color: #f4f4f4;
+    padding: 10px;
+    border: 1px solid #ddd;
+    overflow: auto;
+    max-height: 500px; /* 필요에 따라 높이 조절 */
+}
+
+.left-panel pre {
+    /* 좌측 패널에 추가적인 스타일링이 필요하다면 여기에 추가 */
+}
+
+.right-panel pre {
+    /* 우측 패널에 추가적인 스타일링이 필요하다면 여기에 추가 */
+}
+
+/* 반응형 디자인: 화면이 좁아질 경우 하단 섹션을 세로로 배치 */
+@media (max-width: 800px) {
+    .bottom-section {
+        flex-direction: column;
+    }
+}

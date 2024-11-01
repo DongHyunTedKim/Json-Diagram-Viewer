@@ -1,0 +1,135 @@
+{
+    "file_name": "00002_(노드에 번호 매김).jpg",
+    "summary": "통합 Flow Manager의 구성 요소와 각 역할자 간의 관계 및 작업 프로세스를 시각화하여 총괄 PM 운영을 지원하는 흐름도입니다.",
+    "components": [
+        {
+            "id": "1",
+            "text": "서비스 플랫폼 (서비스 접수)",
+            "node": []
+        },
+        {
+            "id": "2",
+            "text": "영업대표 (서비스 접수)",
+            "node": []
+        },
+        {
+            "id": "3",
+            "text": "기업고객센터 (청약 처리)",
+            "node": []
+        },
+        {
+            "id": "4",
+            "text": "총괄 PM 운영 (통합 Flow Manager)",
+            "node": [
+                {
+                    "id": "5",
+                    "text": "KTS/Biz지원팀 (회선 개통)",
+                    "node": []
+                },
+                {
+                    "id": "6",
+                    "text": "장비 협력사 (장비 개통: 회선 개통 완료 후 진행)",
+                    "node": []
+                },
+                {
+                    "id": "7",
+                    "text": "전담운용센터 (총괄 관리 및 기술 지원)",
+                    "node": []
+                },
+                {
+                    "id": "8",
+                    "text": "고객사",
+                    "node": []
+                }
+            ]
+        },
+        {
+            "id": "9",
+            "text": "One Contact Point 운용 | 설계 → 개통 → 운영 → 장애처리 과정 동안 1개 부서에서 통합 운용",
+            "node": []
+        }
+    ],
+    "connections": [
+        {
+            "from": "1",
+            "to": "3",
+            "text": "",
+            "type": "line",
+            "color": "#bdbfbc",
+            "direction": true,
+            "thickness": "medium"
+        },
+        {
+            "from": "1",
+            "to": "4",
+            "text": "자동화 항목(설치변경, 속도변경 등)은 업무 처리 담당자에게 전달, 자동 반영",
+            "type": "dotted",
+            "color": "#bdbfbc",
+            "direction": true,
+            "thickness": "medium"
+        },
+        {
+            "from": "2",
+            "to": "3",
+            "text": "",
+            "type": "line",
+            "color": "#bdbfbc",
+            "direction": true,
+            "thickness": "medium"
+        },
+        {
+            "from": "3",
+            "to": "5",
+            "text": "",
+            "type": "line",
+            "color": "#bdbfbc",
+            "direction": true,
+            "thickness": "medium"
+        },
+        {
+            "from": "5",
+            "to": "6",
+            "text": "",
+            "type": "line",
+            "color": "#5b5a7a",
+            "direction": true,
+            "thickness": "medium"
+        },
+        {
+            "from": "5",
+            "to": "7",
+            "text": "회선/장비 개통 조율 수행 개통 이슈 대응",
+            "type": "line",
+            "color": "#5b5a7a",
+            "direction": true,
+            "thickness": "medium"
+        },
+        {
+            "from": "6",
+            "to": "7",
+            "text": "",
+            "type": "line",
+            "color": "#5b5a7a",
+            "direction": true,
+            "thickness": "medium"
+        },
+        {
+            "from": "7",
+            "to": "8",
+            "text": "고객 기술 문의 지원",
+            "type": "line",
+            "color": "#5b5a7a",
+            "direction": "없음",
+            "thickness": "medium"
+        },
+        {
+            "from": "8",
+            "to": "7",
+            "text": "고객 기술 문의 지원",
+            "type": "line",
+            "color": "#5b5a7a",
+            "direction": "없음",
+            "thickness": "medium"
+        }
+    ]
+}

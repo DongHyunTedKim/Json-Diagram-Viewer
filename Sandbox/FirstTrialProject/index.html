@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON to Mermaid Parser</title>
+    <!-- 외부 CSS 파일 링크 -->
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Mermaid.js 라이브러리 로드 -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+    <h1>JSON to Mermaid Parser</h1>
+
+    <!-- Mermaid 다이어그램 표시 -->
+    <h2>Mermaid Diagram</h2>
+    <pre id="mermaidDiagram"></pre>
+
+    <!-- 변환된 Mermaid 구문 표시 -->
+    <h2>Generated Mermaid Syntax</h2>
+    <pre id="mermaidSyntaxView"></pre>
+
+    <!-- JSON 데이터 표시 -->
+    <h2>Original JSON Data</h2>
+    <pre id="jsonDataView"></pre>
+
+    <!-- 외부 JavaScript 파일 링크 -->
+    <script src="js/parser.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

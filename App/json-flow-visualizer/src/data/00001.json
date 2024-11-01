@@ -1,0 +1,106 @@
+{
+    "file_name": "00001(노드에 번호매김).jpg",
+    "summary": "지원 절차를 단계별로 나타낸 흐름도입니다.",
+    "components": [
+        {
+            "id": "1",
+            "text": "지원 절차",
+            "node": []
+        },
+        {
+            "id": "2",
+            "text": "은행",
+            "node": [
+                {
+                    "id": "3",
+                    "text": "융자 상담",
+                    "node": []
+                },
+                {
+                    "id": "4",
+                    "text": "융자 신청 (서류 제출)\n(업체→",
+                    "node": []
+                }
+            ]
+        },
+        {
+            "id": "5",
+            "text": "안양시 접수일로부터 15일",
+            "node": [
+                {
+                    "id": "6",
+                    "text": "서류 접수\n은행→시",
+                    "node": []
+                },
+                {
+                    "id": "7",
+                    "text": "심사 (현장 실사)\n(시→업체)",
+                    "node": []
+                },
+                {
+                    "id": "8",
+                    "text": "결정 통보\n(시→업체,",
+                    "node": []
+                }
+            ]
+        },
+        {
+            "id": "9",
+            "text": "은행",
+            "node": [
+                {
+                    "id": "10",
+                    "text": "융자 실행\n(은행→업체)",
+                    "node": []
+                }
+            ]
+        }
+    ],
+    "connections": [
+        {
+            "from": "2",
+            "to": "5",
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true,
+            "thickness": "medium"
+        },
+        {
+            "from": "3",
+            "to": "4",
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true,
+            "thickness": "medium"
+        },
+        {
+            "from": "5",
+            "to": "9",
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true,
+            "thickness": "medium"
+        },
+        {
+            "from": "6",
+            "to": "7",
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true,
+            "thickness": "medium"
+        },
+        {
+            "from": "7",
+            "to": "8",
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true,
+            "thickness": "medium"
+        }
+    ]
+}
