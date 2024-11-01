@@ -138,3 +138,57 @@ body {
 .read-the-docs {
   color: #888;
 }
+
+.react-flow__edge {
+  transition: all 0.1s ease;
+}
+
+@keyframes rainbowGlow {
+  0% {
+    stroke: red;
+    filter: drop-shadow(0 0 5px red) drop-shadow(3px 0 7px orange);
+  }
+  20% {
+    stroke: orange;
+    filter: drop-shadow(0 0 5px orange) drop-shadow(3px 0 7px yellow);
+  }
+  40% {
+    stroke: yellow;
+    filter: drop-shadow(0 0 5px yellow) drop-shadow(3px 0 7px green);
+  }
+  60% {
+    stroke: green;
+    filter: drop-shadow(0 0 5px green) drop-shadow(3px 0 7px blue);
+  }
+  80% {
+    stroke: blue;
+    filter: drop-shadow(0 0 5px blue) drop-shadow(3px 0 7px violet);
+  }
+  100% {
+    stroke: violet;
+    filter: drop-shadow(0 0 5px violet) drop-shadow(3px 0 7px red);
+  }
+}
+
+@keyframes electronFlow {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -1000;
+  }
+}
+
+.react-flow__edge.selected {
+  stroke-width: 3px !important;
+  animation: rainbowGlow 2s infinite linear, electronFlow 50s infinite linear;
+  stroke-dasharray: 5, 10;
+  stroke-linecap: round;
+}
+
+.react-flow__edge:hover {
+  cursor: pointer;
+  stroke: #ff0072 !important;
+  stroke-width: 3px !important;
+  filter: drop-shadow(0 0 3px rgba(255, 0, 114, 0.6));
+}

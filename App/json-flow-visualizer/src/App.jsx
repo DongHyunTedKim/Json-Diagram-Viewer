@@ -8,6 +8,8 @@ import ReactFlow, {
   applyEdgeChanges,
   applyNodeChanges,
   Handle,
+  useNodesState,
+  useEdgesState,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import './styles.css';
@@ -34,8 +36,8 @@ const nodeTypes = {
 
 function App() {
   // 노드와 엣지 상태 관리
-  const [nodes, setNodes] = React.useState([]);
-  const [edges, setEdges] = React.useState([]);
+  const [nodes, setNodes] = useNodesState([]);
+  const [edges, setEdges] = useEdgesState([]);
 
   // 최소화 상태 관리
   const [isMinimized, setIsMinimized] = React.useState(false);
@@ -61,20 +63,64 @@ function App() {
   // 노드 변경 시 호출되는 콜백
   const onNodesChange = useCallback(
     (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
-    []
+    [setNodes]
   );
 
   // 엣지 변경 시 호출되는 콜백
   const onEdgesChange = useCallback(
     (changes) => setEdges((eds) => applyEdgeChanges(changes, eds)),
-    []
+    [setEdges]
   );
 
   // 새로운 연결이 추가될 때 호출되는 콜백
   const onConnect = useCallback(
-    (connection) => setEdges((eds) => addEdge(connection, eds)),
-    []
+    (params) => {
+      const newEdge = {
+        ...params,
+        type: 'default',
+        style: {
+          stroke: '#000000',
+          strokeWidth: 2,
+        },
+        markerEnd: {
+          type: 'arrowclosed',
+          width: 20,
+          height: 20,
+          color: '#000000',
+        },
+      };
+      setEdges((eds) => addEdge(newEdge, eds));
+    },
+    [setEdges]
   );
+
+  // Edge 삭제 핸들러 추가
+  const onEdgeUpdate = useCallback(
+    (oldEdge, newConnection) => {
+      setEdges((els) => els.map((el) => 
+        el.id === oldEdge.id ? { ...oldEdge, ...newConnection } : el
+      ));
+    },
+    [setEdges]
+  );
+
+  // Edge 드롭 시 삭제 핸들러
+  const onEdgeUpdateEnd = useCallback(
+    (_, edge) => {
+      const { source, target } = edge;
+      if (!source || !target) {
+        setEdges((eds) => eds.filter((e) => e.id !== edge.id));
+      }
+    },
+    [setEdges]
+  );
+
+  // Edge 삭제를 위한 키보드 이벤트 핸들러 추가
+  const onKeyPress = useCallback((event) => {
+    if (event.key === 'Delete' || event.key === 'Backspace') {
+      setEdges((edges) => edges.filter((edge) => !edge.selected));
+    }
+  }, [setEdges]);
 
   // 변경된 데이터를 저장하는 함수
   const onSave = () => {
@@ -106,6 +152,12 @@ function App() {
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
+          onEdgeUpdate={onEdgeUpdate}
+          onEdgeUpdateEnd={onEdgeUpdateEnd}
+          onKeyPress={onKeyPress}
+          deleteKeyCode={['Backspace', 'Delete']}
+          edgesFocusable={true}
+          selectNodesOnDrag={false}
           fitView
         >
           <MiniMap /> {/* 미니맵 컴포넌트 */}

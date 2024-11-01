@@ -32,15 +32,18 @@ export function parseConnections(connections) {
     id: `e${connection.from}-${connection.to}`,
     source: connection.from.toString(),
     target: connection.to.toString(),
-    type: 'smoothstep',
-    animated: connection.direction === 'forward',
+    type: 'default',
+    animated: false,
     label: connection.text || '',
     style: {
-      stroke: connection.color || '#000',
+      stroke: '#000000',
       strokeWidth: connection.thickness === 'medium' ? 3 : 2
     },
-    markerEnd: {
+    markerEnd: connection.direction ? {
       type: 'arrowclosed',
-    }
+      width: 10,
+      height: 10,
+      color: '#000000',
+    } : undefined
   }));
 }
