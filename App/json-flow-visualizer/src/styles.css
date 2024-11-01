@@ -192,3 +192,28 @@ body {
   stroke-width: 3px !important;
   filter: drop-shadow(0 0 3px rgba(255, 0, 114, 0.6));
 }
+
+.group-node {
+  background-color: #f8f8f8;
+  border: 2px solid #666;
+  border-radius: 8px;
+  padding: 20px;
+  min-height: 100px;
+}
+
+.group-node .react-flow__handle {
+  background: #666;
+  width: 8px;
+  height: 8px;
+}
+
+.group-node::before {
+  content: attr(data-label);
+  position: absolute;
+  top: -10px;
+  left: 10px;
+  background: white;
+  padding: 0 5px;
+  font-size: 12px;
+  color: #666;
+}

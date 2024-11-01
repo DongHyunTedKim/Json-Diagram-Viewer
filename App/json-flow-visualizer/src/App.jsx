@@ -1,5 +1,5 @@
 // src/App.jsx
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import ReactFlow, {
   addEdge,
   MiniMap,
@@ -21,13 +21,30 @@ import { applyLayout } from './utils/layoutUtils';
 // 커스텀 노드 컴포넌트 정의
 const CustomNode = ({ data }) => {
   return (
-    <div className="custom-node">
-      <Handle type="target" position="top" /> {/* 노드의 상단에 연결 핸들 */}
-      <div style={{ padding: '8px' }}>{data.label}</div> {/* 노드의 레이블 표시 */}
-      <Handle type="source" position="bottom" /> {/* 노드의 하단에 연결 핸들 */}
+    <div className={`custom-node ${data.isGroup ? 'group-node' : ''}`}>
+      <Handle type="target" position="top" />
+      <div style={{ padding: '8px' }}>{data.label}</div>
+      <Handle type="source" position="bottom" />
     </div>
   );
 };
+
+// JSON Viewer 컴포넌트
+const JsonViewer = ({ data }) => (
+  <pre style={{
+    padding: '20px',
+    backgroundColor: '#1e1e1e',
+    color: '#d4d4d4',
+    borderRadius: '4px',
+    overflow: 'auto',
+    fontSize: '12px',
+    margin: 0,
+    border: '1px solid #333',
+  }}>
+    {JSON.stringify(data, null, 2)}
+  </pre>
+);
+
 
 // 노드 타입 정의
 const nodeTypes = {
@@ -47,17 +64,81 @@ function App() {
     setIsMinimized(!isMinimized);
   };
 
+  // JSON Viewer 상태 관리
+  const [showJson, setShowJson] = useState(false);
+  const [jsonViewData, setJsonViewData] = useState({
+    original: initialData,
+    parsed: { nodes: [], edges: [] }
+  });
+
+  // JSON Viewer 크기와 스크롤 위치 상태 추가
+  const [jsonViewerSize, setJsonViewerSize] = useState(() => {
+    const saved = localStorage.getItem('jsonViewerSize');
+    return saved ? JSON.parse(saved) : { width: 600, height: 500 };
+  });
+  
+  const [jsonViewerScroll, setJsonViewerScroll] = useState(() => {
+    const saved = localStorage.getItem('jsonViewerScroll');
+    return saved ? JSON.parse(saved) : { left: 0, top: 0 };
+  });
+
+  // 이미지 뷰어 크기와 스크롤 위치 상태 추가
+  const [imageViewerSize, setImageViewerSize] = useState(() => {
+    const saved = localStorage.getItem('imageViewerSize');
+    return saved ? JSON.parse(saved) : { width: 300, height: 200 };
+  });
+
+  const [imageViewerScroll, setImageViewerScroll] = useState(() => {
+    const saved = localStorage.getItem('imageViewerScroll');
+    return saved ? JSON.parse(saved) : { left: 0, top: 0 };
+  });
+
+  // 크기와 스크롤 위치 저장 함수
+  useEffect(() => {
+    localStorage.setItem('jsonViewerSize', JSON.stringify(jsonViewerSize));
+  }, [jsonViewerSize]);
+
+  useEffect(() => {
+    localStorage.setItem('jsonViewerScroll', JSON.stringify(jsonViewerScroll));
+  }, [jsonViewerScroll]);
+
+  useEffect(() => {
+    localStorage.setItem('imageViewerSize', JSON.stringify(imageViewerSize));
+  }, [imageViewerSize]);
+
+  useEffect(() => {
+    localStorage.setItem('imageViewerScroll', JSON.stringify(imageViewerScroll));
+  }, [imageViewerScroll]);
+
+  // JSON Viewer 스크롤 핸들러
+  const handleJsonViewerScroll = useCallback((e) => {
+    const { scrollLeft, scrollTop } = e.target;
+    setJsonViewerScroll({ left: scrollLeft, top: scrollTop });
+  }, []);
+
+  // 이미지 뷰어 스크롤 핸들러
+  const handleImageViewerScroll = useCallback((e) => {
+    const { scrollLeft, scrollTop } = e.target;
+    setImageViewerScroll({ left: scrollLeft, top: scrollTop });
+  }, []);
+
   // 컴포넌트가 처음 렌더링될 때 실행
   useEffect(() => {
-    console.log('Initial Data:', initialData);
+    
     const parsedNodes = parseComponents(initialData.components); // 컴포넌트 데이터 파싱
     const parsedEdges = parseConnections(initialData.connections); // 연결 데이터 파싱
+    const layoutedNodes = applyLayout(parsedNodes, parsedEdges); // 레이아웃 적용
+    
+    console.log('Initial Data:', initialData);
     console.log('Parsed Nodes:', parsedNodes);
     console.log('Parsed Edges:', parsedEdges);
-    const layoutedNodes = applyLayout(parsedNodes, parsedEdges); // 레이아웃 적용
-
+    
     setNodes(layoutedNodes); // 노드 상태 업데이트
     setEdges(parsedEdges); // 엣지 상태 업데이트
+    setJsonViewData(prev => ({ // JSON Viewer 데이터 업데이트
+      ...prev,
+      parsed: { nodes: layoutedNodes, edges: parsedEdges }
+    }));
   }, []);
 
   // 노드 변경 시 호출되는 콜백
@@ -115,8 +196,8 @@ function App() {
     [setEdges]
   );
 
-  // Edge 삭제를 위한 키보드 이벤트 핸들러 추가
-  const onKeyPress = useCallback((event) => {
+  // Edge 삭제를 위한 키보드 이벤트 핸들러 수정
+  const onKeyDown = useCallback((event) => {
     if (event.key === 'Delete' || event.key === 'Backspace') {
       setEdges((edges) => edges.filter((edge) => !edge.selected));
     }
@@ -154,7 +235,7 @@ function App() {
           onConnect={onConnect}
           onEdgeUpdate={onEdgeUpdate}
           onEdgeUpdateEnd={onEdgeUpdateEnd}
-          onKeyPress={onKeyPress}
+          onKeyDown={onKeyDown}
           deleteKeyCode={['Backspace', 'Delete']}
           edgesFocusable={true}
           selectNodesOnDrag={false}
@@ -171,8 +252,8 @@ function App() {
             position: 'absolute',
             top: '20px',
             left: '20px',
-            width: '300px',
-            height: '200px',
+            width: `${imageViewerSize.width}px`,
+            height: `${imageViewerSize.height}px`,
             backgroundColor: 'white',
             border: '1px solid #ccc',
             borderRadius: '4px',
@@ -184,6 +265,7 @@ function App() {
             minHeight: `${window.innerHeight * 0.25}px`, // 최소 높이를 화면 높이의 25%로 설정
             maxHeight: `${window.innerHeight * 0.75}px`, // 최대 높이를 화면 높이의 75%로 설정
           }}
+          onScroll={handleImageViewerScroll}
         >
           <img
             src="/images/00001(노드에 번호매김).jpg"
@@ -207,11 +289,11 @@ function App() {
               borderRadius: '4px',
             }}
           >
-            원본 이미지 데이터
+            Original Image
           </div>
           <button
             onClick={toggleMinimize}
-            aria-label="Minimize"
+            aria-label="HideImage"
             style={{
               position: 'absolute',
               top: '5px',
@@ -226,14 +308,56 @@ function App() {
               fontSize: '12px',
             }}
           >
-            Minimize
+            Hide Image
           </button>
+          <div 
+            style={{
+              position: 'absolute',
+              top: '5px',
+              right: '5px',
+              cursor: 'se-resize',
+              zIndex: 10,
+            }}
+            onMouseDown={(e) => {
+              const container = e.currentTarget.parentElement.parentElement;
+              const startX = e.pageX;
+              const startY = e.pageY;
+              const startWidth = container.offsetWidth;
+              const startHeight = container.offsetHeight;
+
+              const handleMouseMove = (moveEvent) => {
+                const newWidth = startWidth + (moveEvent.pageX - startX);
+                const newHeight = startHeight + (moveEvent.pageY - startY);
+                
+                const limitedWidth = Math.min(
+                  Math.max(200, newWidth), 
+                  window.innerWidth * 0.8
+                );
+                const limitedHeight = Math.min(
+                  Math.max(150, newHeight), 
+                  window.innerHeight * 0.8
+                );
+                
+                setImageViewerSize({ width: limitedWidth, height: limitedHeight });
+              };
+
+              const handleMouseUp = () => {
+                document.removeEventListener('mousemove', handleMouseMove);
+                document.removeEventListener('mouseup', handleMouseUp);
+              };
+
+              document.addEventListener('mousemove', handleMouseMove);
+              document.addEventListener('mouseup', handleMouseUp);
+            }}
+          >
+            ⇲
+          </div>
         </div>
       )}
       {isMinimized && (
         <button
           onClick={toggleMinimize}
-          aria-label="Expand"
+          aria-label="ShowImage"
           style={{
             position: 'absolute',
             top: '20px',
@@ -248,8 +372,146 @@ function App() {
             fontSize: '12px',
           }}
         >
-          Expand
+          Show Image
         </button>
+      )}
+      {/* JSON Viewer 버튼 */}
+      <button
+        onClick={() => setShowJson(!showJson)}
+        style={{
+          position: 'absolute',
+          bottom: '20px',
+          left: '20px',
+          zIndex: 1000,
+        }}
+      >
+        {showJson ? 'Hide JSON' : 'Show JSON'}
+      </button>
+
+      {/* JSON Viewer 패널 */}
+      {showJson && (
+        <div style={{
+          position: 'absolute',
+          bottom: '70px',
+          left: '20px',
+          width: `${jsonViewerSize.width}px`,
+          height: `${jsonViewerSize.height}px`,
+          backgroundColor: '#252526',
+          boxShadow: '0 0 10px rgba(0,0,0,0.5)',
+          borderRadius: '4px',
+          zIndex: 1000,
+          display: 'flex',
+          flexDirection: 'column',
+          border: '1px solid #333',
+          overflow: 'hidden',
+          minWidth: '400px',
+          minHeight: '300px',
+          maxWidth: `${window.innerWidth * 0.8}px`,
+          maxHeight: `${window.innerHeight * 0.8}px`,
+        }}>
+          <div style={{ 
+            padding: '10px', 
+            borderBottom: '1px solid #333', 
+            backgroundColor: '#333333',
+            position: 'sticky',
+            top: 0,
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}>
+            <h3 style={{ margin: 0, color: '#fff' }}>JSON Structure</h3>
+            <div 
+              onMouseDown={(e) => {
+                const container = e.currentTarget.parentElement.parentElement;
+                const startX = e.pageX;
+                const startY = e.pageY;
+                const startWidth = container.offsetWidth;
+                const startHeight = container.offsetHeight;
+
+                const handleMouseMove = (moveEvent) => {
+                  const newWidth = startWidth + (moveEvent.pageX - startX);
+                  const newHeight = startHeight - (moveEvent.pageY - startY);
+                  
+                  const limitedWidth = Math.min(
+                    Math.max(400, newWidth), 
+                    window.innerWidth * 0.8
+                  );
+                  const limitedHeight = Math.min(
+                    Math.max(300, newHeight), 
+                    window.innerHeight * 0.8
+                  );
+                  
+                  setJsonViewerSize({ width: limitedWidth, height: limitedHeight });
+                };
+
+                const handleMouseUp = () => {
+                  document.removeEventListener('mousemove', handleMouseMove);
+                  document.removeEventListener('mouseup', handleMouseUp);
+                };
+
+                document.addEventListener('mousemove', handleMouseMove);
+                document.addEventListener('mouseup', handleMouseUp);
+              }}
+              style={{
+                cursor: 'se-resize',
+                color: '#fff',
+                userSelect: 'none'
+              }}
+            >
+              ↗️
+            </div>
+          </div>
+          <div 
+            style={{ 
+              flex: 1, 
+              display: 'flex',
+              flexDirection: 'row',
+              overflow: 'hidden'
+            }}
+            onScroll={handleJsonViewerScroll}
+          >
+            {/* Original JSON 패널 */}
+            <div style={{ 
+              flex: 1, 
+              borderRight: '1px solid #333',
+              display: 'flex',
+              flexDirection: 'column',
+              overflow: 'hidden'
+            }}>
+              <h4 style={{ 
+                margin: '10px', 
+                color: '#d4d4d4',
+                position: 'sticky',
+                top: 0,
+                backgroundColor: '#252526',
+                padding: '5px'
+              }}>Original JSON:</h4>
+              <div style={{ flex: 1, overflow: 'auto' }}>
+                <JsonViewer data={jsonViewData.original} />
+              </div>
+            </div>
+
+            {/* Parsed React Flow 패널 */}
+            <div style={{ 
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              overflow: 'hidden'
+            }}>
+              <h4 style={{ 
+                margin: '10px', 
+                color: '#d4d4d4',
+                position: 'sticky',
+                top: 0,
+                backgroundColor: '#252526',
+                padding: '5px'
+              }}>Parsed React Flow:</h4>
+              <div style={{ flex: 1, overflow: 'auto' }}>
+                <JsonViewer data={jsonViewData.parsed} />
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
