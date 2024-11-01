@@ -1,61 +1,114 @@
-export function parseComponents(components) {
-  const nodes = [];
+// 데이터 파싱을 위한 유틸리티 함수
 
-  const traverse = (component, parentId = null) => {
-    const { id, text, node: childNodes } = component;
+/**
+ * JSON_TEMPLATE.json 파일을 파싱하여 초기 노드를 생성하는 함수
+ * @param {Object} data - 파싱할 JSON 데이터
+ * @returns {Array} 초기 노드 배열
+ */
+function parseComponents(data) {
+    if (!data.components || !Array.isArray(data.components)) {
+        throw new Error("유효한 components 배열이 필요합니다.");
+    }
 
-    // 그룹 노드인지 확인
-    const isGroup = childNodes && childNodes.length > 0;
+    const nodes = [];
 
-    const node = {
-      id: id.toString(),
-      type: 'customNode',
-      data: {
-        label: text || 'No Label',
-        isGroup
-      },
-      position: { x: 0, y: 0 },
-      style: { 
-        width: 200, 
-        height: 36,
-        background: isGroup ? '#f0f0f0' : 'white',
-        border: isGroup ? '2px solid #666' : '1px solid #777',
-        borderRadius: isGroup ? '8px' : '5px',
-        padding: isGroup ? '20px' : '10px'
-      },
-      parentNode: parentId,
-      extent: isGroup ? 'parent' : undefined,
-      expandParent: true
+    const traverse = (component, parentId = null, depth = 1) => {
+        if (!component.id || !component.text) {
+            throw new Error("각 구성 요소는 고유한 id와 text를 가져야 합니다.");
+        }
+
+        const node = {
+            id: String(component.id),
+            data: { label: 'Depth:' + depth + ' ' + component.text},
+            position: { x: 0, y: 0 }, // 초기 위치 설정
+            className: `Layer${depth}`, // 레이어 깊이에 따른 클래스 이름 설정
+            parentId: parentId,
+            //extent: parentId ? 'parent' : 'none',
+            style: depth === 1 
+            ? { backgroundColor: 'rgba(255, 0, 0, 0.2)', width: 1000, height: 600 }
+            : depth === 2
+                ? { backgroundColor: 'rgba(255, 0, 0, 0.2)', width: 500, height: 260 }
+                : { width: 160, height: 60 }
+            };
+
+        nodes.push(node);
+
+        if (component.node && Array.isArray(component.node)) {
+            component.node.forEach(child => traverse(child, String(component.id), depth + 1));
+        }
     };
 
-    nodes.push(node);
+    data.components.forEach(component => traverse(component));
 
-    if (isGroup) {
-      childNodes.forEach(child => traverse(child, id.toString()));
+    return nodes;
+}
+
+/**
+ * JSON_TEMPLATE.json 파일을 파싱하여 초기 엣지를 생성하는 함수
+ * @param {Object} data - 파싱할 JSON 데이터
+ * @returns {Array} 초기 엣지 배열
+ */
+function parseConnections(data) {
+    if (!data.connections || !Array.isArray(data.connections)) {
+        throw new Error("유효한 connections 배열이 필요합니다.");
     }
-  };
 
-  components.forEach(component => traverse(component));
-  return nodes;
+    const edges = [];
+
+    data.connections.forEach(connection => {
+        const { from, to, text, type, color, direction, thickness } = connection;
+
+        if (!from || !to) {
+            throw new Error("각 연결은 'from'과 'to' 필드를 가져야 합니다.");
+        }
+
+        const edge = {
+            id: `${from}-${to}`,
+            source: String(from),
+            target: String(to),
+            label: text || '',
+            type: type || 'default',
+            style: {
+                stroke: color || '#000',
+                strokeWidth: thickness || 2,
+            },
+        };
+
+        edges.push(edge);
+    });
+
+    return edges.map(edge => ({
+        ...edge,
+        type: 'smoothstep',
+        animated: false,
+        style: {
+            stroke: '#333',
+            strokeWidth: 1.5,
+        },
+        markerEnd: {
+            type: 'arrowclosed',
+            width: 20,
+            height: 20,
+            color: '#333',
+        },
+    }));
 }
 
-export function parseConnections(connections) {
-  return connections.map(connection => ({
-    id: `e${connection.from}-${connection.to}`,
-    source: connection.from.toString(),
-    target: connection.to.toString(),
-    type: 'default',
-    animated: false,
-    label: connection.text || '',
-    style: {
-      stroke: '#000000',
-      strokeWidth: connection.thickness === 'medium' ? 3 : 2
-    },
-    markerEnd: connection.direction ? {
-      type: 'arrowclosed',
-      width: 10,
-      height: 10,
-      color: '#000000',
-    } : undefined
-  }));
+/**
+ * JSON_TEMPLATE.json 파일을 파싱하여 초기 그래프 데이터를 생성하는 함수
+ * @param {String} jsonString - JSON 문자열
+ * @returns {Object} 초기 노드와 엣지 배열
+ */
+function parseJSONtoReactFlowData(jsonString) {
+    try {
+        const data = JSON.parse(jsonString);
+        const parsedNodes = parseComponents(data);
+        const parsedEdges = parseConnections(data);
+        return { parsedNodes, parsedEdges };
+    } catch (error) {
+        console.error("JSON 파싱 에러:", error.message);
+        return { parsedNodes: [], parsedEdges: [] };
+    }
 }
+
+export { parseComponents, parseConnections, parseJSONtoReactFlowData };

@@ -1,219 +1,195 @@
+/* Root & Global Styles */
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
-
-
-/* src/styles.css */
+/* Base Layout */
 body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
-  background-color: white !important;
-  
-  display: flex;
-  place-items: center;
+  background-color: #f5f5f5 !important;
   min-width: 320px;
   min-height: 100vh;
+  display: flex;
+  place-items: center;
+  -webkit-font-smoothing: auto;
+  -moz-font-smoothing: auto;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-smooth: always;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  margin: 0;
+  padding: 0;
+  background-color: #f8f8f8;
+
 }
 
 #root {
   width: 100%;
   height: 100vh;
-  background-color: white;
+  background-color: #f5f5f5;
 }
 
-.react-flow {
-  background-color: white;
-}
-
+/* ReactFlow Container */
+.react-flow,
 .react-flow__container {
   background-color: white;
+  width: 100%;
+  height: 100%;
 }
 
-.custom-node {
-  padding: 10px;
-  border: 1px solid #777;
-  border-radius: 5px;
-  background-color: white;
-  text-align: center;
+/* Node Styles */
+.react-flow__node {
+  border: 1px solid #1a192b;
+  border-radius: 3px;
+  color: #222;
   font-size: 12px;
-  min-width: 150px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  color: black;
+  padding: 10px;
+  text-align: center;
+  width: auto;
+  background: transparent !important;
+  box-shadow: none;
 }
 
-.custom-node div {
-  word-break: break-word;
+.react-flow__node:hover {
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+  border-color: #ff0072;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.react-flow__node-group {
+  background: transparent !important;
+  border: 2px solid rgba(102, 102, 102, 0.5);
+  border-radius: 8px;
+  padding: 20px;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
-}
-
+/* Edge Styles */
 .react-flow__edge {
-  transition: all 0.1s ease;
+  opacity: 0.7;
+  transition: all 0.2s ease;
+  z-index: 1001 !important;
 }
 
-@keyframes rainbowGlow {
-  0% {
-    stroke: red;
-    filter: drop-shadow(0 0 5px red) drop-shadow(3px 0 7px orange);
-  }
-  20% {
-    stroke: orange;
-    filter: drop-shadow(0 0 5px orange) drop-shadow(3px 0 7px yellow);
-  }
-  40% {
-    stroke: yellow;
-    filter: drop-shadow(0 0 5px yellow) drop-shadow(3px 0 7px green);
-  }
-  60% {
-    stroke: green;
-    filter: drop-shadow(0 0 5px green) drop-shadow(3px 0 7px blue);
-  }
-  80% {
-    stroke: blue;
-    filter: drop-shadow(0 0 5px blue) drop-shadow(3px 0 7px violet);
-  }
-  100% {
-    stroke: violet;
-    filter: drop-shadow(0 0 5px violet) drop-shadow(3px 0 7px red);
-  }
+.react-flow__edge-path {
+  stroke: #333;
+  stroke-width: 1.5px;
+  cursor: pointer;
 }
 
-@keyframes electronFlow {
-  0% {
-    stroke-dashoffset: 0;
-  }
-  100% {
-    stroke-dashoffset: -1000;
-  }
-}
-
-.react-flow__edge.selected {
-  stroke-width: 3px !important;
-  animation: rainbowGlow 2s infinite linear, electronFlow 50s infinite linear;
-  stroke-dasharray: 5, 10;
-  stroke-linecap: round;
+.react-flow__edge-interaction {
+  z-index: 1001 !important;
 }
 
 .react-flow__edge:hover {
-  cursor: pointer;
-  stroke: #ff0072 !important;
-  stroke-width: 3px !important;
-  filter: drop-shadow(0 0 3px rgba(255, 0, 114, 0.6));
+  opacity: 1;
 }
 
-.group-node {
-  background-color: #f8f8f8;
-  border: 2px solid #666;
-  border-radius: 8px;
-  padding: 20px;
-  min-height: 100px;
+.react-flow__edge:hover .react-flow__edge-path {
+  stroke: #ff0072;
+  stroke-width: 2px;
 }
 
-.group-node .react-flow__handle {
-  background: #666;
+.react-flow__edge.selected {
+  opacity: 1;
+  z-index: 1001 !important;
+}
+
+.react-flow__edge.selected .react-flow__edge-path {
+  stroke: #ff0072;
+  stroke-width: 3px;
+}
+
+.react-flow__edge.animated {
+  stroke-dasharray: 5;
+  animation: dashdraw 0.5s linear infinite;
+}
+
+@keyframes dashdraw {
+  from {
+    stroke-dashoffset: 10;
+  }
+}
+
+/* Handle Styles */
+.react-flow__handle {
   width: 8px;
   height: 8px;
+  background-color: #000000;
+  border: 2px solid white;
+  border-radius: 50%;
+  z-index: 1003 !important;
 }
 
-.group-node::before {
-  content: attr(data-label);
+.react-flow__handle:hover {
+  background-color: #000000;
+  transform: scale(1.1);
+}
+
+/* Connection Styles */
+.react-flow__connection {
+  z-index: 1001 !important;
+}
+
+.react-flow__connection-path {
+  stroke: #222;
+  stroke-width: 2px;
+}
+
+/* Controls Styles */
+.react-flow__controls {
+  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.08);
+}
+
+.react-flow__controls button {
+  background: #fefefe;
+  border-bottom: 1px solid #eee;
+  box-sizing: content-box;
+  cursor: pointer;
+  padding: 5px;
+  width: 16px;
+  height: 16px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+.react-flow__controls button:hover {
+  background: #f4f4f4;
+}
+
+/* Minimap Styles */
+.react-flow__minimap {
+  background-color: #fff;
+}
+
+/* DragHandle Styles */
+.drag-handle {
+  width: 16px;
+  height: 16px;
+  background: #555;
+  border-radius: 50%;
   position: absolute;
-  top: -10px;
-  left: 10px;
-  background: white;
-  padding: 0 5px;
-  font-size: 12px;
-  color: #666;
+  top: -8px;
+  left: -8px;
+  cursor: grab;
+  z-index: 1;
+}
+
+.drag-handle:hover {
+  background: #666;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
 }

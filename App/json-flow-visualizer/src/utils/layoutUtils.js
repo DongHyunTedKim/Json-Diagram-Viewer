@@ -1,65 +1,71 @@
 // src/utils/layoutUtils.js
 import dagre from 'dagre';
 
-const nodeWidth = 200;
-const nodeHeight = 36;
-const groupPadding = 50;  // 그룹 노드의 패딩
+// 기본 노드 크기 설정
+const DEFAULT_NODE_SIZE = {
+    width: 150,    // 모든 노드의 기본 너비
+    height: 40,    // 모든 노드의 기본 높이
+};
+
+// 기본 간격 설정
+const DEFAULT_SPACING = {
+    rankdir: 'TB',     // 위에서 아래로 방향
+    ranksep: 50,       // 수직 간격
+    nodesep: 30,       // 수평 간격
+    marginx: 20,       // 좌우 여백
+    marginy: 20,       // 상하 여백
+};
 
 export function applyLayout(nodes, edges, direction = 'TB') {
     const dagreGraph = new dagre.graphlib.Graph();
+    
     dagreGraph.setDefaultEdgeLabel(() => ({}));
-
-    dagreGraph.setGraph({ 
+    dagreGraph.setGraph({
         rankdir: direction,
-        ranksep: 100,  // 계층 간 간격 증가
-        nodesep: 60,   // 노드 간 간격 증가
-        marginx: 50,   // 가로 여백
-        marginy: 50    // 세로 여백
+        ranksep: DEFAULT_SPACING.ranksep,
+        nodesep: DEFAULT_SPACING.nodesep,
+        marginx: DEFAULT_SPACING.marginx,
+        marginy: DEFAULT_SPACING.marginy,
+        align: 'UL',
     });
 
-    // 먼저 그룹 노드를 처리
-    const groupNodes = nodes.filter(node => node.data.isGroup);
-    const childNodes = nodes.filter(node => !node.data.isGroup);
-
-    // 그룹 노드 설정
-    groupNodes.forEach(node => {
-        const childCount = childNodes.filter(child => child.parentNode === node.id).length;
-        const groupHeight = nodeHeight * childCount + groupPadding * 2;
-        dagreGraph.setNode(node.id, { 
-            width: nodeWidth + groupPadding * 2, 
-            height: groupHeight 
+    // 모든 노드를 동일한 크기로 설정
+    nodes.forEach(node => {
+        dagreGraph.setNode(node.id, {
+            width: DEFAULT_NODE_SIZE.width,
+            height: DEFAULT_NODE_SIZE.height,
+            label: node.data.label
         });
-    });
-
-    // 일반 노드 설정
-    childNodes.forEach(node => {
-        dagreGraph.setNode(node.id, { width: nodeWidth, height: nodeHeight });
     });
 
     // 엣지 설정
     edges.forEach(edge => {
-        dagreGraph.setEdge(edge.source, edge.target);
+        dagreGraph.setEdge(edge.source, edge.target, {
+            weight: 1,
+            minlen: 1,
+            labelpos: 'c',
+            labeloffset: 5,
+            curve: 'basis'
+        });
     });
 
+    // 레이아웃 실행
     dagre.layout(dagreGraph);
 
     // 노드 위치 업데이트
     return nodes.map(node => {
         const nodeWithPosition = dagreGraph.node(node.id);
-        if (node.data.isGroup) {
-            // 그룹 노드의 경우 더 큰 영역 할당
-            node.style = {
-                ...node.style,
-                width: nodeWidth + groupPadding * 2,
-                height: nodeWithPosition.height
-            };
+        
+        if (!nodeWithPosition) {
+            return node;
         }
-        
-        node.position = {
-            x: nodeWithPosition.x - (node.data.isGroup ? (nodeWidth + groupPadding * 2) / 2 : nodeWidth / 2),
-            y: nodeWithPosition.y - (node.data.isGroup ? nodeWithPosition.height / 2 : nodeHeight / 2)
+
+        return {
+            ...node,
+            position: {
+                x: nodeWithPosition.x - DEFAULT_NODE_SIZE.width / 2,
+                y: nodeWithPosition.y - DEFAULT_NODE_SIZE.height / 2
+            }
         };
-        
-        return node;
     });
 }
