@@ -1,25 +1,37 @@
 export function parseComponents(components) {
   const nodes = [];
 
-  const traverse = (component) => {
+  const traverse = (component, parentId = null) => {
     const { id, text, node: childNodes } = component;
+
+    // 그룹 노드인지 확인
+    const isGroup = childNodes && childNodes.length > 0;
 
     const node = {
       id: id.toString(),
       type: 'customNode',
       data: {
-        label: text || 'No Label'
+        label: text || 'No Label',
+        isGroup
       },
       position: { x: 0, y: 0 },
-      style: { width: 200, height: 36 }
+      style: { 
+        width: 200, 
+        height: 36,
+        background: isGroup ? '#f0f0f0' : 'white',
+        border: isGroup ? '2px solid #666' : '1px solid #777',
+        borderRadius: isGroup ? '8px' : '5px',
+        padding: isGroup ? '20px' : '10px'
+      },
+      parentNode: parentId,
+      extent: isGroup ? 'parent' : undefined,
+      expandParent: true
     };
-
-    console.log('Node created:', node);
 
     nodes.push(node);
 
-    if (childNodes && childNodes.length > 0) {
-      childNodes.forEach(child => traverse(child));
+    if (isGroup) {
+      childNodes.forEach(child => traverse(child, id.toString()));
     }
   };
 

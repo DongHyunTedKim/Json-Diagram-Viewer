@@ -45,7 +45,6 @@ const JsonViewer = ({ data }) => (
   </pre>
 );
 
-
 // 노드 타입 정의
 const nodeTypes = {
   customNode: CustomNode,
@@ -76,7 +75,7 @@ function App() {
     const saved = localStorage.getItem('jsonViewerSize');
     return saved ? JSON.parse(saved) : { width: 600, height: 500 };
   });
-  
+
   const [jsonViewerScroll, setJsonViewerScroll] = useState(() => {
     const saved = localStorage.getItem('jsonViewerScroll');
     return saved ? JSON.parse(saved) : { left: 0, top: 0 };
@@ -124,15 +123,14 @@ function App() {
 
   // 컴포넌트가 처음 렌더링될 때 실행
   useEffect(() => {
-    
     const parsedNodes = parseComponents(initialData.components); // 컴포넌트 데이터 파싱
     const parsedEdges = parseConnections(initialData.connections); // 연결 데이터 파싱
     const layoutedNodes = applyLayout(parsedNodes, parsedEdges); // 레이아웃 적용
-    
+
     console.log('Initial Data:', initialData);
     console.log('Parsed Nodes:', parsedNodes);
     console.log('Parsed Edges:', parsedEdges);
-    
+
     setNodes(layoutedNodes); // 노드 상태 업데이트
     setEdges(parsedEdges); // 엣지 상태 업데이트
     setJsonViewData(prev => ({ // JSON Viewer 데이터 업데이트
@@ -297,7 +295,7 @@ function App() {
             style={{
               position: 'absolute',
               top: '5px',
-              left : '5px',
+              left: '5px',
               zIndex: 10,
               padding: '4px 8px',
               backgroundColor: 'black',
@@ -315,8 +313,13 @@ function App() {
               position: 'absolute',
               top: '5px',
               right: '5px',
-              cursor: 'se-resize',
-              zIndex: 10,
+              cursor: 'se-resize', // nw-resize에서 se-resize로 변경
+              color: '#fff',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              userSelect: 'none',
+              zIndex: 10
             }}
             onMouseDown={(e) => {
               const container = e.currentTarget.parentElement.parentElement;
@@ -337,7 +340,7 @@ function App() {
                   Math.max(150, newHeight), 
                   window.innerHeight * 0.8
                 );
-                
+
                 setImageViewerSize({ width: limitedWidth, height: limitedHeight });
               };
 
@@ -350,7 +353,7 @@ function App() {
               document.addEventListener('mouseup', handleMouseUp);
             }}
           >
-            ⇲
+            ↗️
           </div>
         </div>
       )}
@@ -421,6 +424,16 @@ function App() {
           }}>
             <h3 style={{ margin: 0, color: '#fff' }}>JSON Structure</h3>
             <div 
+              style={{
+                width: '20px',
+                height: '20px',
+                cursor: 'nesw-resize',
+                color: '#fff',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                userSelect: 'none'
+              }}
               onMouseDown={(e) => {
                 const container = e.currentTarget.parentElement.parentElement;
                 const startX = e.pageX;
@@ -440,7 +453,7 @@ function App() {
                     Math.max(300, newHeight), 
                     window.innerHeight * 0.8
                   );
-                  
+
                   setJsonViewerSize({ width: limitedWidth, height: limitedHeight });
                 };
 
@@ -451,11 +464,6 @@ function App() {
 
                 document.addEventListener('mousemove', handleMouseMove);
                 document.addEventListener('mouseup', handleMouseUp);
-              }}
-              style={{
-                cursor: 'se-resize',
-                color: '#fff',
-                userSelect: 'none'
               }}
             >
               ↗️
