@@ -9,12 +9,13 @@ import ReactFlow, {
   applyNodeChanges,
   useNodesState,
   useEdgesState,
+  ReactFlowProvider,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import './styles.css';
 
 import initialData from './data/flowData.json';
-import { parseJSONtoReactFlowData } from './utils/dataUtils';
+import { parseJSONtoReactFlowData, createEdge } from './utils/dataUtils';
 import { applyLayout } from './utils/layoutUtils';
 
 // JSON Viewer 컴포넌트
@@ -32,11 +33,6 @@ const JsonViewer = ({ data }) => (
     {JSON.stringify(data, null, 2)}
   </pre>
 );
-
-// 노드 타입 정의 (필요 시 추가)
-const nodeTypes = {
-  // 커스텀 노드 타입 추가
-};
 
 function App() {
   // 노드와 엣지 상태 관리
@@ -79,7 +75,6 @@ function App() {
     const saved = localStorage.getItem('imageViewerScroll');
     return saved ? JSON.parse(saved) : { left: 0, top: 0 };
   });
-
 
   // JsonViewer & ImageViewer 크기와 스크롤 위치 저장 함수
   useEffect(() => {
@@ -145,23 +140,8 @@ function App() {
   // 새로운 연결이 추가될 때 호출되는 콜백
   const onConnect = useCallback(
     (params) => {
-      const newEdge = {
-        ...params,
-        type: 'smoothstep',
-        animated: false,
-        style: {
-          stroke: '#333',
-          strokeWidth: 1.5,
-        },
-        markerEnd: {
-          type: 'arrowclosed',
-          width: 20,
-          height: 20,
-          color: '#333',
-        },
-      };
-      setEdges((eds) => addEdge(newEdge, eds));
-      console.log('New edge connected:', newEdge);
+      setEdges((eds) => addEdge(createEdge(params), eds));
+      console.log('New edge connected:', params);
     },
     [setEdges]
   );
@@ -170,7 +150,7 @@ function App() {
   const onEdgeUpdate = useCallback(
     (oldEdge, newConnection) => {
       setEdges((els) => els.map((el) => 
-        el.id === oldEdge.id ? { ...oldEdge, ...newConnection } : el
+        el.id === oldEdge.id ? createEdge({ ...oldEdge, ...newConnection }) : el
       ));
     },
     [setEdges]
@@ -224,43 +204,35 @@ function App() {
 
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
-        onEdgeUpdate={onEdgeUpdate}
-        onEdgeUpdateStart={onEdgeUpdateStart}
-        onEdgeUpdateEnd={onEdgeUpdateEnd}
-        onKeyDown={onKeyDown}
-        fitView
-        selectNodesOnDrag={false}
-        elementsSelectable={true}
-        edgesFocusable={true}
-        edgesUpdatable={true}
-        nodesDraggable={true}
-        nodesConnectable={true}
-        deleteKeyCode={['Backspace', 'Delete']}
-        defaultEdgeOptions={{
-          type: 'default',
-          style: { 
-            stroke: '#333', 
-            strokeWidth: 1.5,
-            zIndex: 0  // 기본 zIndex 설정
-          },
-          markerEnd: { 
-            type: 'arrowclosed', 
-            color: '#333' 
-          },
-          interactionWidth: 20, // 상호작용 영역 넓히기
-        }}
-        proOptions={{ hideAttribution: true }}
-      >
-        <Background variant="dots" gap={12} size={1} />
-        <Controls />
-        <MiniMap />
-      </ReactFlow>
+      <ReactFlowProvider>
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          onConnect={onConnect}
+          onEdgeUpdate={onEdgeUpdate}
+          onEdgeUpdateStart={onEdgeUpdateStart}
+          onEdgeUpdateEnd={onEdgeUpdateEnd}
+          onKeyDown={onKeyDown}
+          fitView
+          selectNodesOnDrag={true}
+          elementsSelectable={true}
+          edgesFocusable={true}
+          edgesUpdatable={true}
+          nodesDraggable={true}
+          nodesConnectable={true}
+          deleteKeyCode={['Backspace', 'Delete']}
+          defaultEdgeOptions={{
+            type: 'floating',
+          }}
+          proOptions={{ hideAttribution: true }}
+        >
+          <Background variant="dots" gap={12} size={1} />
+          <Controls />
+          <MiniMap />
+        </ReactFlow>
+      </ReactFlowProvider>
 
       <div style={{ flex: 1 }}>
         <div style={{ position: 'absolute', top: '20px', right: '20px', zIndex: 1000 }}>
@@ -453,7 +425,8 @@ function App() {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  userSelect: 'none'
+                  userSelect: 'none',
+                  zIndex: 10
                 }}
                 onMouseDown={(e) => {
                   const container = e.currentTarget.parentElement.parentElement;

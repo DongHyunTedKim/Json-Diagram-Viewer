@@ -1,0 +1,354 @@
+{
+    "file_name": "00003.png",
+    "summary": "AI 통화 비서를 통해 고객의 전화를 자동 분류 및 처리하여 소상공인의 업무를 효율화하는 시스템.",
+    "components": [
+        {
+            "id": "1",
+            "text": "이용고객(Caller)",
+            "node": [
+                {
+                    "id": "2",
+                    "text": "착신(지능망)콜",
+                    "node": [
+                        {
+                            "id": "3",
+                            "text": "이용고객이 가게유선전화로 발신\n→지능망 착신콜, AI통화비서 연결",
+                            "node": []
+                        }
+                    ]
+                },
+                {
+                    "id": "5",
+                    "text": "AI통화비서 인트로",
+                    "node": [
+                        {
+                            "id": "6",
+                            "text": "AI통화비서 인사말 + 통화연결음\n→이용고객과 전화통화 시작"
+                        }
+                    ]
+                },
+                {
+                    "id": "8",
+                    "text": "발신자 의도 분류",
+                    "node": [
+                        {
+                            "id": "9",
+                            "text": "이용고객의 발신 의도를 파악\n→문의(시간, 위치, 주차)/예약/주문 등",
+                            "node": []
+                        }
+                    ]
+                },
+                {
+                    "id": "11",
+                    "text": "대화 시나리오",
+                    "node": [
+                        {
+                            "id": "12",
+                            "text": "해당 시나리오로 이용고객과 대화\n→예약/주문은 전용링크 문자전송",
+                            "node": []
+                        }
+                    ]
+                },
+                {
+                    "id": "14",
+                    "text": "가게연결 또는 자유발화",
+                    "node": [
+                        {
+                            "id": "15",
+                            "text": "가게연결 요청 시 유선전화 착신음\n→착신불가(통화중, 부재중) 자유발화",
+                            "node": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "17",
+            "text": "",
+            "node": [
+                {
+                    "id": "18",
+                    "text": "이용고객",
+                    "node": []
+                },
+                {
+                    "id": "19",
+                    "text": "통화연결음",
+                    "node": []
+                },
+                {
+                    "id": "20",
+                    "text": "가게연결",
+                    "node": []
+                },
+                {
+                    "id": "21",
+                    "text": "일반문의(시간,위치)",
+                    "node": []
+                },
+                {
+                    "id": "22",
+                    "text": "예약",
+                    "node": []
+                },
+                {
+                    "id": "23",
+                    "text": "주문",
+                    "node": []
+                },
+                {
+                    "id": "24",
+                    "text": "앱알림",
+                    "node": []
+                },
+                {
+                    "id": "25",
+                    "text": "앱알림",
+                    "node": []
+                },
+                {
+                    "id": "26",
+                    "text": "소상공인",
+                    "node": []
+                },
+                {
+                    "id": "27",
+                    "text": "통화불가 안내",
+                    "node": []
+                },
+                {
+                    "id": "28",
+                    "text": "고객 자유발화",
+                    "node": []
+                },
+                {
+                    "id": "29",
+                    "text": "통화종료",
+                    "node": []
+                },
+                {
+                    "id": "30",
+                    "text": "확인 후 콜백(문자/전화)",
+                    "node": []
+                },
+                {
+                    "id": "31",
+                    "text": "앱알림",
+                    "node": []
+                }
+            ]
+        },
+        {
+            "id": "32",
+            "text": "가게점주(Receiver)",
+            "node": [
+                {
+                    "id": "33",
+                    "text": "①통화비서 부가서비스",
+                    "node": [
+                        {
+                            "id": "34",
+                            "text": "착신유선번호 AI통화비서 App 설치(점주 지정 모바일)\n→모상품:일반전화(홈), 인터넷전화(홈,기업)",
+                            "node": []
+                        }
+                    ]
+                },
+                {
+                    "id": "36",
+                    "text": "②AI통화비서 App 설정",
+                    "node": [
+                        {
+                            "id": "37",
+                            "text": "AI 통화비서 App 설정\n→동작 on/off, 인트로, 영업시간, 가게정보, 예약/메뉴 등",
+                            "node": []
+                        }
+                    ]
+                },
+                {
+                    "id": "39",
+                    "text": "③대화결과 업무처리",
+                    "node": [
+                        {
+                            "id": "40",
+                            "text": "대화결과/특화웹에 따라 App내 처리할 업무 list-up\n→예약확인, 주문확인, 자유발화 회신 등",
+                            "node": []
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "connections": [
+        {
+            "from": "18",
+            "to": "19",
+            "text": "",
+            "type": "line",
+            "color": "#642126",
+            "direction": false,
+            "thickness": "thick"
+        },
+        {
+            "from": "19",
+            "to": "20",
+            "text": "",
+            "type": "line",
+            "color": "#642126",
+            "direction": false,
+            "thickness": "thick"
+        },
+        {
+            "from": "19",
+            "to": "21",
+            "text": "",
+            "type": "line",
+            "color": "#642126",
+            "direction": true,
+            "thickness": "thick"
+        },
+        {
+            "from": "19",
+            "to": "22",
+            "text": "",
+            "type": "line",
+            "color": "#642126",
+            "direction": true,
+            "thickness": "thick"
+        },
+        {
+            "from": "19",
+            "to": "23",
+            "text": "",
+            "type": "line",
+            "color": "#642126",
+            "direction": true,
+            "thickness": "thick"
+        },
+        {
+            "from": "19",
+            "to": "29",
+            "text": "",
+            "type": "line",
+            "color": "#642126",
+            "direction": true,
+            "thickness": "thick"
+        },
+        {
+            "from": "20",
+            "to": "26",
+            "text": "통화연결",
+            "type": "line",
+            "color": "#642126",
+            "direction": true,
+            "thickness": "thick"
+        },
+        {
+            "from": "22",
+            "to": "23",
+            "text": "",
+            "type": "line",
+            "color": "#642126",
+            "direction": false,
+            "thickness": "thick"
+        },
+        {
+            "from": "22",
+            "to": "24",
+            "text": "",
+            "type": "dashed",
+            "color": "#2a5c81",
+            "direction": true,
+            "thickness": "thick"
+        },
+        {
+            "from": "23",
+            "to": "18",
+            "text": "※ 전용 링크",
+            "type": "line",
+            "color": "#2a5c81",
+            "direction": true,
+            "thickness": "thick"
+        },
+        {
+            "from": "23",
+            "to": "25",
+            "text": "",
+            "type": "dashed",
+            "color": "#2a5c81",
+            "direction": false,
+            "thickness": "thick"
+        },
+        {
+            "from": "24",
+            "to": "26",
+            "text": "통화연결",
+            "type": "dashed",
+            "color": "#2a5c81",
+            "direction": true,
+            "thickness": "thick"
+        },
+        {
+            "from": "25",
+            "to": "24",
+            "text": "",
+            "type": "dashed",
+            "color": "#2a5c81",
+            "direction": true,
+            "thickness": "thick"
+        },
+        {
+            "from": "26",
+            "to": "27",
+            "text": "연결불가\n(통화중/부재중)",
+            "type": "",
+            "color": "#2a5c81",
+            "direction": true,
+            "thickness": "thick"
+        },
+        {
+            "from": "27",
+            "to": "28",
+            "text": "",
+            "type": "",
+            "color": "#2a5c81",
+            "direction": true,
+            "thickness": "thick"
+        },
+        {
+            "from": "28",
+            "to": "29",
+            "text": "",
+            "type": "",
+            "color": "#2a5c81",
+            "direction": true,
+            "thickness": "thick"
+        },
+        {
+            "from": "28",
+            "to": "31",
+            "text": "",
+            "type": "dashed",
+            "color": "#2a5c81",
+            "direction": true,
+            "thickness": "thick"
+        },
+        {
+            "from": "31",
+            "to": "30",
+            "text": "",
+            "type": "dashed",
+            "color": "#2a5c81",
+            "direction": true,
+            "thickness": "thick"
+        },
+        {
+            "from": "30",
+            "to": "18",
+            "text": "자유발화 회신, 예약확인, 주문확인",
+            "type": "line",
+            "color": "#9d9d9d",
+            "direction": true,
+            "thickness": "thick"
+        }
+    ]
+}

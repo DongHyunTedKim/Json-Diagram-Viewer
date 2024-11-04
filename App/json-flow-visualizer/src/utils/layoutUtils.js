@@ -9,19 +9,19 @@ const DEFAULT_NODE_SIZE = {
 
 // 기본 간격 설정
 const DEFAULT_SPACING = {
-    rankdir: 'TB',     // 위에서 아래로 방향
-    ranksep: 50,       // 수직 간격
-    nodesep: 30,       // 수평 간격
+    rankdir: 'LR',
+    ranksep: 70,       // 좌우 간격 증가
+    nodesep: 30,       // 상하 간격
     marginx: 20,       // 좌우 여백
     marginy: 20,       // 상하 여백
 };
 
-export function applyLayout(nodes, edges, direction = 'TB') {
+export function applyLayout(nodes, edges, direction = 'LR') {
     const dagreGraph = new dagre.graphlib.Graph();
     
     dagreGraph.setDefaultEdgeLabel(() => ({}));
     dagreGraph.setGraph({
-        rankdir: direction,
+        rankdir: direction, // 외부에서 direction을 받을 수 있도록 수정
         ranksep: DEFAULT_SPACING.ranksep,
         nodesep: DEFAULT_SPACING.nodesep,
         marginx: DEFAULT_SPACING.marginx,
@@ -38,14 +38,15 @@ export function applyLayout(nodes, edges, direction = 'TB') {
         });
     });
 
-    // 엣지 설정
+    // 엣지 설정 업데이트
     edges.forEach(edge => {
         dagreGraph.setEdge(edge.source, edge.target, {
-            weight: 1,
-            minlen: 1,
-            labelpos: 'c',
-            labeloffset: 5,
-            curve: 'basis'
+            ...edge.data, // edge.data에서 설정 가져오기
+            weight: edge.data?.weight || 1,
+            minlen: edge.data?.minlen || 1,
+            labelpos: edge.data?.labelpos || 'c',
+            labeloffset: edge.data?.labeloffset || 5,
+            curve: edge.data?.curve || 'basis'
         });
     });
 
