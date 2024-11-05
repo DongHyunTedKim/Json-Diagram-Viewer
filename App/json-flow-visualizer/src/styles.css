@@ -30,6 +30,7 @@
   text-align: center;
   width: auto;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1;
 }
 
 .react-flow__node:hover {
@@ -38,24 +39,26 @@
 }
 
 /* Edge Styles */
-.floatingedges .react-flow__handle {
-  opacity: 0;
-}
-
 .react-flow__edge {
-  opacity: 0.7;
-  transition: all 0.2s ease;
-  z-index: 1001 !important;
-}
-
-.react-flow__edge-path {
-  stroke: #333;
-  stroke-width: 1.5px;
+  opacity: 0.8;
+  z-index: 1000 !important;
   cursor: pointer;
 }
 
+.react-flow__edge-path {
+  stroke: #444;
+  stroke-width: 4px;
+  cursor: pointer;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
+  z-index: 1000 !important;
+}
+
 .react-flow__edge-interaction {
-  z-index: 1002 !important;
+  z-index: 1001 !important;
+  stroke-width: 12px;
+  stroke: transparent;
+  fill: none;
+  cursor: pointer;
 }
 
 .react-flow__edge:hover {
@@ -63,8 +66,9 @@
 }
 
 .react-flow__edge:hover .react-flow__edge-path {
-  stroke: #ff0072;
-  stroke-width: 2px;
+  stroke: #ff4081;
+  stroke-width: 5px;
+  filter: drop-shadow(0 0 8px rgba(255,0,114,0.6));
 }
 
 .react-flow__edge.selected {
@@ -74,22 +78,40 @@
 
 .react-flow__edge.selected .react-flow__edge-path {
   stroke: #ff0072;
-  stroke-width: 3px;
+  stroke-width: 5px;
+  stroke-dasharray: 10;
+  animation: flowingDash 5s linear infinite;
+  filter: drop-shadow(0 0 8px rgba(255,0,114,1));
+}
+
+.react-flow__edge.selected .react-flow__edge-path.floating {
+  stroke-width: 2.5;
+  stroke: #000;
+}
+
+@keyframes flowingDash {
+  from {
+    stroke-dashoffset: 100;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
 }
 
 /* Handle Styles */
 .react-flow__handle {
-  width: 8px;
-  height: 8px;
-  background-color: #000000;
-  border: 2px solid white;
-  border-radius: 50%;
+  width: 10px !important;
+  height: 10px !important;
+  background-color: #1a192b !important;
   z-index: 1000;
+  opacity: 1 !important;
+  transition: all 0.1s ease;
 }
 
 .react-flow__handle:hover {
-  background-color: #000000;
-  transform: scale(1.1);
+  background-color: #ff0072 !important;
+  transform: scale(2);
+  box-shadow: 0 0 3px 1px rgba(255, 0, 114, 0.4);
 }
 
 /* Connection Styles */

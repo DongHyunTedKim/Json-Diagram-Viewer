@@ -42,30 +42,18 @@ export const FLOW_CONSTANTS = {
     },
     EDGE: {
         STYLE: {
-            STROKE_WIDTH: 1.5,
-            STROKE_COLOR: '#333',
-            HOVER_STROKE_WIDTH: 2,
-            HOVER_STROKE_COLOR: '#ff0072',
-            SELECTED_STROKE_WIDTH: 2.5,
-            OPACITY: 0.7,
+            STROKE_WIDTH: 4,
+            STROKE_COLOR: '#444',
+            HOVER_STROKE_WIDTH: 5,
+            HOVER_STROKE_COLOR: '#ff4081',
+            SELECTED_STROKE_WIDTH: 5,
+            OPACITY: 0.9,
             HOVER_OPACITY: 1
         },
-        MARKER: {
-            WIDTH: 20,
-            HEIGHT: 20,
-            COLOR: '#333'
+        MARKER: { // 엣지 마커 = 화살표 대가리
+            WIDTH: 10,
+            HEIGHT: 10,
+            COLOR: '#444'
         }
     },
-    HANDLE: {
-        SIZE: {
-            WIDTH: 8,
-            HEIGHT: 8
-        },
-        STYLE: {
-            BACKGROUND_COLOR: '#000000',
-            BORDER: '2px solid white',
-            BORDER_RADIUS: '50%',
-            HOVER_SCALE: 1.1
-        }
-    }
 }; 

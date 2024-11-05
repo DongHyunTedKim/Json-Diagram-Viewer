@@ -69,7 +69,11 @@ function parseComponents(data) {
             position: { x: 0, y: 0 },
             className: `Layer${depth}`,
             parentId: parentId,
-            extent: 'parent',
+            // 핸들 관련 속성 수정
+            sourcePosition: Position.Right,
+            targetPosition: Position.Left,
+            // 핸들 표시 여부 명시적 설정
+            connectable: true,
             style: {
                 width,
                 height,
@@ -120,15 +124,18 @@ export function createEdge({ source, target }) {
         target: String(target),
         type: 'floating',
         animated: false,
+        interactionWidth: 12,
         style: {
             strokeWidth: FLOW_CONSTANTS.EDGE.STYLE.STROKE_WIDTH,
-            stroke: FLOW_CONSTANTS.EDGE.STYLE.STROKE_COLOR
+            stroke: FLOW_CONSTANTS.EDGE.STYLE.STROKE_COLOR,
+            cursor: 'pointer'
         },
         markerEnd: {
             type: MarkerType.ArrowClosed,
             width: FLOW_CONSTANTS.EDGE.MARKER.WIDTH,
             height: FLOW_CONSTANTS.EDGE.MARKER.HEIGHT,
-            color: FLOW_CONSTANTS.EDGE.STYLE.STROKE_COLOR
+            color: FLOW_CONSTANTS.EDGE.STYLE.STROKE_COLOR,
+            strokeWidth: 2
         }
     };
 }

@@ -58,10 +58,20 @@ function App() {
   // 새로운 연결이 추가될 때 호출되는 콜백
   const onConnect = useCallback(
     (params) => {
+      // 중복 연결 체크
+      const isDuplicate = edges.some(
+        edge => edge.source === params.source && edge.target === params.target
+      );
+
+      if (isDuplicate) {
+        console.warn('이미 존재하는 연결입니다.');
+        return;
+      }
+
       setEdges((eds) => addEdge(createEdge(params), eds));
-      console.log('New edge connected:', params);
+      console.log('새로운 연결이 생성되었습니다:', params);
     },
-    [setEdges]
+    [setEdges, edges]
   );
 
   // 엣지 변경 시 호출되는 콜백
@@ -248,18 +258,21 @@ function App() {
           fitView
           edgeTypes={edgeTypes}
           connectionLineComponent={FloatingConnectionLine}
-          selectNodesOnDrag={true}
+          selectNodesOnDrag={false}
           elementsSelectable={true}
           edgesFocusable={true}
           edgesUpdatable={true}
           nodesDraggable={true}
           nodesConnectable={true}
-          deleteKeyCode={['Backspace', 'Delete']}
-          proOptions={{ hideAttribution: true }}
+          snapToGrid={true}
+          snapGrid={[15, 15]}
+          connectionMode="loose"
           defaultEdgeOptions={{
-            type: 'floating'
+            type: 'floating',
+            animated: true
           }}
-          className="floatingedges"
+          className="react-flow-graph"
+          elevateEdgesOnSelect={true}
         >
           <Background variant="dots" gap={12} size={1} />
           <Controls />

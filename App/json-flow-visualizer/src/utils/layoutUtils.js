@@ -49,7 +49,6 @@ export function applyLayout(nodes, edges, direction = 'LR') {
     // 노드 위치 업데이트
     return nodes.map(node => {
         const nodeWithPosition = dagreGraph.node(node.id);
-        const dimensions = getNodeDimensions(node);
         
         if (!nodeWithPosition) {
             return node;
