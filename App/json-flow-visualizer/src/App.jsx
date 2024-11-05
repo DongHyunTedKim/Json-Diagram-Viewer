@@ -10,6 +10,7 @@ import ReactFlow, {
   useNodesState,
   useEdgesState,
   ReactFlowProvider,
+  MarkerType,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import './styles.css';
@@ -17,6 +18,9 @@ import './styles.css';
 import initialData from './data/flowData.json';
 import { parseJSONtoReactFlowData, createEdge } from './utils/dataUtils';
 import { applyLayout } from './utils/layoutUtils';
+
+import FloatingEdge from './components/FloatingEdge';
+import FloatingConnectionLine from './components/FloatingConnectionLine';
 
 // JSON Viewer 컴포넌트
 const JsonViewer = ({ data }) => (
@@ -34,11 +38,100 @@ const JsonViewer = ({ data }) => (
   </pre>
 );
 
+const edgeTypes = {
+  floating: FloatingEdge
+};
+
 function App() {
+
+  //MARK: - 필수 기능
   // 노드와 엣지 상태 관리
   const [nodes, setNodes] = useNodesState([]);
   const [edges, setEdges] = useEdgesState([]);
 
+  // 노드 변경 시 호출되는 콜백
+  const onNodesChange = useCallback(
+    (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
+    [setNodes]
+  );
+
+  // 새로운 연결이 추가될 때 호출되는 콜백
+  const onConnect = useCallback(
+    (params) => {
+      setEdges((eds) => addEdge(createEdge(params), eds));
+      console.log('New edge connected:', params);
+    },
+    [setEdges]
+  );
+
+  // 엣지 변경 시 호출되는 콜백
+  const onEdgesChange = useCallback(
+    (changes) => {
+      setEdges((eds) => applyEdgeChanges(changes, eds));
+      console.log('Edge changed:', changes);
+    },
+    [setEdges]
+  );
+
+
+  // Edge 삭제 핸들러 추가
+  const onEdgeUpdate = useCallback(
+    (oldEdge, newConnection) => {
+      setEdges((els) => els.map((el) =>
+        el.id === oldEdge.id ? createEdge({ ...oldEdge, ...newConnection }) : el
+      ));
+    },
+    [setEdges]
+  );
+
+  // Edge 드롭 시 삭제 핸들러
+  const onEdgeUpdateEnd = useCallback(
+    (_, edge) => {
+      const { source, target } = edge;
+      if (!source || !target) {
+        setEdges((eds) => eds.filter((e) => e.id !== edge.id));
+      }
+    },
+    [setEdges]
+  );
+
+  // Edge 삭제를 위한 키보드 이벤트 핸들러 수정
+  const onKeyDown = useCallback(
+    (event) => {
+      if (event.key === 'Delete' || event.key === 'Backspace') {
+        setEdges((eds) => eds.filter((edge) => !edge.selected));
+        console.log('Edge deleted');
+      }
+    },
+    [setEdges]
+  );
+
+  // 변경된 데이터를 저장하는 함수
+  const onSave = () => {
+    const data = {
+      nodes,
+      edges,
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+
+    // 다운로드 링크 생성 및 클릭
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'updatedFlowData.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  // Edge 업데이트 시작 핸들러 추가
+  const onEdgeUpdateStart = useCallback((event, edge) => {
+    // 엣지 업데이트 시작 시 필요한 작업을 수행할 수 있습니다
+    // 예: 현재 엣지의 상태를 저장하거나, UI 피드백을 제공
+    console.log('Edge update started:', edge);
+  }, []);
+
+
+  //MARK: - 편의 기능
   // 최소화 상태 관리
   const [isMinimized, setIsMinimized] = useState(false);
 
@@ -114,92 +207,12 @@ function App() {
     console.log('Parsed Nodes:', parsedNodes);
     console.log('Parsed Edges:', parsedEdges);
 
-    setNodes(layoutedNodes); // 노드 상태 업데이트
+    setNodes(layoutedNodes); // 노드 상태 업데트
     setEdges(parsedEdges); // 엣지 상태 업데이트
     setJsonViewData(prev => ({ // JSON Viewer 데이터 업데이트
       ...prev,
       parsed: { nodes: layoutedNodes, edges: parsedEdges }
     }));
-  }, []);
-
-  // 노드 변경 시 호출되는 콜백
-  const onNodesChange = useCallback(
-    (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
-    [setNodes]
-  );
-
-  // 엣지 변경 시 호출되는 콜백
-  const onEdgesChange = useCallback(
-    (changes) => {
-      setEdges((eds) => applyEdgeChanges(changes, eds));
-      console.log('Edge changed:', changes);
-    },
-    [setEdges]
-  );
-
-  // 새로운 연결이 추가될 때 호출되는 콜백
-  const onConnect = useCallback(
-    (params) => {
-      setEdges((eds) => addEdge(createEdge(params), eds));
-      console.log('New edge connected:', params);
-    },
-    [setEdges]
-  );
-
-  // Edge 삭제 핸들러 추가
-  const onEdgeUpdate = useCallback(
-    (oldEdge, newConnection) => {
-      setEdges((els) => els.map((el) => 
-        el.id === oldEdge.id ? createEdge({ ...oldEdge, ...newConnection }) : el
-      ));
-    },
-    [setEdges]
-  );
-
-  // Edge 드롭 시 삭제 핸들러
-  const onEdgeUpdateEnd = useCallback(
-    (_, edge) => {
-      const { source, target } = edge;
-      if (!source || !target) {
-        setEdges((eds) => eds.filter((e) => e.id !== edge.id));
-      }
-    },
-    [setEdges]
-  );
-
-  // Edge 삭제를 위한 키보드 이벤트 핸들러 수정
-  const onKeyDown = useCallback(
-    (event) => {
-      if (event.key === 'Delete' || event.key === 'Backspace') {
-        setEdges((eds) => eds.filter((edge) => !edge.selected));
-        console.log('Edge deleted');
-      }
-    },
-    [setEdges]
-  );
-
-  // 변경된 데이터를 저장하는 함수
-  const onSave = () => {
-    const data = {
-      nodes,
-      edges,
-    };
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-
-    // 다운로드 링크 생성 및 클릭
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'updatedFlowData.json';
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
-  // Edge 업데이트 시작 핸들러 추가
-  const onEdgeUpdateStart = useCallback((event, edge) => {
-    // 엣지 업데이트 시작 시 필요한 작업을 수행할 수 있습니다
-    // 예: 현재 엣지의 상태를 저장하거나, UI 피드백을 제공
-    console.log('Edge update started:', edge);
   }, []);
 
   return (
@@ -216,6 +229,8 @@ function App() {
           onEdgeUpdateEnd={onEdgeUpdateEnd}
           onKeyDown={onKeyDown}
           fitView
+          edgeTypes={edgeTypes}
+          connectionLineComponent={FloatingConnectionLine}
           selectNodesOnDrag={true}
           elementsSelectable={true}
           edgesFocusable={true}
@@ -223,10 +238,11 @@ function App() {
           nodesDraggable={true}
           nodesConnectable={true}
           deleteKeyCode={['Backspace', 'Delete']}
-          defaultEdgeOptions={{
-            type: 'floating',
-          }}
           proOptions={{ hideAttribution: true }}
+          defaultEdgeOptions={{
+            type: 'floating'
+          }}
+          className="floatingedges"
         >
           <Background variant="dots" gap={12} size={1} />
           <Controls />
@@ -302,7 +318,7 @@ function App() {
             >
               Hide Image
             </button>
-            <div 
+            <div
               style={{
                 position: 'absolute',
                 top: '5px',
@@ -325,13 +341,13 @@ function App() {
                 const handleMouseMove = (moveEvent) => {
                   const newWidth = startWidth + (moveEvent.pageX - startX);
                   const newHeight = startHeight + (moveEvent.pageY - startY);
-                  
+
                   const limitedWidth = Math.min(
-                    Math.max(200, newWidth), 
+                    Math.max(200, newWidth),
                     window.innerWidth * 0.8
                   );
                   const limitedHeight = Math.min(
-                    Math.max(150, newHeight), 
+                    Math.max(150, newHeight),
                     window.innerHeight * 0.8
                   );
 
@@ -405,9 +421,9 @@ function App() {
             maxWidth: `${window.innerWidth * 0.8}px`,
             maxHeight: `${window.innerHeight * 0.8}px`,
           }}>
-            <div style={{ 
-              padding: '10px', 
-              borderBottom: '1px solid #333', 
+            <div style={{
+              padding: '10px',
+              borderBottom: '1px solid #333',
               backgroundColor: '#333333',
               position: 'sticky',
               top: 0,
@@ -416,7 +432,7 @@ function App() {
               alignItems: 'center'
             }}>
               <h3 style={{ margin: 0, color: '#fff' }}>JSON Structure</h3>
-              <div 
+              <div
                 style={{
                   width: '20px',
                   height: '20px',
@@ -438,13 +454,13 @@ function App() {
                   const handleMouseMove = (moveEvent) => {
                     const newWidth = startWidth + (moveEvent.pageX - startX);
                     const newHeight = startHeight - (moveEvent.pageY - startY);
-                    
+
                     const limitedWidth = Math.min(
-                      Math.max(400, newWidth), 
+                      Math.max(400, newWidth),
                       window.innerWidth * 0.8
                     );
                     const limitedHeight = Math.min(
-                      Math.max(300, newHeight), 
+                      Math.max(300, newHeight),
                       window.innerHeight * 0.8
                     );
 
@@ -463,9 +479,9 @@ function App() {
                 ↗️
               </div>
             </div>
-            <div 
-              style={{ 
-                flex: 1, 
+            <div
+              style={{
+                flex: 1,
                 display: 'flex',
                 flexDirection: 'row',
                 overflow: 'hidden'
@@ -473,15 +489,15 @@ function App() {
               onScroll={handleJsonViewerScroll}
             >
               {/* Original JSON 패널 */}
-              <div style={{ 
-                flex: 1, 
+              <div style={{
+                flex: 1,
                 borderRight: '1px solid #333',
                 display: 'flex',
                 flexDirection: 'column',
                 overflow: 'hidden'
               }}>
-                <h4 style={{ 
-                  margin: '10px', 
+                <h4 style={{
+                  margin: '10px',
                   color: '#d4d4d4',
                   position: 'sticky',
                   top: 0,
@@ -494,14 +510,14 @@ function App() {
               </div>
 
               {/* Parsed React Flow 패널 */}
-              <div style={{ 
+              <div style={{
                 flex: 1,
                 display: 'flex',
                 flexDirection: 'column',
                 overflow: 'hidden'
               }}>
-                <h4 style={{ 
-                  margin: '10px', 
+                <h4 style={{
+                  margin: '10px',
                   color: '#d4d4d4',
                   position: 'sticky',
                   top: 0,

@@ -8,6 +8,7 @@
   background-color: #242424;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
+  box-sizing: border-box;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -75,6 +76,18 @@ body {
 }
 
 /* Edge Styles */
+
+.floatingedges {
+  flex-direction: column;
+  display: flex;
+  flex-grow: 1;
+  height: 100%;
+}
+
+.floatingedges .react-flow__handle {
+  opacity: 0;
+}
+
 .react-flow__edge {
   opacity: 0.7;
   transition: all 0.2s ease;
@@ -168,7 +181,17 @@ body {
   background: #f4f4f4;
 }
 
-/* Minimap Styles */
-.react-flow__minimap {
-  background-color: #fff;
+.react-flow__edge-path.floating {
+    stroke-width: 1.5;
+    stroke: #333;
+}
+
+.react-flow__edge-path.floating:hover {
+    stroke-width: 2;
+    stroke: #ff0072;
+}
+
+.react-flow__edge.selected .react-flow__edge-path.floating {
+    stroke-width: 2.5;
+    stroke: #ff0072;
 }

@@ -1,5 +1,8 @@
 // 데이터 파싱을 위한 유틸리티 함수
 
+import { Position } from "reactflow";
+import { MarkerType } from "reactflow";
+
 //MARK: - 노드 파싱
 /**
  * JSON_TEMPLATE.json 파일을 파싱하여 초기 노드를 생성하는 함수
@@ -20,18 +23,17 @@ function parseComponents(data) {
 
         const node = {
             id: String(component.id),
-            data: { label: 'Depth:' + depth + ' ' + component.text},
-            position: { x: 0, y: 0 }, // 초기 위치 설정
-            className: `Layer${depth}`, // 레이어 깊이에 따른 클래스 이름 설정
+            data: { label: 'Depth:' + depth + ' ' + component.text },
+            position: { x: 0, y: 0 },
+            className: `Layer${depth}`,
             parentId: parentId,
-            //extent: parentId ? 'parent' : 'none',
-            style: depth === 1 
-            ? { backgroundColor: 'rgba(255, 0, 0, 0.2)', width: 1200, height: 300 }
-            : depth === 2
-                ? { backgroundColor: 'rgba(255, 0, 0, 0.2)', width: 300, height: 160 }
-                : { width: 90, height: 60 },
-            sourcePosition: undefined,
-            targetPosition: undefined,
+            style: depth === 1
+                ? { backgroundColor: 'rgba(255, 0, 0, 0.2)', width: 1200, height: 300 }
+                : depth === 2
+                    ? { backgroundColor: 'rgba(255, 0, 0, 0.2)', width: 300, height: 160 }
+                    : { width: 90, height: 60 },
+            sourcePosition: Position.Right,
+            targetPosition: Position.Left
         };
 
         nodes.push(node);
@@ -53,53 +55,36 @@ function parseComponents(data) {
  * @returns {Array} 초기 엣지 배열
  */
 
-// 엣지 스타일 상수 수정
-const DEFAULT_EDGE_STYLE = {
-    type: 'floating', // 엣지 타입을 'floating'으로 설정
-    animated: false,
-    style: {
-        stroke: '#333',
-        strokeWidth: 1.5,
-    },
-    markerEnd: {
-        type: 'arrowclosed',
-        width: 20,
-        height: 20,
-        color: '#333',
-    },
-    // connection 관련 속성 추가
-    deletable: true,
-    updatable: true,
-    interactionWidth: 20,
-    data: {
-        weight: 1,
-        minlen: 1,
-        labelpos: 'c',
-        labeloffset: 5,
-        curve: 'basis'
-    }
-};
-
 function parseConnections(data) {
     if (!data.connections || !Array.isArray(data.connections)) {
         throw new Error("유효한 connections 배열이 필요합니다.");
     }
 
-    return data.connections.map(connection => {
-        const { from, to, text, ...rest } = connection;
-
+    return data.connections.map(({ from, to }) => {
         if (!from || !to) {
             throw new Error("각 연결은 'from'과 'to' 필드를 가져야 합니다.");
         }
 
-        return createEdge({
-            id: `${from}-${to}`,
-            source: String(from),
-            target: String(to),
-            label: text || '',
-            ...rest // 추가 connection 속성 유지
-        });
+        return createEdge({ source: from, target: to });
     });
+}
+
+// createEdge 함수 수정
+export function createEdge({ source, target }) {
+    return {
+        id: `${source}-${target}`,
+        source: String(source),
+        target: String(target),
+        type: 'floating',
+        animated: false,
+        style: {
+            strokeWidth: 1.5,
+            stroke: '#333'
+        },
+        markerEnd: {
+            type: MarkerType.Arrow
+        }
+    };
 }
 
 /**
@@ -117,22 +102,6 @@ function parseJSONtoReactFlowData(jsonString) {
         console.error("JSON 파싱 에러:", error.message);
         return { parsedNodes: [], parsedEdges: [] };
     }
-}
-
-// createEdge 함수 수정
-export function createEdge(params = {}) {
-    const { source, target, ...rest } = params;
-    return {
-        ...DEFAULT_EDGE_STYLE,
-        source: source || '',
-        target: target || '',
-        ...rest,
-        // connection 관련 속성은 덮어쓰기 방지
-        data: {
-            ...DEFAULT_EDGE_STYLE.data,
-            ...(rest.data || {})
-        }
-    };
 }
 
 export { parseComponents, parseConnections, parseJSONtoReactFlowData };

@@ -10,30 +10,38 @@ const DEFAULT_NODE_SIZE = {
 // 기본 간격 설정
 const DEFAULT_SPACING = {
     rankdir: 'LR',
-    ranksep: 70,       // 좌우 간격 증가
-    nodesep: 30,       // 상하 간격
-    marginx: 20,       // 좌우 여백
-    marginy: 20,       // 상하 여백
+    ranksep: 0,    // 좌우 간격 증가
+    nodesep: 0,     // 상하 간격 증가
+    marginx: 0,     // 여백 증가
+    marginy: 0,
 };
+
+function getNodeDimensions(node) {
+    return {
+        width: node.style?.width || DEFAULT_NODE_SIZE.width,
+        height: node.style?.height || DEFAULT_NODE_SIZE.height
+    };
+}
 
 export function applyLayout(nodes, edges, direction = 'LR') {
     const dagreGraph = new dagre.graphlib.Graph();
     
     dagreGraph.setDefaultEdgeLabel(() => ({}));
     dagreGraph.setGraph({
-        rankdir: direction, // 외부에서 direction을 받을 수 있도록 수정
-        ranksep: DEFAULT_SPACING.ranksep,
-        nodesep: DEFAULT_SPACING.nodesep,
-        marginx: DEFAULT_SPACING.marginx,
-        marginy: DEFAULT_SPACING.marginy,
+        rankdir: direction,
+        ranksep: 100,    // 간격 증가
+        nodesep: 50,     // 간격 증가
+        marginx: 30,
+        marginy: 30,
         align: 'UL',
     });
 
-    // 모든 노드를 동일한 크기로 설정
+    // 각 노드의 실제 크기 사용
     nodes.forEach(node => {
+        const dimensions = getNodeDimensions(node);
         dagreGraph.setNode(node.id, {
-            width: DEFAULT_NODE_SIZE.width,
-            height: DEFAULT_NODE_SIZE.height,
+            width: dimensions.width,
+            height: dimensions.height,
             label: node.data.label
         });
     });
@@ -41,12 +49,11 @@ export function applyLayout(nodes, edges, direction = 'LR') {
     // 엣지 설정 업데이트
     edges.forEach(edge => {
         dagreGraph.setEdge(edge.source, edge.target, {
-            ...edge.data, // edge.data에서 설정 가져오기
-            weight: edge.data?.weight || 1,
-            minlen: edge.data?.minlen || 1,
-            labelpos: edge.data?.labelpos || 'c',
-            labeloffset: edge.data?.labeloffset || 5,
-            curve: edge.data?.curve || 'basis'
+            weight: 1,  // 모든 엣지의 가중치를 동일하게
+            minlen: 1,  // 최소 길이도 동일하게
+            labelpos: 'c',
+            labeloffset: 0,
+            curve: 'basis'  // 곡선 타입 유지
         });
     });
 
