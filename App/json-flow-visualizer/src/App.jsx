@@ -130,16 +130,53 @@ function App() {
     console.log('Edge update started:', edge);
   }, []);
 
-
-  //MARK: - 편의 기능
+  //
+  //
+  //
+  //
+  // MARK: 편의 기능
   // 최소화 상태 관리
   const [isMinimized, setIsMinimized] = useState(false);
 
-  // 최소화 버튼 클릭 시 호출되는 함수
+  //
+  //
+  //
+  // MARK: - 이미지뷰어
+  // 이미지 뷰어 - 최소화 버튼 클릭 시 호출되는 함수
   const toggleMinimize = () => {
     setIsMinimized(!isMinimized);
   };
 
+  // 이미지 뷰어 - 크기와 스크롤 위치 상태 추가
+  const [imageViewerSize, setImageViewerSize] = useState(() => {
+    const saved = localStorage.getItem('imageViewerSize');
+    return saved ? JSON.parse(saved) : { width: 300, height: 200 };
+  });
+
+  const [imageViewerScroll, setImageViewerScroll] = useState(() => {
+    const saved = localStorage.getItem('imageViewerScroll');
+    return saved ? JSON.parse(saved) : { left: 0, top: 0 };
+  });
+
+  // 이미지 뷰어 - 크기와 스크롤 위치 저장 함수
+  useEffect(() => {
+    localStorage.setItem('imageViewerSize', JSON.stringify(imageViewerSize));
+  }, [imageViewerSize]);
+
+  useEffect(() => {
+    localStorage.setItem('imageViewerScroll', JSON.stringify(imageViewerScroll));
+  }, [imageViewerScroll]);
+
+  // 이미지 뷰어 스크롤 핸들러
+  const handleImageViewerScroll = useCallback((e) => {
+    const { scrollLeft, scrollTop } = e.target;
+    setImageViewerScroll({ left: scrollLeft, top: scrollTop });
+  }, []);
+
+  //
+  //
+  //
+  // MARK: - JSONViewer
   // JSON Viewer 상태 관리
   const [showJson, setShowJson] = useState(false);
   const [jsonViewData, setJsonViewData] = useState({
@@ -158,18 +195,7 @@ function App() {
     return saved ? JSON.parse(saved) : { left: 0, top: 0 };
   });
 
-  // 이미지 뷰어 크기와 스크롤 위치 상태 추가
-  const [imageViewerSize, setImageViewerSize] = useState(() => {
-    const saved = localStorage.getItem('imageViewerSize');
-    return saved ? JSON.parse(saved) : { width: 300, height: 200 };
-  });
-
-  const [imageViewerScroll, setImageViewerScroll] = useState(() => {
-    const saved = localStorage.getItem('imageViewerScroll');
-    return saved ? JSON.parse(saved) : { left: 0, top: 0 };
-  });
-
-  // JsonViewer & ImageViewer 크기와 스크롤 위치 저장 함수
+  // JsonViewer 크기와 스크롤 위치 저장 함수
   useEffect(() => {
     localStorage.setItem('jsonViewerSize', JSON.stringify(jsonViewerSize));
   }, [jsonViewerSize]);
@@ -178,26 +204,17 @@ function App() {
     localStorage.setItem('jsonViewerScroll', JSON.stringify(jsonViewerScroll));
   }, [jsonViewerScroll]);
 
-  useEffect(() => {
-    localStorage.setItem('imageViewerSize', JSON.stringify(imageViewerSize));
-  }, [imageViewerSize]);
-
-  useEffect(() => {
-    localStorage.setItem('imageViewerScroll', JSON.stringify(imageViewerScroll));
-  }, [imageViewerScroll]);
-
   // JSON Viewer 스크롤 핸들러
   const handleJsonViewerScroll = useCallback((e) => {
     const { scrollLeft, scrollTop } = e.target;
     setJsonViewerScroll({ left: scrollLeft, top: scrollTop });
   }, []);
 
-  // 이미지 뷰어 스크롤 핸들러
-  const handleImageViewerScroll = useCallback((e) => {
-    const { scrollLeft, scrollTop } = e.target;
-    setImageViewerScroll({ left: scrollLeft, top: scrollTop });
-  }, []);
 
+  //  
+  //
+  //
+  // MARK: - 레이아웃
   // 컴포넌트가 처음 렌더링될 때 실행
   useEffect(() => {
     const { parsedNodes, parsedEdges } = parseJSONtoReactFlowData(JSON.stringify(initialData));
@@ -251,8 +268,36 @@ function App() {
       </ReactFlowProvider>
 
       <div style={{ flex: 1 }}>
-        <div style={{ position: 'absolute', top: '20px', right: '20px', zIndex: 1000 }}>
-          <button onClick={onSave}>Save Changes</button> {/* 변경 사항 저장 버튼 */}
+        <div style={{ 
+          position: 'absolute', 
+          top: '20px', 
+          right: '20px', 
+          zIndex: 1000 
+        }}>
+          <button 
+            onClick={onSave}
+            style={{
+              padding: '8px 16px',
+              backgroundColor: '#000',
+              color: '#fff',
+              border: '1px solid #ccc',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontSize: '12px',
+              boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.backgroundColor = '#333';
+              e.currentTarget.style.transform = 'translateY(-1px)';
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.backgroundColor = '#000';
+              e.currentTarget.style.transform = 'translateY(0)';
+            }}
+          >
+            Save Changes
+          </button>
         </div>
         {!isMinimized && (
           <div

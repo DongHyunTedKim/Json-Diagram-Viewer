@@ -1,25 +1,11 @@
 // src/utils/layoutUtils.js
 import dagre from 'dagre';
-
-// 기본 노드 크기 설정
-const DEFAULT_NODE_SIZE = {
-    width: 150,    // 모든 노드의 기본 너비
-    height: 40,    // 모든 노드의 기본 높이
-};
-
-// 기본 간격 설정
-const DEFAULT_SPACING = {
-    rankdir: 'LR',
-    ranksep: 0,    // 좌우 간격 증가
-    nodesep: 0,     // 상하 간격 증가
-    marginx: 0,     // 여백 증가
-    marginy: 0,
-};
+import { FLOW_CONSTANTS } from '../constants/flowConstants';
 
 function getNodeDimensions(node) {
     return {
-        width: node.style?.width || DEFAULT_NODE_SIZE.width,
-        height: node.style?.height || DEFAULT_NODE_SIZE.height
+        width: node.style?.width || FLOW_CONSTANTS.NODE.SIZE.DEFAULT_WIDTH,
+        height: node.style?.height || FLOW_CONSTANTS.NODE.SIZE.DEFAULT_HEIGHT
     };
 }
 
@@ -29,10 +15,10 @@ export function applyLayout(nodes, edges, direction = 'LR') {
     dagreGraph.setDefaultEdgeLabel(() => ({}));
     dagreGraph.setGraph({
         rankdir: direction,
-        ranksep: 100,    // 간격 증가
-        nodesep: 50,     // 간격 증가
-        marginx: 30,
-        marginy: 30,
+        ranksep: FLOW_CONSTANTS.NODE.LAYOUT.RANKSEP,    
+        nodesep: FLOW_CONSTANTS.NODE.LAYOUT.NODESEP,     
+        marginx: FLOW_CONSTANTS.NODE.LAYOUT.MARGIN.X,
+        marginy: FLOW_CONSTANTS.NODE.LAYOUT.MARGIN.Y,
         align: 'UL',
     });
 
@@ -53,7 +39,7 @@ export function applyLayout(nodes, edges, direction = 'LR') {
             minlen: 1,  // 최소 길이도 동일하게
             labelpos: 'c',
             labeloffset: 0,
-            curve: 'basis'  // 곡선 타입 유지
+            curve: 'basis'  // 곡선 타입
         });
     });
 
@@ -63,17 +49,60 @@ export function applyLayout(nodes, edges, direction = 'LR') {
     // 노드 위치 업데이트
     return nodes.map(node => {
         const nodeWithPosition = dagreGraph.node(node.id);
+        const dimensions = getNodeDimensions(node);
         
         if (!nodeWithPosition) {
             return node;
         }
 
-        return {
-            ...node,
-            position: {
-                x: nodeWithPosition.x - DEFAULT_NODE_SIZE.width / 2,
-                y: nodeWithPosition.y - DEFAULT_NODE_SIZE.height / 2
+        // 부모 노드 찾기
+        const parentNode = nodes.find(n => n.id === node.parentId);
+        
+        if (parentNode) {
+            // 자식 노드인 경우
+            const siblingNodes = nodes.filter(n => n.parentId === node.parentId);
+            const nodeIndex = siblingNodes.findIndex(n => n.id === node.id);
+            const totalSiblings = siblingNodes.length;
+            
+            // 부모 노드의 좌측 여백 계산
+            const parentLeftMargin = FLOW_CONSTANTS.NODE.PADDING.HORIZONTAL;
+            
+            // 자식 노드들 사이의 총 간격
+            const totalSpacing = (totalSiblings - 1) * FLOW_CONSTANTS.NODE.CHILD_SPACING;
+            
+            // 자식 노드들의 총 너비
+            const totalChildrenWidth = siblingNodes.reduce((sum, sibling) => {
+                const siblingDimensions = getNodeDimensions(sibling);
+                return sum + siblingDimensions.width;
+            }, 0);
+            
+            // 각 자식 노드의 x 위치 계산
+            let accumulatedX = parentLeftMargin;
+            for (let i = 0; i < nodeIndex; i++) {
+                const prevSibling = siblingNodes[i];
+                const prevDimensions = getNodeDimensions(prevSibling);
+                accumulatedX += prevDimensions.width + FLOW_CONSTANTS.NODE.CHILD_SPACING;
             }
-        };
+            
+            // 수직 위치 계산 (부모 노드의 상단 여백 + 수직 패딩)
+            const verticalPosition = FLOW_CONSTANTS.NODE.PADDING.VERTICAL;
+            
+            return {
+                ...node,
+                position: {
+                    x: parentNode.position.x + accumulatedX,
+                    y: parentNode.position.y + verticalPosition
+                }
+            };
+        } else {
+            // 최상위 노드인 경우
+            return {
+                ...node,
+                position: {
+                    x: nodeWithPosition.x,
+                    y: nodeWithPosition.y
+                }
+            };
+        }
     });
 }
