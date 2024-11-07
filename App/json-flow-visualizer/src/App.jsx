@@ -94,22 +94,24 @@ function App() {
     [setEdges]
   );
 
-  // Edge 드롭 시 삭제 핸들러
-  const onEdgeUpdateEnd = useCallback(
-    (_, edge) => {
-      const { source, target } = edge;
-      if (!source || !target) {
-        setEdges((eds) => eds.filter((e) => e.id !== edge.id));
-      }
-    },
-    [setEdges]
-  );
-
   // Edge 삭제를 위한 키보드 이벤트 핸들러 수정
   const onKeyDown = useCallback(
     (event) => {
-      if (event.key === 'Delete' || event.key === 'Backspace') {
-        setEdges((eds) => eds.filter((edge) => !edge.selected));
+      // Delete 키와 Backspace 키 모두 처리
+      if (event.key === 'Delete') {
+        event.preventDefault(); // 기본 동작 방지
+        
+        
+
+        setEdges((eds) => {
+          const selectedEdges = eds.filter((edge) => edge.selected);
+          if (selectedEdges.length === 0) {
+            console.warn('삭제할 엣지가 선택되지 않았습니다.');
+            return eds;
+          }
+          console.log('삭제할 엣지:', selectedEdges);
+          return eds.filter((edge) => !edge.selected);
+        });
         console.log('Edge deleted');
       }
     },
@@ -242,6 +244,9 @@ function App() {
     }));
   }, []);
 
+  // 상단에 상태 추가
+  const [showHelp, setShowHelp] = useState(false);
+
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
       <ReactFlowProvider>
@@ -253,8 +258,8 @@ function App() {
           onConnect={onConnect}
           onEdgeUpdate={onEdgeUpdate}
           onEdgeUpdateStart={onEdgeUpdateStart}
-          onEdgeUpdateEnd={onEdgeUpdateEnd}
           onKeyDown={onKeyDown}
+          deleteKeyCode="Delete"
           fitView
           edgeTypes={edgeTypes}
           connectionLineComponent={FloatingConnectionLine}
@@ -273,19 +278,108 @@ function App() {
           }}
           className="react-flow-graph"
           elevateEdgesOnSelect={true}
+          selectionOnDrag={true}
+          selectionMode="partial"
+          multiSelectionKeyCode="Shift"
+          panOnDrag={[1, 2]}
+          zoomOnScroll={true}
+          zoomOnPinch={true}
+          panOnScroll={false}
         >
           <Background variant="dots" gap={12} size={1} />
+          
+          {/* 도움말 버튼 - MiniMap 위에 배치 */}
+          <div style={{ 
+            position: 'absolute', 
+            right: '45px', 
+            bottom: '200px',  // MiniMap 위 공간 확보
+            zIndex: 5
+          }}>
+            <button
+              onClick={() => setShowHelp(!showHelp)}
+              style={{
+                backgroundColor: '#fff',
+                border: '1px solid #ccc',
+                borderRadius: '4px',
+                padding: '5px 10px',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px',
+                fontSize: '14px',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+              }}
+            >
+              <span role="img" aria-label="help">❔</span>
+              사용 방법
+            </button>
+
+            {/* 도움말 패널 */}
+            {showHelp && (
+              <div
+                style={{
+                  position: 'absolute',
+                  bottom: '40px',
+                  right: '0px',
+                  width: '350px',
+                  backgroundColor: '#fff',
+                  border: '1px solid #ccc',
+                  borderRadius: '4px',
+                  padding: '15px',
+                  zIndex: 1000,
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                  fontSize: '13px',
+                  lineHeight: '1.4'
+                }}
+              >
+                <h4 style={{ margin: '0 0 10px 0', color: '#333' }}>사용 방법</h4>
+                <ul style={{ margin: 0, paddingLeft: '20px' }}>
+                  <li style={{ marginBottom: '12px' }}>
+                    <strong>화면 이동:</strong>
+                    <ul>
+                      <li>마우스 휠 클릭 후 드래그</li>
+                      <li>또는 마우스 우클릭 후 드래그</li>
+                    </ul>
+                  </li>
+                  
+                  <li style={{ marginBottom: '12px' }}>
+                    <strong>노드 추가:</strong> (개발중) 빈 공간 더블클릭
+                  </li>
+                  
+                  <li style={{ marginBottom: '12px' }}>
+                    <strong>삭제:</strong>
+                    <ul>
+                      <li>일반 삭제 (Delete): 선택된 노드와 엣지 모두 삭제</li>
+                      <li>엣지만 삭제 (Shift + Delete): 영역 선택된 노드와 엣지 중 엣지만 삭제</li>
+                    </ul>
+                  </li>
+
+                  <li style={{ marginBottom: '12px' }}>
+                    <strong>엣지 선택:</strong>
+                    <ul style={{ marginTop: '5px' }}>
+                      <li>단일 엣지 선택: 그룹 내 엣지를 선택하려면 먼저 source노드를 선택해야 합니다</li>
+                      <li>다중 엣지 선택: 영역 선택으로 노드를 선택하면 관련된 모든 엣지가 함께 선택됩니다</li>
+                    </ul>
+                  </li>
+                </ul>
+              </div>
+            )}
+          </div>
+
           <Controls />
           <MiniMap />
         </ReactFlow>
       </ReactFlowProvider>
 
+      {/* 저장 버튼 */}
       <div style={{ flex: 1 }}>
         <div style={{ 
           position: 'absolute', 
           top: '20px', 
           right: '20px', 
-          zIndex: 1000 
+          zIndex: 1000,
+          display: 'flex',
+          gap: '10px'  // 버튼 사이 간격
         }}>
           <button 
             onClick={onSave}
@@ -312,6 +406,7 @@ function App() {
             Save Changes
           </button>
         </div>
+
         {!isMinimized && (
           <div
             style={{
