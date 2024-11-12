@@ -69,9 +69,13 @@ function parseComponents(data) {
             position: { x: 0, y: 0 },
             className: `Layer${depth}`,
             parentId: parentId,
-            // 핸들 관련 속성 수정
-            sourcePosition: Position.Right,
-            targetPosition: Position.Left,
+            // 모든 방향의 핸들 활성화
+            handles: [
+                { type: 'source', position: Position.Top, id: 't' },
+                { type: 'source', position: Position.Right, id: 'r' },
+                { type: 'source', position: Position.Bottom, id: 'b' },
+                { type: 'source', position: Position.Left, id: 'l' }
+            ],
             // 핸들 표시 여부 명시적 설정
             connectable: true,
             style: {
@@ -116,27 +120,19 @@ function parseConnections(data) {
     });
 }
 
-// createEdge 함수 수정
 export function createEdge({ source, target }) {
     return {
         id: `${source}-${target}`,
         source: String(source),
         target: String(target),
         type: 'floating',
-        animated: false,
-        interactionWidth: 12,
-        style: {
-            strokeWidth: FLOW_CONSTANTS.EDGE.STYLE.STROKE_WIDTH,
-            stroke: FLOW_CONSTANTS.EDGE.STYLE.STROKE_COLOR,
-            cursor: 'pointer'
-        },
         markerEnd: {
             type: MarkerType.ArrowClosed,
-            width: FLOW_CONSTANTS.EDGE.MARKER.WIDTH,
-            height: FLOW_CONSTANTS.EDGE.MARKER.HEIGHT,
-            color: FLOW_CONSTANTS.EDGE.STYLE.STROKE_COLOR,
-            strokeWidth: 2
-        }
+            className: 'react-flow__edge-marker'
+        },
+        // utils_simple.js의 로직을 따르도록 sourceHandle과 targetHandle을 null로 설정
+        sourceHandle: null,
+        targetHandle: null
     };
 }
 

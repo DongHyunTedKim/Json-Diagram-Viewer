@@ -1,26 +1,26 @@
+/* 루트 컨테이너 스타일 - 전체 앱을 감싸는 최상위 div */
 #root {
   width: 100%;
   height: 100vh;
   background-color: #f5f5f5;
 }
 
-
-
-/* Controls Styles */
+/* 컨트롤 패널 스타일 - 줌인/아웃, 맞춤 버튼이 있는 컨트롤러 */
 .react-flow__controls {
   box-shadow: 1000px 0 20px 100px rgba(0, 0, 0, 0.08);
   bottom: 50px !important;
 }
 
+/* 미니맵 스타일 - 우측 하단의 전체 그래프 미리보기 */
 .react-flow__minimap {
   right: 30px !important;
   bottom: 30px !important;
   border: 1px solid #525252;
 }
 
-
-/* Node Styles */
-.react-flow__node {
+/* 노드 스타일 - 그래프의 각 노드(기본 및 커스텀) */
+.react-flow__node,
+.simple-floatingedges .react-flow__node-custom {
   background: #fff;
   border: 1px solid #1a192b;
   border-radius: 3px;
@@ -28,31 +28,35 @@
   font-size: 12px;
   padding: 10px;
   text-align: center;
-  width: auto;
+  width: 150px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   z-index: 1;
 }
 
+/* 노드 호버 효과 - 마우스를 노드 위에 올렸을 때 */
 .react-flow__node:hover {
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+  
   border-color: #ff0072;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
 }
 
-/* Edge Styles */
+/* 엣지 기본 스타일 - 노드 간 연결선의 기본 상태 */
 .react-flow__edge {
   opacity: 0.8;
   z-index: 1000 !important;
   cursor: pointer;
 }
 
+/* 엣지 경로 스타일 - 실제 보이는 연결선의 스타일 */
 .react-flow__edge-path {
-  stroke: #444;
-  stroke-width: 4px;
+  stroke: #333333;
+  stroke-width: 13px;
   cursor: pointer;
   filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
   z-index: 1000 !important;
 }
 
+/* 엣지 상호작용 영역 - 클릭/호버 가능한 영역 (실제론 보이지 않음) */
 .react-flow__edge-interaction {
   z-index: 1001 !important;
   stroke-width: 12px;
@@ -61,80 +65,111 @@
   cursor: pointer;
 }
 
+/* 엣지 호버 효과 - 마우스를 엣지 위에 올렸을 때 */
 .react-flow__edge:hover {
   opacity: 1;
 }
 
+/* 엣지 호버 시 경로 스타일 - 마우스를 엣지 위에 올렸을 때의 연결선 */
 .react-flow__edge:hover .react-flow__edge-path {
   stroke: #ff4081;
-  stroke-width: 5px;
+  stroke-width: 3px;
   filter: drop-shadow(0 0 8px rgba(255,0,114,0.6));
 }
 
+/* 선택된 엣지 스타일 - 클릭하여 선택된 엣지의 상태 */
 .react-flow__edge.selected {
   opacity: 1;
   z-index: 1003 !important;
 }
 
+/* 선택된 엣지의 경로 스타일 - 선택된 엣지의 연결선 (점선 애니메이션) */
 .react-flow__edge.selected .react-flow__edge-path {
   stroke: #ff0072;
-  stroke-width: 5px;
+  stroke-width: 3px;
   stroke-dasharray: 10;
   animation: flowingDash 5s linear infinite;
   filter: drop-shadow(0 0 8px rgba(255,0,114,1));
 }
 
-.react-flow__edge.selected .react-flow__edge-path.floating {
-  stroke-width: 2.5;
-  stroke: #000;
-}
-
+/* 선택된 엣지의 점선 애니메이션 정의 */
 @keyframes flowingDash {
-  from {
-    stroke-dashoffset: 100;
-  }
-  to {
-    stroke-dashoffset: 0;
-  }
+  from { stroke-dashoffset: 100; }
+  to { stroke-dashoffset: 0; }
 }
 
-/* Handle Styles */
+/* 핸들 스타일 - 노드에 부착된 연결점의 기본 상태 */
 .react-flow__handle {
-  width: 10px !important;
-  height: 10px !important;
-  background-color: #1a192b !important;
-  z-index: 1000;
+  width: 8px !important;
+  height: 8px !important;
+  background-color: #555 !important;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
   opacity: 1 !important;
   transition: all 0.1s ease;
+  z-index: 1000;
 }
 
+/* 핸들 위치 정의 - 각 방향별 핸들의 위치 */
+.react-flow__handle-top {
+  top: -15px !important;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.react-flow__handle-right {
+  right: -15px !important;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.react-flow__handle-bottom {
+  bottom: -15px !important;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.react-flow__handle-left {
+  left: -15px !important;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* 핸들 호버 효과 */
 .react-flow__handle:hover {
   background-color: #ff0072 !important;
-  transform: scale(2);
-  box-shadow: 0 0 3px 1px rgba(255, 0, 114, 0.4);
+  transform: scale(1.5);
+  box-shadow: 0 0 6px rgba(255, 0, 114, 0.6);
 }
 
-/* Connection Styles */
+/* 연결 중인 상태 스타일 - 드래그하여 새 연결을 만드는 중일 때 */
 .react-flow__connection {
   z-index: 1002 !important;
 }
 
+/* 연결 중인 경로 스타일 - 드래그 중인 임시 연결선 */
 .react-flow__connection-path {
-  stroke: #222;
+  stroke: #555;
   stroke-width: 2px;
 }
 
+/* Floating 엣지 컨테이너 - floating 엣지를 포함하는 컨테이너의 레이아웃 */
+.simple-floatingedges {
+  flex-direction: column;
+  display: flex;
+  flex-grow: 1;
+  height: 100%;
+}
+
 .react-flow__edge-path.floating {
-  stroke-width: 1.5;
-  stroke: #333;
+  stroke: #00ff6a;
+  stroke-width: 3px;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
 }
 
-.react-flow__edge-path.floating:hover {
-  stroke-width: 2;
-  stroke: #ff0072;
-}
-
-.react-flow__edge.selected .react-flow__edge-path.floating {
-  stroke-width: 2.5;
-  stroke: #ff0072;
+.react-flow__edge:hover .react-flow__edge-path.floating {
+  stroke: #00ff62;
+  stroke-width: 4px;
+  filter: drop-shadow(0 0 8px rgba(255,0,114,0.6));
 }

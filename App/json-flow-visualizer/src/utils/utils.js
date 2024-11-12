@@ -1,4 +1,4 @@
-import { Position, MarkerType } from 'reactflow';
+import { Position } from 'reactflow';
 
 function getNodeIntersection(node, targetNode) {
   const width = node.style?.width || node.width || DEFAULT_NODE_SIZE.width;
@@ -100,37 +100,9 @@ export function createNodesAndEdges() {
 }
 
 function calculateEdgePosition(sourceNode, targetNode) {
-    const sourceCenter = {
-        x: sourceNode.position.x + sourceNode.width / 2,
-        y: sourceNode.position.y + sourceNode.height / 2
+    // 모든 방향의 핸들을 반환
+    return {
+        sourcePos: [Position.Top, Position.Right, Position.Bottom, Position.Left],
+        targetPos: [Position.Top, Position.Right, Position.Bottom, Position.Left]
     };
-    
-    const targetCenter = {
-        x: targetNode.position.x + targetNode.width / 2,
-        y: targetNode.position.y + targetNode.height / 2
-    };
-
-    // 노드 간의 각도 계산
-    const dx = targetCenter.x - sourceCenter.x;
-    const dy = targetCenter.y - sourceCenter.y;
-    const angle = Math.atan2(dy, dx);
-
-    // 각도에 따른 위치 결정
-    let sourcePos, targetPos;
-
-    if (Math.abs(angle) < Math.PI / 4) { // 오른쪽
-        sourcePos = Position.Right;
-        targetPos = Position.Left;
-    } else if (Math.abs(angle) > (3 * Math.PI) / 4) { // 왼쪽
-        sourcePos = Position.Left;
-        targetPos = Position.Right;
-    } else if (angle > 0) { // 아래
-        sourcePos = Position.Bottom;
-        targetPos = Position.Top;
-    } else { // 위
-        sourcePos = Position.Top;
-        targetPos = Position.Bottom;
-    }
-
-    return { sourcePos, targetPos };
 }

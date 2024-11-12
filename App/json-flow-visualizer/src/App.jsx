@@ -11,16 +11,25 @@ import ReactFlow, {
   useEdgesState,
   ReactFlowProvider,
   MarkerType,
+  ConnectionMode
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import './styles.css';
 
-import initialData from './data/flowData.json';
+//import initialData from './data/flowData.json';
+import initialData from './data/0001.json';
+
+
 import { parseJSONtoReactFlowData, createEdge } from './utils/dataUtils';
 import { applyLayout } from './utils/layoutUtils';
 
-import FloatingEdge from './components/FloatingEdge';
-import FloatingConnectionLine from './components/FloatingConnectionLine';
+import SimpleFloatingEdge from './components/SimpleFloatingEdge';
+import CustomNode from './components/CustomNode';
+
+import './styles.css';
+
+
+
 
 // JSON Viewer 컴포넌트
 const JsonViewer = ({ data }) => (
@@ -39,7 +48,11 @@ const JsonViewer = ({ data }) => (
 );
 
 const edgeTypes = {
-  floating: FloatingEdge
+  floating: SimpleFloatingEdge
+};
+
+const nodeTypes = {
+  custom: CustomNode
 };
 
 function App() {
@@ -251,6 +264,7 @@ function App() {
     <div style={{ width: '100vw', height: '100vh' }}>
       <ReactFlowProvider>
         <ReactFlow
+          //className="simple-floatingedges"
           nodes={nodes}
           edges={edges}
           onNodesChange={onNodesChange}
@@ -262,21 +276,22 @@ function App() {
           deleteKeyCode="Delete"
           fitView
           edgeTypes={edgeTypes}
-          connectionLineComponent={FloatingConnectionLine}
+          //connectionLineComponent={FloatingConnectionLine}
           selectNodesOnDrag={false}
           elementsSelectable={true}
-          edgesFocusable={true}
-          edgesUpdatable={true}
-          nodesDraggable={true}
-          nodesConnectable={true}
-          snapToGrid={true}
-          snapGrid={[15, 15]}
-          connectionMode="loose"
+          edgesFocusable={true} // 엣지 선택 가능 
+          edgesUpdatable={true} // 엣지 업데이트 가능
+          nodesDraggable={true} // 노드 드래그 가능
+          nodesConnectable={true} // 노드 연결 가능
+          snapToGrid={true} // 그리드 맞춤
+          snapGrid={[15, 15]} // 그리드 크기
+//          connectionMode="loose" // 엣지 연결 모드
+          connectionMode={ConnectionMode.Loose}
+
           defaultEdgeOptions={{
-            type: 'floating',
-            animated: true
+            type: 'floating'
           }}
-          className="react-flow-graph"
+          //className="react-flow-graph"
           elevateEdgesOnSelect={true}
           selectionOnDrag={true}
           selectionMode="partial"
@@ -285,6 +300,7 @@ function App() {
           zoomOnScroll={true}
           zoomOnPinch={true}
           panOnScroll={false}
+          nodeTypes={nodeTypes}
         >
           <Background variant="dots" gap={12} size={1} />
           
@@ -429,7 +445,7 @@ function App() {
             onScroll={handleImageViewerScroll}
           >
             <img
-              src="/images/00001(노드에 번호매김).jpg"
+              src="/images/0001.jpg"
               alt="Original Flowchart"
               style={{
                 width: '100%',

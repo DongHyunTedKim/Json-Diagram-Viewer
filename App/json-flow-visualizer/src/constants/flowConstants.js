@@ -39,21 +39,5 @@ export const FLOW_CONSTANTS = {
                 LAYER10: 'rgba(0, 0, 128, 0.2)'
             }
         }
-    },
-    EDGE: {
-        STYLE: {
-            STROKE_WIDTH: 4,
-            STROKE_COLOR: '#444',
-            HOVER_STROKE_WIDTH: 5,
-            HOVER_STROKE_COLOR: '#ff4081',
-            SELECTED_STROKE_WIDTH: 5,
-            OPACITY: 0.9,
-            HOVER_OPACITY: 1
-        },
-        MARKER: { // 엣지 마커 = 화살표 대가리
-            WIDTH: 10,
-            HEIGHT: 10,
-            COLOR: '#444'
-        }
-    },
+    }
 }; 
