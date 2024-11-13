@@ -1,0 +1,266 @@
+{
+    "file_name": "0001.jpg",
+    "summary": "검사(재검사) 신청 및 처리 절차를 나타낸 인포그래픽으로, 민원청구, 발주자, 보완, 현장검사, 부적합 시 처리 절차 등을 포함하고 있다.",
+    "components": [
+        {
+            "id": 1,
+            "text": "민원청구",
+            "node": []
+        },
+        {
+            "id": 2,
+            "text": "검사(재검사) 신청서 접수",
+            "node": [
+                {
+                    "id": 3,
+                    "text": "수수료조사 (수입인지)",
+                    "node": []
+                },
+                {
+                    "id": 4,
+                    "text": "첨부서류 확인",
+                    "node": []
+                },
+                {
+                    "id": 5,
+                    "text": "민원행정시스템 등록",
+                    "node": []
+                },
+                {
+                    "id": 6,
+                    "text": "처리결과 안내",
+                    "node": []
+                }
+            ]
+        },
+        {
+            "id": 7,
+            "text": "검사 신청서 인수",
+            "node": [
+                {
+                    "id": 8,
+                    "text": "문서등록대장 (접수)",
+                    "node": []
+                },
+                {
+                    "id": 9,
+                    "text": "민원행정시스템 등록 (접수확인)",
+                    "node": []
+                },
+                {
+                    "id": 10,
+                    "text": "신청서 실물확인 (구비 오조건)",
+                    "node": []
+                },
+                {
+                    "id": 11,
+                    "text": "검사정보확보 (검사항목, 범위)",
+                    "node": []
+                },
+                {
+                    "id": 12,
+                    "text": "검사신청 결과처리",
+                    "node": []
+                }
+            ]
+        },
+        {
+            "id": 13,
+            "text": "현장검사",
+            "node": [
+                {
+                    "id": 14,
+                    "text": "예비판정 (적합/부적합)",
+                    "node": []
+                }
+            ]
+        },
+        {
+            "id": 15,
+            "text": "적합",
+            "node": []
+        },
+        {
+            "id": 16,
+            "text": "부적합",
+            "node": [
+                {
+                    "id": 17,
+                    "text": "중대한 사항",
+                    "node": []
+                },
+                {
+                    "id": 18,
+                    "text": "경미한 사항",
+                    "node": []
+                }
+            ]
+        },
+        {
+            "id": 19,
+            "text": "사용전검사 결과표 (보고서) 작성결재",
+            "node": []
+        },
+        {
+            "id": 20,
+            "text": "부적합 보완지시서 작성",
+            "node": []
+        },
+        {
+            "id": 21,
+            "text": "검사결과통보 (보완지시)",
+            "node": []
+        },
+        {
+            "id": 22,
+            "text": "검사 결과 통보",
+            "node": [
+                {
+                    "id": 23,
+                    "text": "허가부서",
+                    "node": []
+                },
+                {
+                    "id": 24,
+                    "text": "발주자",
+                    "node": []
+                }
+            ]
+        },
+        {
+            "id": 25,
+            "text": "필증발급 (대장정리)",
+            "node": []
+        },
+        {
+            "id": 26,
+            "text": "민원행정처리시스템 (처리결과입력)",
+            "node": []
+        },
+        {
+            "id": 27,
+            "text": "발주자",
+            "node": []
+        },
+        {
+            "id": 28,
+            "text": "보완",
+            "node": []
+        },
+        {
+            "id": 29,
+            "text": "보완알료",
+            "node": []
+        },
+        {
+            "id": 30,
+            "text": "현장보완 지시",
+            "node": []
+        },
+        {
+            "id": 31,
+            "text": "필증수령",
+            "node": []
+        }
+    ],
+    "connections": [
+        {
+            "from": 1,
+            "to": 2,
+            "text": "",
+            "type": "line",
+            "direction": true
+        },
+        {
+            "from": 2,
+            "to": 7,
+            "text": "",
+            "type": "line",
+            "direction": true
+        },
+        {
+            "from": 7,
+            "to": 28,
+            "text": "",
+            "type": "line",
+            "direction": true
+        },
+        {
+            "from": 7,
+            "to": 13,
+            "text": "",
+            "type": "line",
+            "direction": true
+        },
+        {
+            "from": 13,
+            "to": 15,
+            "text": "적합",
+            "type": "line",
+            "direction": true
+        },
+        {
+            "from": 13,
+            "to": 16,
+            "text": "부적합",
+            "type": "line",
+            "direction": true
+        },
+        {
+            "from": 16,
+            "to": 20,
+            "text": "",
+            "type": "line",
+            "direction": true
+        },
+        {
+            "from": 15,
+            "to": 19,
+            "text": "",
+            "type": "line",
+            "direction": true
+        },
+        {
+            "from": 19,
+            "to": 22,
+            "text": "",
+            "type": "line",
+            "direction": true
+        },
+        {
+            "from": 20,
+            "to": 21,
+            "text": "",
+            "type": "line",
+            "direction": true
+        },
+        {
+            "from": 21,
+            "to": 22,
+            "text": "",
+            "type": "line",
+            "direction": true
+        },
+        {
+            "from": 22,
+            "to": 25,
+            "text": "필증발급",
+            "type": "line",
+            "direction": true
+        },
+        {
+            "from": 25,
+            "to": 26,
+            "text": "",
+            "type": "line",
+            "direction": true
+        },
+        {
+            "from": 25,
+            "to": 31,
+            "text": "",
+            "type": "line",
+            "direction": true
+        }
+    ]
+}

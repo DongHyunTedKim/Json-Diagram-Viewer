@@ -1,0 +1,234 @@
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+h1 {
+  font-size: 1.5rem;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
+
+
+/* src/styles.css */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  background-color: white !important;
+  -webkit-font-smoothing: auto;
+  -moz-font-smoothing: auto;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+#root {
+  width: 100%;
+  height: 100vh;
+  background-color: white;
+}
+
+.react-flow {
+  background-color: white;
+}
+
+.react-flow__container {
+  background-color: white;
+}
+
+.react-flow__node {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(119, 119, 119, 0.5);
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 12px;
+  color: black;
+  transition: all 0.2s;
+}
+
+.react-flow__node-group {
+  background: rgba(240, 240, 240, 0.5);
+  border: 2px solid rgba(102, 102, 102, 0.5);
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+.react-flow__edge {
+  opacity: 0.7;
+  transition: all 0.1s ease;
+}
+
+@keyframes rainbowGlow {
+  0% {
+    stroke: red;
+    filter: drop-shadow(0 0 5px red) drop-shadow(3px 0 7px orange);
+  }
+  20% {
+    stroke: orange;
+    filter: drop-shadow(0 0 5px orange) drop-shadow(3px 0 7px yellow);
+  }
+  40% {
+    stroke: yellow;
+    filter: drop-shadow(0 0 5px yellow) drop-shadow(3px 0 7px green);
+  }
+  60% {
+    stroke: green;
+    filter: drop-shadow(0 0 5px green) drop-shadow(3px 0 7px blue);
+  }
+  80% {
+    stroke: blue;
+    filter: drop-shadow(0 0 5px blue) drop-shadow(3px 0 7px violet);
+  }
+  100% {
+    stroke: violet;
+    filter: drop-shadow(0 0 5px violet) drop-shadow(3px 0 7px red);
+  }
+}
+
+@keyframes electronFlow {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -1000;
+  }
+}
+
+.react-flow__edge.selected {
+  stroke-width: 3px !important;
+  animation: rainbowGlow 2s infinite linear, electronFlow 50s infinite linear;
+  stroke-dasharray: 5, 10;
+  stroke-linecap: round;
+  opacity: 1;
+}
+
+.react-flow__edge:hover {
+  cursor: pointer;
+  stroke: #ff0072 !important;
+  stroke-width: 3px !important;
+  filter: drop-shadow(0 0 3px rgba(255, 0, 114, 0.6));
+  opacity: 1;
+}
+
+.group-node {
+  background-color: rgba(240, 240, 240, 0.5);
+  border: 2px solid rgba(102, 102, 102, 0.5);
+  padding: 10px;
+  min-height: 8px;
+}
+
+.group-node .react-flow__handle {
+  background: #00000000;
+  width: 8px;
+  height: 8px;
+}
+
+.custom-node.selected .resize-handle {
+  opacity: 1;
+}
+
+.custom-node .resize-handle {
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.custom-node:hover .resize-handle {
+  opacity: 1;
+}
+
+.resize-handle:hover {
+  background-color: #1a192b !important;
+}

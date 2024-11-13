@@ -1,0 +1,236 @@
+file_name: "00003.png"
+summary: ""
+components
+├── id: 1
+│   name: ""
+│   sub_blocks
+│   ├── id: 24
+│   │   name: "이용고객(Caller)"
+│   │   blocks
+│   │   ├── id: 2
+│   │   │   name: "착신(지능망)콜"
+│   │   │   text: "이용 고객이 가게 유선전화로 발신 -> 지능망 착신콜, AI통화비서연결"
+│   │   ├── id: 3
+│   │   │   name: "AI통화비서 인트로"
+│   │   │   text: "AI통화비서 인사말 + 통화연결음 -> 이용고객과 전화통화 시작"
+│   │   ├── id: 4
+│   │   │   name: "발신자 의도 분류"
+│   │   │   text: "이용 고객의 발신 의도를 파악 -> 문의(시간, 위치, 주차)/예약/주문 등"
+│   │   ├── id: 5
+│   │   │   name: "대화 시나리오"
+│   │   │   text: "해당 시나리오로 이용고객과 대화 -> 예약/주문은 전용링크 문자전송"
+│   │   └── id: 6
+│   │       name: "가게연결 또는 자유발화"
+│   │       text: "가게연결 요청 시 유선전화 착신음 -> 착신불가(통화중, 부재중) 자유발화"
+│   ├── id: 25
+│   │   name: ""
+│   │   blocks
+│   │   ├── id: 7
+│   │   │   name: "이용고객"
+│   │   ├── id: 8
+│   │   │   name: "통화연결음"
+│   │   ├── id: 9
+│   │   │   name: "가게연결"
+│   │   ├── id: 10
+│   │   │   name: "일반문의(시간,위치)"
+│   │   ├── id: 11
+│   │   │   name: "예약"
+│   │   ├── id: 12
+│   │   │   name: "주문"
+│   │   ├── id: 13
+│   │   │   name: "앱알림"
+│   │   ├── id: 14
+│   │   │   name: "앱알림"
+│   │   ├── id: 15
+│   │   │   name: "소상공인"
+│   │   ├── id: 16
+│   │   │   name: "통화불가 안내"
+│   │   ├── id: 17
+│   │   │   name: "고객 자유발화"
+│   │   ├── id: 18
+│   │   │   name: "통화종료"
+│   │   ├── id: 19
+│   │   │   name: "확인 후 콜백(문자/전화)"
+│   │   └── id: 20
+│   │       name: "앱알림"
+│   └── id: 26
+│       name: "가게점주(Receiver)"
+│       blocks
+│       ├── id: 21
+│       │   name: "통화비서 부가서비스"
+│       │   text: "착신유선번호 AI통화비서 App 설치(점주 지정 모바일) -> 모상품:일반전화(홈), 인터넷전화(홈,기업)"
+│       ├── id: 22
+│       │   name: "AI통화비서 App 설정"
+│       │   text: "AI 통화비서 App 설정 -> 동작 on/off, 인트로, 영업시간, 가게정보, 예약/메뉴 등"
+│       └── id: 23
+│           name: "대화결과 업무처리"
+│           text: "대화결과/특화웹에따라 App내 처리할 업무 list-up -> 예약확인, 주문확인, 자유발화 회신 등"
+connections
+├── from: 7
+│   to: 8
+│   text: ""
+│   type: "line"
+│   color: "red"
+│   direction: "line"
+│   thickness: "bold"
+├── from: 8
+│   to: 9
+│   text: ""
+│   type: "line"
+│   color: "red"
+│   direction: "directional"
+│   thickness: "bold"
+├── from: 8
+│   to: 10
+│   text: ""
+│   type: "line"
+│   color: "red"
+│   direction: "directional"
+│   thickness: "bold"
+├── from: 8
+│   to: 11
+│   text: ""
+│   type: "line"
+│   color: "red"
+│   direction: "directional"
+│   thickness: "bold"
+├── from: 8
+│   to: 12
+│   text: ""
+│   type: "line"
+│   color: "red"
+│   direction: "directional"
+│   thickness: "bold"
+├── from: 8
+│   to: 12
+│   text: ""
+│   type: "line"
+│   color: "red"
+│   direction: "directional"
+│   thickness: "bold"
+├── from: 9
+│   to: 15
+│   text: "통화연결"
+│   type: "line"
+│   color: "red"
+│   direction: "directional"
+│   thickness: "bold"
+├── from: 11
+│   to: 13
+│   text: ""
+│   type: "dotted-line"
+│   color: "blue"
+│   direction: "line"
+│   thickness: "bold"
+├── from: 12
+│   to: 14
+│   text: ""
+│   type: "dotted-line"
+│   color: "blue"
+│   direction: "line"
+│   thickness: "bold"
+├── from: 13
+│   to: 14
+│   text: ""
+│   type: "dotted-line"
+│   color: "blue"
+│   direction: "line"
+│   thickness: "bold"
+├── from: 13
+│   to: 15
+│   text: ""
+│   type: "dotted-line"
+│   color: "blue"
+│   direction: "directional"
+│   thickness: "bold"
+├── from: 15
+│   to: 16
+│   text: "연결불가(통화중/부재중)"
+│   type: "line"
+│   color: "blue"
+│   direction: "directional"
+│   thickness: "bold"
+├── from: 16
+│   to: 17
+│   text: ""
+│   type: "line"
+│   color: "blue"
+│   direction: "directional"
+│   thickness: "bold"
+├── from: 17
+│   to: 18
+│   text: ""
+│   type: "line"
+│   color: "blue"
+│   direction: "directional"
+│   thickness: "bold"
+├── from: 19
+│   to: 7
+│   text: "자유발화 회신, 예약확인, 주문확인"
+│   type: "line"
+│   color: "grey"
+│   direction: "directional"
+│   thickness: "bold"
+├── from: 20
+│   to: 19
+│   text: ""
+│   type: "dotted-line"
+│   color: "blue"
+│   direction: "directional"
+│   thickness: "bold"
+├── from: 17
+│   to: 20
+│   text: ""
+│   type: "dotted-line"
+│   color: "blue"
+│   direction: "line"
+│   thickness: "bold"
+├── from: 12
+│   to: 7
+│   text: "전용링크"
+│   type: "dotted-line"
+│   color: "red"
+│   direction: "line"
+│   thickness: "light"
+├── from: 2
+│   to: 3
+│   text: ""
+│   type: "textbox"
+│   color: "grey"
+│   direction: "directional"
+│   thickness: ""
+├── from: 3
+│   to: 4
+│   text: "textbox"
+│   type: ""
+│   color: "grey"
+│   direction: "directional"
+│   thickness: ""
+├── from: 4
+│   to: 5
+│   text: ""
+│   type: "textbox"
+│   color: "grey"
+│   direction: "directional"
+│   thickness: ""
+├── from: 5
+│   to: 6
+│   text: ""
+│   type: "textbox"
+│   color: "grey"
+│   direction: "directional"
+│   thickness: ""
+├── from: 21
+│   to: 22
+│   text: ""
+│   type: "textbox"
+│   color: "grey"
+│   direction: "directional"
+│   thickness: ""
+└── from: 22
+    to: 23
+    text: ""
+    type: "textbox"
+    color: "grey"
+    direction: "directional"
+    thickness: ""

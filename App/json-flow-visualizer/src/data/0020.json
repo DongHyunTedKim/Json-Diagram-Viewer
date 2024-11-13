@@ -1,0 +1,61 @@
+{
+    "file_name": "0020.png",
+    "summary": "지역사회서비스 결제 단말기 절차를 설명하는 순서도. 각 단계별로 결제 단말기 사용 및 필요한 정보 입력 과정을 포함한다.",
+    "components": [
+        {
+            "id": 1,
+            "text": "\"지역사회서비스\" 선택",
+            "node": []
+        },
+        {
+            "id": 2,
+            "text": "\"서비스코드\" 6자리 입력",
+            "node": []
+        },
+        {
+            "id": 3,
+            "text": "제공인력별 결제 ID 8자리 입력\n전자바우처 시스템에서 확인",
+            "node": []
+        },
+        {
+            "id": 4,
+            "text": "대상자 카드 접촉\n결제단말기 + 바우처카드",
+            "node": []
+        },
+        {
+            "id": 5,
+            "text": "결제금액 입력",
+            "node": []
+        }
+    ],
+    "connections": [
+        {
+            "from": 1,
+            "to": 2,
+            "text": "",
+            "type": "line",
+            "direction": true
+        },
+        {
+            "from": 2,
+            "to": 3,
+            "text": "",
+            "type": "line",
+            "direction": true
+        },
+        {
+            "from": 3,
+            "to": 4,
+            "text": "",
+            "type": "line",
+            "direction": true
+        },
+        {
+            "from": 4,
+            "to": 5,
+            "text": "",
+            "type": "line",
+            "direction": true
+        }
+    ]
+}

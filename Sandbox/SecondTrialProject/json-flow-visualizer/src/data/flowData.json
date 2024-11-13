@@ -1,0 +1,39 @@
+{
+    "file_name": "00001(노드에 번호매김).jpg",
+    "summary": "지원 절차를 단계별로 나타낸 흐름도입니다.",
+    "components": [
+        {
+            "id": "1",
+            "text": "지원 절차",
+            "node": [
+                {
+                    "id": "2",
+                    "text": "은행",
+                    "node": [
+                        {
+                            "id": "3",
+                            "text": "융자 상담",
+                            "node": []
+                        },
+                        {
+                            "id": "4",
+                            "text": "융자 신청 (서류 제출)\n(업체→",
+                            "node": []
+                        }
+                    ]
+                }
+            ]
+        }        
+    ],
+    "connections": [
+        {
+            "from": "3",
+            "to": "4",
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true,
+            "thickness": "medium"
+        }
+    ]
+}

@@ -1,0 +1,193 @@
+{
+    "file_name": "0141.gif",
+    "summary": "국가산림자원조사 업무 추진 체계를 설명하는 다이어그램으로, 표본점 배치부터 자료 분석과 보고서 작성에 이르는 과정이 포함되어 있다.",
+    "components": [
+        {
+            "id": 1,
+            "text": "표본점 배치",
+            "node": []
+        },
+        {
+            "id": 2,
+            "text": "표본점 구역 및 GIS 정보 추출",
+            "node": []
+        },
+        {
+            "id": 3,
+            "text": "정밀사진판독",
+            "node": []
+        },
+        {
+            "id": 4,
+            "text": "표본점 조사",
+            "node": []
+        },
+        {
+            "id": 5,
+            "text": "현지자원조사",
+            "node": []
+        },
+        {
+            "id": 6,
+            "text": "한국임업진흥원 현장 지도/점검",
+            "node": []
+        },
+        {
+            "id": 7,
+            "text": "현지조사관리",
+            "node": []
+        },
+        {
+            "id": 8,
+            "text": "국가산림자원조사 정보시스템",
+            "node": []
+        },
+        {
+            "id": 9,
+            "text": "자료 분석",
+            "node": []
+        },
+        {
+            "id": 10,
+            "text": "보고서 작성",
+            "node": []
+        },
+        {
+            "id": 11,
+            "text": "치수조사",
+            "node": []
+        },
+        {
+            "id": 12,
+            "text": "임목자원조사",
+            "node": []
+        },
+        {
+            "id": 13,
+            "text": "산림식생조사",
+            "node": []
+        },
+        {
+            "id": 14,
+            "text": "토양시료채취",
+            "node": []
+        },
+        {
+            "id": 15,
+            "text": "토양특성분석 (분석전문기관)",
+            "node": []
+        },
+        {
+            "id": 16,
+            "text": "채취목본 연륜생장량분석",
+            "node": []
+        }
+    ],
+    "connections": [
+        {
+            "from": 1,
+            "to": 2,
+            "text": "",
+            "type": "line",
+            "direction": true
+        },
+        {
+            "from": 2,
+            "to": 3,
+            "text": "",
+            "type": "line",
+            "direction": true
+        },
+        {
+            "from": 3,
+            "to": 4,
+            "text": "",
+            "type": "line",
+            "direction": true
+        },
+        {
+            "from": 4,
+            "to": 5,
+            "text": "",
+            "type": "line",
+            "direction": true
+        },
+        {
+            "from": 5,
+            "to": 6,
+            "text": "",
+            "type": "line",
+            "direction": true
+        },
+        {
+            "from": 6,
+            "to": 7,
+            "text": "",
+            "type": "line",
+            "direction": true
+        },
+        {
+            "from": 7,
+            "to": 8,
+            "text": "",
+            "type": "line",
+            "direction": true
+        },
+        {
+            "from": 8,
+            "to": 9,
+            "text": "",
+            "type": "line",
+            "direction": true
+        },
+        {
+            "from": 9,
+            "to": 10,
+            "text": "",
+            "type": "line",
+            "direction": true
+        },
+        {
+            "from": 5,
+            "to": 11,
+            "text": "",
+            "type": "line",
+            "direction": true
+        },
+        {
+            "from": 5,
+            "to": 12,
+            "text": "",
+            "type": "line",
+            "direction": true
+        },
+        {
+            "from": 5,
+            "to": 13,
+            "text": "",
+            "type": "line",
+            "direction": true
+        },
+        {
+            "from": 5,
+            "to": 14,
+            "text": "",
+            "type": "line",
+            "direction": true
+        },
+        {
+            "from": 14,
+            "to": 15,
+            "text": "",
+            "type": "line",
+            "direction": true
+        },
+        {
+            "from": 12,
+            "to": 16,
+            "text": "",
+            "type": "line",
+            "direction": true
+        }
+    ]
+}
