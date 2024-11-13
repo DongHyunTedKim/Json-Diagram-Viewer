@@ -8,11 +8,12 @@ function getParams(node, target) {
   const targetCenterY = target.positionAbsolute.y + target.height / 2;
 
   const position = getPosition(node, target);
+  const offset = 15;
 
-  if (position === Position.Left) return [node.positionAbsolute.x, centerY, position];
-  if (position === Position.Right) return [node.positionAbsolute.x + node.width, centerY, position];
-  if (position === Position.Top) return [centerX, node.positionAbsolute.y, position];
-  if (position === Position.Bottom) return [centerX, node.positionAbsolute.y + node.height, position];
+  if (position === Position.Left) return [node.positionAbsolute.x - offset, centerY, position];
+  if (position === Position.Right) return [node.positionAbsolute.x + node.width + offset, centerY, position];
+  if (position === Position.Top) return [centerX, node.positionAbsolute.y - offset, position];
+  if (position === Position.Bottom) return [centerX, node.positionAbsolute.y + node.height + offset, position];
 
   return [centerX, centerY, position];
 }

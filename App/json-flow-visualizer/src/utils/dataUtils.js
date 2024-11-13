@@ -129,7 +129,10 @@ export function createEdge({ source, target }) {
         type: 'floating',
         markerEnd: {
             type: MarkerType.ArrowClosed,
-            className: 'react-flow__edge-marker'
+            width: 10,
+            height: 10,
+            color: '#444',
+            strokeWidth: 2,
         },
     };
 }
