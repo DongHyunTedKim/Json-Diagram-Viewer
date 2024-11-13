@@ -1,114 +1,48 @@
 import { Position } from 'reactflow';
 
-// returns the position (top,right,bottom or right) passed node compared to
-function getParams(nodeA, nodeB) {
-    const centerA = getNodeCenter(nodeA);
-    const centerB = getNodeCenter(nodeB);
+function getParams(node, target) {
+  const centerX = node.positionAbsolute.x + node.width / 2;
+  const centerY = node.positionAbsolute.y + node.height / 2;
 
-    const horizontalDiff = Math.abs(centerA.x - centerB.x);
-    const verticalDiff = Math.abs(centerA.y - centerB.y);
+  const targetCenterX = target.positionAbsolute.x + target.width / 2;
+  const targetCenterY = target.positionAbsolute.y + target.height / 2;
 
-    let position;
+  const position = getPosition(node, target);
 
-    // when the horizontal difference between the nodes is bigger, we use Position.Left or Position.Right for the handle
-    if (horizontalDiff > verticalDiff) {
-        position = centerA.x > centerB.x ? Position.Left : Position.Right;
-    } else {
-        // here the vertical difference between the nodes is bigger, so we use Position.Top or Position.Bottom for the handle
-        position = centerA.y > centerB.y ? Position.Top : Position.Bottom;
-    }
+  if (position === Position.Left) return [node.positionAbsolute.x, centerY, position];
+  if (position === Position.Right) return [node.positionAbsolute.x + node.width, centerY, position];
+  if (position === Position.Top) return [centerX, node.positionAbsolute.y, position];
+  if (position === Position.Bottom) return [centerX, node.positionAbsolute.y + node.height, position];
 
-    const [x, y] = getHandleCoordsByPosition(nodeA, position);
-    return [x, y, position];
+  return [centerX, centerY, position];
 }
 
+function getPosition(node, target) {
+  const sourceX = node.positionAbsolute.x + node.width / 2;
+  const sourceY = node.positionAbsolute.y + node.height / 2;
+  const targetX = target.positionAbsolute.x + target.width / 2;
+  const targetY = target.positionAbsolute.y + target.height / 2;
+  
+  const deltaX = Math.abs(targetX - sourceX);
+  const deltaY = Math.abs(targetY - sourceY);
 
-function getNodeCenter(node) {
-    const position = node.positionAbsolute || node.position;
-    const width = node.width || 150;
-    const height = node.height || 40;
+  if (deltaX > deltaY) {
+    return targetX > sourceX ? Position.Right : Position.Left;
+  }
 
-    return {
-        x: position.x + width / 2,
-        y: position.y + height / 2,
-    };
-}
-
-function getEdgePosition(sourceNode, targetNode) {
-    const sourceCenter = getNodeCenter(sourceNode);
-    const targetCenter = getNodeCenter(targetNode);
-
-    const dx = targetCenter.x - sourceCenter.x;
-    const dy = targetCenter.y - sourceCenter.y;
-    const angle = Math.atan2(dy, dx);
-
-    if (angle <= -7 * Math.PI / 8 || angle > 7 * Math.PI / 8) {
-        return { sourcePos: Position.Left, targetPos: Position.Right };
-    } else if (angle <= -5 * Math.PI / 8) {
-        return { sourcePos: Position.Top, targetPos: Position.Right };
-    } else if (angle <= -3 * Math.PI / 8) {
-        return { sourcePos: Position.Top, targetPos: Position.Bottom };
-    } else if (angle <= -Math.PI / 8) {
-        return { sourcePos: Position.Right, targetPos: Position.Bottom };
-    } else if (angle <= Math.PI / 8) {
-        return { sourcePos: Position.Right, targetPos: Position.Left };
-    } else if (angle <= 3 * Math.PI / 8) {
-        return { sourcePos: Position.Right, targetPos: Position.Top };
-    } else if (angle <= 5 * Math.PI / 8) {
-        return { sourcePos: Position.Bottom, targetPos: Position.Top };
-    } else if (angle <= 7 * Math.PI / 8) {
-        return { sourcePos: Position.Left, targetPos: Position.Top };
-    } else {
-        return { sourcePos: Position.Left, targetPos: Position.Right };
-    }
-}
-
-function getHandleCoords(node, position) {
-    const width = node.width || 150;
-    const height = node.height || 40;
-    const nodePosition = node.positionAbsolute || node.position;
-    const offset = 15;
-
-    switch (position) {
-        case Position.Top:
-            return {
-                x: nodePosition.x + width / 2,
-                y: nodePosition.y - offset
-            };
-        case Position.Right:
-            return {
-                x: nodePosition.x + width + offset,
-                y: nodePosition.y + height / 2
-            };
-        case Position.Bottom:
-            return {
-                x: nodePosition.x + width / 2,
-                y: nodePosition.y + height + offset
-            };
-        case Position.Left:
-            return {
-                x: nodePosition.x - offset,
-                y: nodePosition.y + height / 2
-            };
-        default:
-            return {
-                x: nodePosition.x + width / 2,
-                y: nodePosition.y + height / 2
-            };
-    }
+  return targetY > sourceY ? Position.Bottom : Position.Top;
 }
 
 export function getEdgeParams(source, target) {
-    const { sourcePos, targetPos } = getEdgePosition(source, target);
-    const sourceHandle = getHandleCoords(source, sourcePos);
-    const targetHandle = getHandleCoords(target, targetPos);
+  const [sx, sy, sourcePos] = getParams(source, target);
+  const [tx, ty, targetPos] = getParams(target, source);
 
-    return {
-        sx: sourceHandle.x,
-        sy: sourceHandle.y,
-        tx: targetHandle.x,
-        ty: targetHandle.y,
-        sourcePos,
-        targetPos,
-    };
+  return {
+    sx,
+    sy,
+    tx,
+    ty,
+    sourcePos,
+    targetPos,
+  };
 }

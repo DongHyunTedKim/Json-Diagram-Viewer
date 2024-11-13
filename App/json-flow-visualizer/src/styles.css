@@ -18,6 +18,9 @@
   border: 1px solid #525252;
 }
 
+/* ▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽ */
+/* ==================== NODE STYLE ==================== */
+/* ▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽ */
 /* 노드 스타일 - 그래프의 각 노드(기본 및 커스텀) */
 .react-flow__node,
 .simple-floatingedges .react-flow__node-custom {
@@ -35,67 +38,8 @@
 
 /* 노드 호버 효과 - 마우스를 노드 위에 올렸을 때 */
 .react-flow__node:hover {
-  
   border-color: #ff0072;
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
-}
-
-/* 엣지 기본 스타일 - 노드 간 연결선의 기본 상태 */
-.react-flow__edge {
-  opacity: 0.8;
-  z-index: 1000 !important;
-  cursor: pointer;
-}
-
-/* 엣지 경로 스타일 - 실제 보이는 연결선의 스타일 */
-.react-flow__edge-path {
-  stroke: #333333;
-  stroke-width: 13px;
-  cursor: pointer;
-  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
-  z-index: 1000 !important;
-}
-
-/* 엣지 상호작용 영역 - 클릭/호버 가능한 영역 (실제론 보이지 않음) */
-.react-flow__edge-interaction {
-  z-index: 1001 !important;
-  stroke-width: 12px;
-  stroke: transparent;
-  fill: none;
-  cursor: pointer;
-}
-
-/* 엣지 호버 효과 - 마우스를 엣지 위에 올렸을 때 */
-.react-flow__edge:hover {
-  opacity: 1;
-}
-
-/* 엣지 호버 시 경로 스타일 - 마우스를 엣지 위에 올렸을 때의 연결선 */
-.react-flow__edge:hover .react-flow__edge-path {
-  stroke: #ff4081;
-  stroke-width: 3px;
-  filter: drop-shadow(0 0 8px rgba(255,0,114,0.6));
-}
-
-/* 선택된 엣지 스타일 - 클릭하여 선택된 엣지의 상태 */
-.react-flow__edge.selected {
-  opacity: 1;
-  z-index: 1003 !important;
-}
-
-/* 선택된 엣지의 경로 스타일 - 선택된 엣지의 연결선 (점선 애니메이션) */
-.react-flow__edge.selected .react-flow__edge-path {
-  stroke: #ff0072;
-  stroke-width: 3px;
-  stroke-dasharray: 10;
-  animation: flowingDash 5s linear infinite;
-  filter: drop-shadow(0 0 8px rgba(255,0,114,1));
-}
-
-/* 선택된 엣지의 점선 애니메이션 정의 */
-@keyframes flowingDash {
-  from { stroke-dashoffset: 100; }
-  to { stroke-dashoffset: 0; }
 }
 
 /* 핸들 스타일 - 노드에 부착된 연결점의 기본 상태 */
@@ -143,6 +87,71 @@
   box-shadow: 0 0 6px rgba(255, 0, 114, 0.6);
 }
 
+/* ▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽ */
+/* ==================== EDGE STYLE ==================== */
+/* ▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽ */  
+/* 엣지 기본 스타일 */
+.react-flow__edge {
+  opacity: 0.8;
+  z-index: 1000;
+  cursor: pointer;
+}
+
+/* 엣지 경로 스타일 */
+.react-flow__edge-path {
+  stroke: #d60d0d;
+  stroke-width: 2px;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
+}
+
+/* 엣지 마커 스타일 */
+.react-flow__edge-marker {
+  fill: #555;
+  stroke: #333;
+  stroke-width: 1;
+}
+
+/* 엣지 호버 효과 */
+.react-flow__edge:hover {
+  opacity: 1;
+}
+
+.react-flow__edge:hover .react-flow__edge-path.floating {
+  stroke: #5500ff;
+  stroke-width: 3px;
+  filter: drop-shadow(0 0 8px rgba(255,0,114,0.6));
+}
+
+.react-flow__edge:hover .react-flow__edge-marker {
+  fill: #ff0072;
+  filter: drop-shadow(0 0 2px rgba(255,0,114,0.5));
+}
+
+/* 선택된 엣지 스타일 */
+.react-flow__edge.selected {
+  opacity: 1;
+  z-index: 1003;
+}
+
+.react-flow__edge.selected .react-flow__edge-path.floating {
+  stroke: #ff0072;
+  stroke-width: 3px;
+  stroke-dasharray: 10;
+  animation: flowingDash 5s linear infinite;
+  filter: drop-shadow(0 0 8px rgba(255,0,114,1));
+}
+
+.react-flow__edge.selected .react-flow__edge-marker {
+  fill: #ff0072;
+  filter: drop-shadow(0 0 4px rgba(255,0,114,0.8));
+}
+
+/* 엣지 애니메이션 */
+@keyframes flowingDash {
+  from { stroke-dashoffset: 100; }
+  to { stroke-dashoffset: 0; }
+}
+
 /* 연결 중인 상태 스타일 - 드래그하여 새 연결을 만드는 중일 때 */
 .react-flow__connection {
   z-index: 1002 !important;
@@ -162,14 +171,53 @@
   height: 100%;
 }
 
+.simple-floatingedges .react-flow__handle {
+  width: 8px;
+  height: 8px;
+  background-color: #bbb;
+}
+ 
+.simple-floatingedges .react-flow__handle-top {
+  top: -15px;
+}
+ 
+.simple-floatingedges .react-flow__handle-bottom {
+  bottom: -15px;
+}
+ 
+.simple-floatingedges .react-flow__handle-left {
+  left: -15px;
+}
+ 
+.simple-floatingedges .react-flow__handle-right {
+  right: -15px;
+}
+ 
+.simple-floatingedges .react-flow__node-custom {
+  background: #fff;
+  border: 1px solid #1a192b;
+  border-radius: 3px;
+  color: #222;
+  font-size: 12px;
+  padding: 10px;
+  text-align: center;
+  width: 150px;
+}
+
 .react-flow__edge-path.floating {
-  stroke: #00ff6a;
+  stroke: #787878;
   stroke-width: 3px;
   filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
 }
 
 .react-flow__edge:hover .react-flow__edge-path.floating {
-  stroke: #00ff62;
+  stroke: #000000;
   stroke-width: 4px;
   filter: drop-shadow(0 0 8px rgba(255,0,114,0.6));
+}
+
+/* 선택된 엣지와 마커의 스타일 */
+.react-flow__edge.selected .react-flow__edge-marker {
+    fill: #000000;
+    filter: drop-shadow(0 0 4px rgba(255,0,114,0.8));
 }

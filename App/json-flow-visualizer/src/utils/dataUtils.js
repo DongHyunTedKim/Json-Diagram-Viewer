@@ -67,6 +67,7 @@ function parseComponents(data) {
             id: String(component.id),
             data: { label: component.text + ' (Depth:' + depth + ')' },
             position: { x: 0, y: 0 },
+            type: 'custom',
             className: `Layer${depth}`,
             parentId: parentId,
             // 모든 방향의 핸들 활성화
@@ -130,9 +131,6 @@ export function createEdge({ source, target }) {
             type: MarkerType.ArrowClosed,
             className: 'react-flow__edge-marker'
         },
-        // utils_simple.js의 로직을 따르도록 sourceHandle과 targetHandle을 null로 설정
-        sourceHandle: null,
-        targetHandle: null
     };
 }
 

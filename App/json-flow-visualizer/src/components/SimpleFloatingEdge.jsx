@@ -24,9 +24,10 @@ function SimpleFloatingEdge({ id, source, target, markerEnd, style }) {
   return (
     <path
       id={id}
-      className="react-flow__edge-path"
+      className="react-flow__edge-path floating"
       d={edgePath}
       markerEnd={markerEnd}
+      style={style}
     />
   );
 }

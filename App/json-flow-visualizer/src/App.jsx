@@ -14,20 +14,27 @@ import ReactFlow, {
   ConnectionMode
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import './styles.css';
-
-//import initialData from './data/flowData.json';
-import initialData from './data/0001.json';
-
-
-import { parseJSONtoReactFlowData, createEdge } from './utils/dataUtils';
-import { applyLayout } from './utils/layoutUtils';
 
 import SimpleFloatingEdge from './components/SimpleFloatingEdge';
 import CustomNode from './components/CustomNode';
 
 import './styles.css';
 
+//import initialData from './data/flowData.json';
+import initialData from './data/0001.json';
+
+import { parseJSONtoReactFlowData, createEdge } from './utils/dataUtils';
+import { applyLayout } from './utils/layoutUtils';
+
+
+
+const nodeTypes = {
+  custom: CustomNode
+};
+
+const edgeTypes = {
+  floating: SimpleFloatingEdge
+};
 
 
 
@@ -46,14 +53,6 @@ const JsonViewer = ({ data }) => (
     {JSON.stringify(data, null, 2)}
   </pre>
 );
-
-const edgeTypes = {
-  floating: SimpleFloatingEdge
-};
-
-const nodeTypes = {
-  custom: CustomNode
-};
 
 function App() {
 
@@ -235,6 +234,7 @@ function App() {
     setJsonViewerScroll({ left: scrollLeft, top: scrollTop });
   }, []);
 
+  //
 
   //  
   //
@@ -264,7 +264,6 @@ function App() {
     <div style={{ width: '100vw', height: '100vh' }}>
       <ReactFlowProvider>
         <ReactFlow
-          //className="simple-floatingedges"
           nodes={nodes}
           edges={edges}
           onNodesChange={onNodesChange}
@@ -276,7 +275,6 @@ function App() {
           deleteKeyCode="Delete"
           fitView
           edgeTypes={edgeTypes}
-          //connectionLineComponent={FloatingConnectionLine}
           selectNodesOnDrag={false}
           elementsSelectable={true}
           edgesFocusable={true} // 엣지 선택 가능 
@@ -285,13 +283,11 @@ function App() {
           nodesConnectable={true} // 노드 연결 가능
           snapToGrid={true} // 그리드 맞춤
           snapGrid={[15, 15]} // 그리드 크기
-//          connectionMode="loose" // 엣지 연결 모드
           connectionMode={ConnectionMode.Loose}
 
           defaultEdgeOptions={{
             type: 'floating'
           }}
-          //className="react-flow-graph"
           elevateEdgesOnSelect={true}
           selectionOnDrag={true}
           selectionMode="partial"
