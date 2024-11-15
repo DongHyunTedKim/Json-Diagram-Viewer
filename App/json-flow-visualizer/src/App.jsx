@@ -17,7 +17,8 @@ import 'reactflow/dist/style.css';
 
 import SimpleFloatingEdge from './components/SimpleFloatingEdge';
 import CustomNode from './components/CustomNode';
-import FileUploader from './components/FileUploader';
+//import FileUploader from './components/FileUploader';
+import FolderViewer from './components/FolderViewer';
 
 import './styles.css';
 
@@ -26,8 +27,6 @@ import initialData from './data/0001.json';
 
 import { parseJSONtoReactFlowData, createEdge } from './utils/dataUtils';
 import { applyLayout } from './utils/layoutUtils';
-
-
 
 const nodeTypes = {
   custom: CustomNode
@@ -113,8 +112,8 @@ function App() {
       // Delete 키와 Backspace 키 모두 처리
       if (event.key === 'Delete') {
         event.preventDefault(); // 기본 동작 방지
-        
-        
+
+
 
         setEdges((eds) => {
           const selectedEdges = eds.filter((edge) => edge.selected);
@@ -160,11 +159,67 @@ function App() {
   //
   //
   // MARK: 편의 기능
+  //MARK: 폴더 뷰어
+  // 이미지 경로 상태 수정
+  const [currentImage, setCurrentImage] = useState({
+    path: '/data/images/0001.jpg',  // 기본 이미지 경로
+    name: '0001.jpg'
+  });
+
+  // ReactFlow 초기화 함수
+  const initializeFlowData = (jsonData) => {
+    try {
+      // 먼저 노드와 엣지 초기화
+      setNodes([]);
+      setEdges([]);
+      
+      // JSON Viewer 데이터도 초기화
+      setJsonViewData({
+        original: jsonData,
+        parsed: { nodes: [], edges: [] }
+      });
+
+      // 잠시 대기 후 새로운 데이터로 파싱 및 렌더링
+      setTimeout(() => {
+        const { parsedNodes, parsedEdges } = parseJSONtoReactFlowData(JSON.stringify(jsonData));
+        const layoutedNodes = applyLayout(parsedNodes, parsedEdges);
+
+        setNodes(layoutedNodes);
+        setEdges(parsedEdges);
+        setJsonViewData(prev => ({
+          ...prev,
+          parsed: { nodes: layoutedNodes, edges: parsedEdges }
+        }));
+      }, 100);
+
+    } catch (error) {
+      console.error("Flow 초기화 에러:", error);
+    }
+  };
+
+  // handleFilesSelected 함수 수정
+  const handleFilesSelected = (imageFiles, jsonFiles) => {
+    setSelectedFiles({
+      images: imageFiles,
+      jsons: jsonFiles
+    });
+
+    jsonFiles.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const jsonData = JSON.parse(e.target.result);
+          initializeFlowData(jsonData);
+        } catch (error) {
+          console.error('JSON 파싱 에러:', error);
+        }
+      };
+      reader.readAsText(file);
+    });
+  };
+
   // 최소화 상태 관리
   const [isMinimized, setIsMinimized] = useState(false);
-
-  //
-  //
   //
   // MARK: - 이미지뷰어
   // 이미지 뷰어 - 최소화 버튼 클릭 시 호출되는 함수
@@ -234,9 +289,6 @@ function App() {
     const { scrollLeft, scrollTop } = e.target;
     setJsonViewerScroll({ left: scrollLeft, top: scrollTop });
   }, []);
-
-  //
-
   //  
   //
   //
@@ -266,36 +318,6 @@ function App() {
     images: [],
     jsons: []
   });
-
-  const handleFilesSelected = (imageFiles, jsonFiles) => {
-    setSelectedFiles({
-      images: imageFiles,
-      jsons: jsonFiles
-    });
-    
-    // 파일 처리 로직
-    imageFiles.forEach(file => {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        // 이미지 처리
-        console.log('이미지 로드됨:', e.target.result);
-      };
-      reader.readAsDataURL(file);
-    });
-
-    jsonFiles.forEach(file => {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        try {
-          const jsonData = JSON.parse(e.target.result);
-          console.log('JSON 파싱됨:', jsonData);
-        } catch (error) {
-          console.error('JSON 파싱 에러:', error);
-        }
-      };
-      reader.readAsText(file);
-    });
-  };
 
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
@@ -336,11 +358,11 @@ function App() {
           nodeTypes={nodeTypes}
         >
           <Background variant="dots" gap={12} size={1} />
-          
+
           {/* 도움말 버튼 - MiniMap 위에 배치 */}
-          <div style={{ 
-            position: 'absolute', 
-            right: '45px', 
+          <div style={{
+            position: 'absolute',
+            right: '45px',
             bottom: '200px',  // MiniMap 위 공간 확보
             zIndex: 5
           }}>
@@ -390,11 +412,11 @@ function App() {
                       <li>또는 마우스 우클릭 후 드래그</li>
                     </ul>
                   </li>
-                  
+
                   <li style={{ marginBottom: '12px' }}>
                     <strong>노드 추가:</strong> (개발중) 빈 공간 더블클릭
                   </li>
-                  
+
                   <li style={{ marginBottom: '12px' }}>
                     <strong>삭제:</strong>
                     <ul>
@@ -422,15 +444,15 @@ function App() {
 
       {/* 저장 버튼 */}
       <div style={{ flex: 1 }}>
-        <div style={{ 
-          position: 'absolute', 
-          top: '20px', 
-          right: '20px', 
+        <div style={{
+          position: 'absolute',
+          top: '20px',
+          right: '20px',
           zIndex: 1000,
           display: 'flex',
           gap: '10px'  // 버튼 사이 간격
         }}>
-          <button 
+          <button
             onClick={onSave}
             style={{
               padding: '8px 16px',
@@ -478,12 +500,12 @@ function App() {
             onScroll={handleImageViewerScroll}
           >
             <img
-              src="/images/0001.jpg"
-              alt="Original Flowchart"
+              src={currentImage.path}
+              alt={currentImage.name}
               style={{
                 width: '100%',
                 height: '100%',
-                objectFit: 'contain',
+                objectFit: 'contain'
               }}
             />
             <div
@@ -523,9 +545,9 @@ function App() {
             <div
               style={{
                 position: 'absolute',
-                top: '5px',
+                bottom: '5px', // top에서 bottom으로 변경
                 right: '5px',
-                cursor: 'se-resize',
+                cursor: 'se-resize', 
                 color: '#fff',
                 display: 'flex',
                 alignItems: 'center',
@@ -564,7 +586,6 @@ function App() {
                 document.addEventListener('mouseup', handleMouseUp);
               }}
             >
-              ↗️
             </div>
           </div>
         )}
@@ -734,7 +755,15 @@ function App() {
           </div>
         )}
       </div>
-      <FileUploader onFilesSelected={handleFilesSelected} />
+      <FolderViewer 
+        onImageSelect={(file) => {
+          setCurrentImage({
+            path: file.path,
+            name: file.name
+          });
+        }} 
+        onFilesSelected={handleFilesSelected}
+      />
     </div>
   );
 }

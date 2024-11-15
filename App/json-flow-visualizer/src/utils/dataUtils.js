@@ -49,8 +49,10 @@ function calculateNodeSize(component) {
 }
 
 function parseComponents(data) {
-    if (!data.components || !Array.isArray(data.components)) {
-        throw new Error("유효한 components 배열이 필요합니다.");
+    // components 또는 nodes 배열 확인
+    const componentArray = data.components || data.nodes || [];
+    if (!Array.isArray(componentArray)) {
+        throw new Error("유효한 components 또는 nodes 배열이 필요합니다.");
     }
 
     const nodes = [];
@@ -65,19 +67,18 @@ function parseComponents(data) {
 
         const node = {
             id: String(component.id),
-            data: { label: component.text + ' (Depth:' + depth + ')' },
+            //data: { label: component.text + ' (Depth:' + depth + ')' },
+            data: { label: component.text },
             position: { x: 0, y: 0 },
             type: 'custom',
             className: `Layer${depth}`,
             parentId: parentId,
-            // 모든 방향의 핸들 활성화
             handles: [
                 { type: 'source', position: Position.Top, id: 't' },
                 { type: 'source', position: Position.Right, id: 'r' },
                 { type: 'source', position: Position.Bottom, id: 'b' },
                 { type: 'source', position: Position.Left, id: 'l' }
             ],
-            // 핸들 표시 여부 명시적 설정
             connectable: true,
             style: {
                 width,
@@ -95,8 +96,7 @@ function parseComponents(data) {
         }
     };
 
-    data.components.forEach(component => traverse(component));
-
+    componentArray.forEach(component => traverse(component));
     return nodes;
 }
 
