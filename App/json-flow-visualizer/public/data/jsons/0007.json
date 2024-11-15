@@ -1,0 +1,54 @@
+{
+    "file_name": "diagram_analysis",
+    "summary": "This diagram illustrates the process of investigation, consisting of four main stages: Problem Identification, Survey Design, Data Collection and Analysis, and Report Writing. Each stage is connected sequentially, indicating a flow from one stage to the next.",
+    "node_count": 4,
+    "connection_count": 3,
+    "nodes": [
+        {
+            "id": "1",
+            "text": "문제 제기",
+            "node": []
+        },
+        {
+            "id": "2",
+            "text": "조사 설계\n조사 주제 선정 & 목적 명시\n무엇을 어떻게 물을 것인가?\n변수 & 측정",
+            "node": []
+        },
+        {
+            "id": "3",
+            "text": "자료 수집 및 분석",
+            "node": []
+        },
+        {
+            "id": "4",
+            "text": "보고서작성",
+            "node": []
+        }
+    ],
+    "connections": [
+        {
+            "from": "1",
+            "to": "2",
+            "text": "설문지",
+            "type": "line",
+            "color": "#000000",
+            "direction": true
+        },
+        {
+            "from": "2",
+            "to": "3",
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true
+        },
+        {
+            "from": "3",
+            "to": "4",
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true
+        }
+    ]
+}

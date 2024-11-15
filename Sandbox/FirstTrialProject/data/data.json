@@ -1,0 +1,96 @@
+{
+    "file_name": "00002.png",
+    "caption": "융자 실행 절차",
+    "title": null,
+    "description": "One Contact Point 운용 | 설계->개통->운영->장애처리",
+    "components": [
+        {
+            "id": 1,
+            "name": "서비스플랫폼(서비스접수)"
+        },
+        {
+            "id": 2,
+            "name": "영업대표(서비스접수)"
+        },
+        {
+            "id": 3,
+            "name": "기업고객센터(청약처리)"
+        },
+        {
+            "id": 4,
+            "name": "총괄 PM 운영 (통합 Flow Manager)",
+            "sub_blocks": [
+                {
+                    "id": 5,
+                    "name": "KTS/Biz지원팀(회선개통)"
+                },
+                {
+                    "id": 6,
+                    "name": "장비 협력사(장비개통 : 회선 개통 완료 후 진행)"
+                },
+                {
+                    "id": 7,
+                    "name": "전담운용센터(총괄 관리 및 기술 지원)"
+                },
+                {
+                    "id": 8,
+                    "name": "고객사"
+                }
+            ]
+        }
+    ],
+    "connections": [
+        {
+            "from": 1,
+            "to": 3,
+            "type": "line",
+            "color": "grey",
+            "direction": "directional"
+        },
+        {
+            "from": 2,
+            "to": 3,
+            "type": "line",
+            "color": "grey",
+            "direction": "directional"
+        },
+        {
+            "from": 1,
+            "to": 4,
+            "text": "자동화 항목(설치변경, 속도변경 등)은 업무 처리 담당자에게 전달, 자동 반영",
+            "type": "dotted-line",
+            "color": "grey",
+            "direction": "directional"
+        },
+        {
+            "from": 3,
+            "to": 5,
+            "type": "line",
+            "color": "grey",
+            "direction": "directional"
+        },
+        {
+            "from": 5,
+            "to": 6,
+            "type": "line",
+            "color": "dark grey",
+            "direction": "directional"
+        },
+        {
+            "from": 5,
+            "to": 7,
+            "text": "회선/장비 개통 조율 수행\n 개통 이슈 대응",
+            "type": "line",
+            "color": "dark grey",
+            "direction": "directional"
+        },
+        {
+            "from": 7,
+            "to": 8,
+            "text": "고객 기술 문의 지원",
+            "type": "line",
+            "color": "dark grey",
+            "direction": "bi-directional"
+        }
+    ]
+}

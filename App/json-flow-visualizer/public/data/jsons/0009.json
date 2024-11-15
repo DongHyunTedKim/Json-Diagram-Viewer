@@ -1,0 +1,83 @@
+{
+    "file_name": "diagram_analysis",
+    "summary": "This diagram represents a process flow involving national subsidy projects, business planning, and management. It includes stages like project information analysis, business planning, project confirmation, and monitoring, leading to outcome management.",
+    "node_count": 5,
+    "connection_count": 6,
+    "nodes": [
+        {
+            "id": "1",
+            "text": "국고보조금\n사업정보\n사업안내서\n보건복지부",
+            "node": []
+        },
+        {
+            "id": "2",
+            "text": "사업계획수립\n통보검토 및\n확정\n시도 및 지원단\n시군구(보조사업자)",
+            "node": []
+        },
+        {
+            "id": "3",
+            "text": "국고보조금\n확정통보\n사업계획 제출\n보건복지부\n시도 및 지원단\n시군구(보조사업자)",
+            "node": []
+        },
+        {
+            "id": "4",
+            "text": "계획점검\n사업관리\n자체평가\n시도, 시군구(지원단)",
+            "node": []
+        },
+        {
+            "id": "5",
+            "text": "성과관리\n보건복지부,\n시도, 지원단",
+            "node": []
+        }
+    ],
+    "connections": [
+        {
+            "from": "1",
+            "to": "2",
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true
+        },
+        {
+            "from": "2",
+            "to": "3",
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true
+        },
+        {
+            "from": "3",
+            "to": "4",
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true
+        },
+        {
+            "from": "4",
+            "to": "5",
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true
+        },
+        {
+            "from": "5",
+            "to": "1",
+            "text": "환류(Feedback)",
+            "type": "line",
+            "color": "#000000",
+            "direction": true
+        },
+        {
+            "from": "4",
+            "to": "3",
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true
+        }
+    ]
+}

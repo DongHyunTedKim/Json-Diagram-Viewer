@@ -1,0 +1,16 @@
+const initialNodes = [{
+    id: '1',
+    data: { label: '해당 노드의 레이블' },
+    position: { x: 0, y: 0 }, // <- 우선 0, 0으로 초기화
+    className: 'layerLevel', // 레이어 레벨 클래스 이름
+    parentId: '부모노드의 id', //부모가 있을 경우 부모노드의 id 입력
+    extent: 'parent', // 부모가 있을 경우 부모노드의 위치에 맞춰 배치
+}
+
+
+const initialEdges = [{
+    id: '1', // 엣지의 id
+    source: '1', // 엣지의 시작 노드의 id
+    target: '2', // 엣지의 끝 노드의 id
+    label: '해당 엣지의 레이블', // 엣지의 레이블이 있을 경우 입력
+}

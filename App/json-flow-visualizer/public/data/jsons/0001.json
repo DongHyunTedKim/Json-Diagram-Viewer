@@ -1,0 +1,158 @@
+{
+    "file_name": "diagram_analysis.json",
+    "summary": "This diagram outlines the process of inspection application reception, inspection request acceptance, on-site inspection, and subsequent actions based on the inspection results.",
+    "node_count": 12,
+    "connection_count": 11,
+    "nodes": [
+        {
+            "id": "1",
+            "text": "민원접수구",
+            "node": []
+        },
+        {
+            "id": "2",
+            "text": "검사(재검사) 신청서 접수\n- 수수료수수 (수입증지)\n- 첨부서류 확인\n- 민원행정시스템 등록\n- 처리결과 안내",
+            "node": []
+        },
+        {
+            "id": "3",
+            "text": "검사 신청서 인수\n- 문서등록대장 (접수)\n- 민원행정시스템 (접수확인)\n- 신청서 심사반출 (구비 오조건)\n- 검사신청정보확인 (접수처, 원본)\n- 검사신청 결과처리",
+            "node": []
+        },
+        {
+            "id": "4",
+            "text": "발주자",
+            "node": []
+        },
+        {
+            "id": "5",
+            "text": "보완",
+            "node": []
+        },
+        {
+            "id": "6",
+            "text": "현장검사\n- 예비판정 (적합/부적합)",
+            "node": []
+        },
+        {
+            "id": "7",
+            "text": "적합",
+            "node": []
+        },
+        {
+            "id": "8",
+            "text": "부적합\n중대한 사항\n경미한 사항",
+            "node": []
+        },
+        {
+            "id": "9",
+            "text": "사용전검사 결과표(보고서) 작성결재",
+            "node": []
+        },
+        {
+            "id": "10",
+            "text": "부적합 보완지시서 작성",
+            "node": []
+        },
+        {
+            "id": "11",
+            "text": "검사결과통보 (보완지시)",
+            "node": []
+        },
+        {
+            "id": "12",
+            "text": "검사 결과 통보\n*통보대상\n허가부서\n발주자",
+            "node": []
+        }
+    ],
+    "connections": [
+        {
+            "from": "1",
+            "to": "2",
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true
+        },
+        {
+            "from": "2",
+            "to": "3",
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true
+        },
+        {
+            "from": "3",
+            "to": "4",
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true
+        },
+        {
+            "from": "4",
+            "to": "5",
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true
+        },
+        {
+            "from": "5",
+            "to": "6",
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true
+        },
+        {
+            "from": "6",
+            "to": "7",
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true
+        },
+        {
+            "from": "6",
+            "to": "8",
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true
+        },
+        {
+            "from": "8",
+            "to": "9",
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true
+        },
+        {
+            "from": "8",
+            "to": "10",
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true
+        },
+        {
+            "from": "10",
+            "to": "11",
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true
+        },
+        {
+            "from": "11",
+            "to": "12",
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true
+        }
+    ]
+}

@@ -1,0 +1,28 @@
+{
+    "file_name": "diagram_analysis.json",
+    "summary": "The diagram compares '기존 국고보조사업' and '지역사회 통합건강증진사업' with a directional arrow indicating a transition or comparison between the two.",
+    "node_count": 2,
+    "connection_count": 1,
+    "nodes": [
+        {
+            "id": 1,
+            "text": "기존 국고보조사업\n- 사업내용 및 방법 지정 지침\n- 중앙집중식·하향식\n- 지역여건에 무반한 사업\n- 산출중심의 사업 평가\n- 분절적 사업수행으로 비효율",
+            "node": []
+        },
+        {
+            "id": 2,
+            "text": "지역사회 통합건강증진사업\n- 사업범위 및 원칙 중심 지침\n- 지방분권식·상향식\n- 지역여건과 연계된 사업\n- 과정, 성과중심의 평가\n- 보건소 내외 사업 통합·연계 활성화",
+            "node": []
+        }
+    ],
+    "connections": [
+        {
+            "from": 1,
+            "to": 2,
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true
+        }
+    ]
+}

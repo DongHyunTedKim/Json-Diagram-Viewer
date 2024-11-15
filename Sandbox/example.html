@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>JSON to Diagram Live Editor 😎</title>
+    <!-- CodeMirror CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    <!-- CodeMirror 테마 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
+    <!-- Mermaid.js -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        #header {
+            background-color: #282a36;
+            color: #f8f8f2;
+            padding: 10px;
+            text-align: center;
+        }
+
+        #main {
+            display: flex;
+            flex: 1;
+        }
+
+        #editor {
+            width: 50%;
+            height: 100%;
+        }
+
+        .CodeMirror {
+            height: 100%;
+        }
+
+        #diagram {
+            width: 50%;
+            height: 100%;
+            background-color: #ffffff;
+            overflow: auto;
+            padding: 10px;
+        }
+
+        #controls {
+            padding: 10px;
+            background-color: #f0f0f0;
+            text-align: center;
+        }
+
+        #controls button {
+            margin: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            #main {
+                flex-direction: column;
+            }
+            #editor, #diagram {
+                width: 100%;
+                height: 50%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="header">
+        <h1>JSON to Diagram Live Editor 😎</h1>
+    </div>
+
+    <div id="main">
+        <!-- 코드 편집기 영역 -->
+        <div id="editor"></div>
+
+        <!-- 다이어그램 렌더링 영역 -->
+        <div id="diagram"></div>
+    </div>
+
+    <!-- 컨트롤 버튼 영역 -->
+    <div id="controls">
+        <button id="saveBtn">파일 저장</button>
+        <input type="file" id="loadInput" style="display: none;">
+        <button id="loadBtn">파일 불러오기</button>
+        <button id="exportSvgBtn">SVG로 내보내기</button>
+        <button id="exportPngBtn">PNG로 내보내기</button>
+    </div>
+
+    <!-- CodeMirror JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <!-- CodeMirror 모드 (Markdown 사용) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/markdown/markdown.min.js"></script>
+    <!-- FileSaver.js (파일 저장을 위해 필요) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <!-- dom-to-image (PNG 저장을 위해 필요) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
+
+    <script>
+        // Mermaid.js 초기화
+        mermaid.initialize({ startOnLoad: false });
+
+        // CodeMirror 초기화
+        var editor = CodeMirror(document.getElementById("editor"), {
+            mode: "markdown",
+            theme: "dracula",
+            lineNumbers: true,
+            value: `flowchart TD
+    A[Christmas] -->|Get money| B(Go shopping)
+    B --> C{Let me think}
+    C -->|One| D[Laptop]
+    C -->|Two| E[iPhone]
+    C -->|Three| F[fa:fa-car Car]`,
+        });
+
+        // 다이어그램 렌더링 함수
+        async function renderMermaid() {
+            var code = editor.getValue();
+            var diagramContainer = document.getElementById("diagram");
+
+            // 기존 다이어그램 초기화
+            diagramContainer.innerHTML = '';
+
+            try {
+                // 다이어그램 렌더링
+                const { svg, bindFunctions } = await mermaid.render('theGraph', code);
+                diagramContainer.innerHTML = svg;
+                if (bindFunctions) {
+                    bindFunctions(diagramContainer);
+                }
+            } catch (e) {
+                diagramContainer.innerHTML = '<p style="color: red;">다이어그램을 렌더링하는 동안 오류가 발생했습니다.</p>';
+                console.error('Mermaid.js 오류:', e);
+            }
+        }
+
+        // 에디터 내용 변경 시 다이어그램 업데이트
+        editor.on('change', function() {
+            renderMermaid();
+        });
+
+        // 페이지 로드 시 초기 다이어그램 렌더링
+        renderMermaid();
+
+        // 파일 저장 기능
+        document.getElementById('saveBtn').addEventListener('click', function() {
+            var blob = new Blob([editor.getValue()], { type: 'text/plain;charset=utf-8' });
+            saveAs(blob, 'diagram.mmd');
+        });
+
+        // 파일 불러오기 기능
+        document.getElementById('loadBtn').addEventListener('click', function() {
+            document.getElementById('loadInput').click();
+        });
+
+        document.getElementById('loadInput').addEventListener('change', function(e) {
+            var file = e.target.files[0];
+            if (!file) return;
+
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                editor.setValue(e.target.result);
+            };
+            reader.readAsText(file);
+        });
+
+        // SVG로 내보내기 기능
+        document.getElementById('exportSvgBtn').addEventListener('click', function() {
+            var svgContent = document.querySelector('#diagram svg');
+            if (svgContent) {
+                var blob = new Blob([svgContent.outerHTML], { type: 'image/svg+xml;charset=utf-8' });
+                saveAs(blob, 'diagram.svg');
+            } else {
+                alert('다이어그램이 없습니다.');
+            }
+        });
+
+        // PNG로 내보내기 기능
+        document.getElementById('exportPngBtn').addEventListener('click', function() {
+            var diagramElement = document.getElementById('diagram');
+            domtoimage.toBlob(diagramElement)
+                .then(function(blob) {
+                    saveAs(blob, 'diagram.png');
+                })
+                .catch(function(error) {
+                    console.error('PNG 내보내기 오류:', error);
+                });
+        });
+    </script>
+</body>
+</html>
