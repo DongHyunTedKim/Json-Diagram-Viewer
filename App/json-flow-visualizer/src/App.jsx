@@ -17,6 +17,7 @@ import 'reactflow/dist/style.css';
 
 import SimpleFloatingEdge from './components/SimpleFloatingEdge';
 import CustomNode from './components/CustomNode';
+import FileUploader from './components/FileUploader';
 
 import './styles.css';
 
@@ -259,6 +260,42 @@ function App() {
 
   // 상단에 상태 추가
   const [showHelp, setShowHelp] = useState(false);
+
+  // App.jsx에 추가할 부분
+  const [selectedFiles, setSelectedFiles] = useState({
+    images: [],
+    jsons: []
+  });
+
+  const handleFilesSelected = (imageFiles, jsonFiles) => {
+    setSelectedFiles({
+      images: imageFiles,
+      jsons: jsonFiles
+    });
+    
+    // 파일 처리 로직
+    imageFiles.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        // 이미지 처리
+        console.log('이미지 로드됨:', e.target.result);
+      };
+      reader.readAsDataURL(file);
+    });
+
+    jsonFiles.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const jsonData = JSON.parse(e.target.result);
+          console.log('JSON 파싱됨:', jsonData);
+        } catch (error) {
+          console.error('JSON 파싱 에러:', error);
+        }
+      };
+      reader.readAsText(file);
+    });
+  };
 
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
@@ -697,6 +734,7 @@ function App() {
           </div>
         )}
       </div>
+      <FileUploader onFilesSelected={handleFilesSelected} />
     </div>
   );
 }
