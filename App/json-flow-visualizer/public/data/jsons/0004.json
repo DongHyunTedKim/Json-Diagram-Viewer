@@ -1,0 +1,52 @@
+{
+    "file_name": "diagram_analysis",
+    "summary": "This diagram illustrates the process of data collection, analysis, and statistical extraction, leading to results and applications. It includes sources of data, disease management, and the utilization of results.",
+    "node_count": 3,
+    "connection_count": 3,
+    "nodes": [
+        {
+            "id": 1,
+            "text": "자료원\n- 의료기관\n- 건강보험심사평가원\n- 건강보험공단",
+            "node": []
+        },
+        {
+            "id": 2,
+            "text": "질병관리청\n- 등록통계\n- 추정통계\n- 재원통계",
+            "node": []
+        },
+        {
+            "id": 3,
+            "text": "결과 활용\n- R&D 및 정책 수립 근거자료 제공\n- 희귀질환 현황 파악\n- 통계 연보 발간\n- 국가통계포털\n- 질병관리청 홈페이지 등",
+            "node": []
+        }
+    ],
+    "connections": [
+        {
+            "from": 1,
+            "to": 2,
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true,
+            "thickness": 1
+        },
+        {
+            "from": 2,
+            "to": 3,
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true,
+            "thickness": 1
+        },
+        {
+            "from": 3,
+            "to": 3,
+            "text": "",
+            "type": "dashed",
+            "color": "#000000",
+            "direction": true,
+            "thickness": 1
+        }
+    ]
+}

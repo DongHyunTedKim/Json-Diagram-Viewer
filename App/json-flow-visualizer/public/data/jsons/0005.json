@@ -1,0 +1,141 @@
+{
+    "file_name": "social_innovation_career_path_map.png",
+    "summary": "사회혁신 인재양성을 위한 커리어패스 맵으로, 사회봉사 의무 교육을 시작으로 다양한 프로그램과 프로젝트를 통해 사회적 기업가 및 사회혁신가로 성장하는 과정을 나타냅니다.",
+    "node_count": 10,
+    "connection_count": 9,
+    "nodes": [
+        {
+            "id": "1",
+            "text": "사회 봉사\n의무 교육\n(연간 30,000명)",
+            "node": []
+        },
+        {
+            "id": "2",
+            "text": "APYE",
+            "node": []
+        },
+        {
+            "id": "3",
+            "text": "SVYE",
+            "node": []
+        },
+        {
+            "id": "4",
+            "text": "사회적경제 리더과정(학부)",
+            "node": []
+        },
+        {
+            "id": "5",
+            "text": "희망한대 리더그룹 기본 프로그램",
+            "node": []
+        },
+        {
+            "id": "6",
+            "text": "부트캠프",
+            "node": []
+        },
+        {
+            "id": "7",
+            "text": "소셜벤처 창업스쿨",
+            "node": []
+        },
+        {
+            "id": "8",
+            "text": "사회혁신융합전공",
+            "node": []
+        },
+        {
+            "id": "9",
+            "text": "희망한대리더그룹 사회혁신프로젝트",
+            "node": []
+        },
+        {
+            "id": "10",
+            "text": "사회혁신 대학원 과정",
+            "node": []
+        }
+    ],
+    "connections": [
+        {
+            "from": "1",
+            "to": "2",
+            "text": "",
+            "type": "line",
+            "color": "#ffffff",
+            "direction": true,
+            "thickness": 2
+        },
+        {
+            "from": "1",
+            "to": "3",
+            "text": "",
+            "type": "line",
+            "color": "#ffffff",
+            "direction": true,
+            "thickness": 2
+        },
+        {
+            "from": "1",
+            "to": "4",
+            "text": "",
+            "type": "line",
+            "color": "#ffffff",
+            "direction": true,
+            "thickness": 2
+        },
+        {
+            "from": "1",
+            "to": "5",
+            "text": "",
+            "type": "line",
+            "color": "#ffffff",
+            "direction": true,
+            "thickness": 2
+        },
+        {
+            "from": "6",
+            "to": "7",
+            "text": "",
+            "type": "line",
+            "color": "#00ffff",
+            "direction": true,
+            "thickness": 2
+        },
+        {
+            "from": "4",
+            "to": "8",
+            "text": "",
+            "type": "line",
+            "color": "#ff9900",
+            "direction": true,
+            "thickness": 2
+        },
+        {
+            "from": "9",
+            "to": "8",
+            "text": "",
+            "type": "line",
+            "color": "#ff9900",
+            "direction": true,
+            "thickness": 2
+        },
+        {
+            "from": "8",
+            "to": "10",
+            "text": "",
+            "type": "line",
+            "color": "#ff9900",
+            "direction": true,
+            "thickness": 2
+        },
+        {
+            "from": "7",
+            "to": "10",
+            "text": "",
+            "type": "line",
+            "color": "#00ff00",
+            "direction": true,
+            "thickness": 2
+        }
+    ]
+}

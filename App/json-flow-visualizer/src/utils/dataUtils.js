@@ -49,8 +49,10 @@ function calculateNodeSize(component) {
 }
 
 function parseComponents(data) {
-    if (!data.components || !Array.isArray(data.components)) {
-        throw new Error("유효한 components 배열이 필요합니다.");
+    // components 또는 nodes 배열 확인
+    const componentArray = data.components || data.nodes || [];
+    if (!Array.isArray(componentArray)) {
+        throw new Error("유효한 components 또는 nodes 배열이 필요합니다.");
     }
 
     const nodes = [];
@@ -65,19 +67,18 @@ function parseComponents(data) {
 
         const node = {
             id: String(component.id),
-            data: { label: component.text + ' (Depth:' + depth + ')' },
+            //data: { label: component.text + ' (Depth:' + depth + ')' },
+            data: { label: component.text },
             position: { x: 0, y: 0 },
             type: 'custom',
             className: `Layer${depth}`,
             parentId: parentId,
-            // 모든 방향의 핸들 활성화
             handles: [
                 { type: 'source', position: Position.Top, id: 't' },
                 { type: 'source', position: Position.Right, id: 'r' },
                 { type: 'source', position: Position.Bottom, id: 'b' },
                 { type: 'source', position: Position.Left, id: 'l' }
             ],
-            // 핸들 표시 여부 명시적 설정
             connectable: true,
             style: {
                 width,
@@ -95,8 +96,7 @@ function parseComponents(data) {
         }
     };
 
-    data.components.forEach(component => traverse(component));
-
+    componentArray.forEach(component => traverse(component));
     return nodes;
 }
 
@@ -152,6 +152,50 @@ function parseJSONtoReactFlowData(jsonString) {
         console.error("JSON 파싱 에러:", error.message);
         return { parsedNodes: [], parsedEdges: [] };
     }
+}
+
+// ReactFlow 데이터를 원본 JSON 형식으로 변환하는 함수
+export function convertReactFlowToJSON(nodes, edges) {
+    // 최상위 노드들 찾기 (parentId가 없는 노드들)
+    const rootNodes = nodes.filter(node => !node.parentId);
+    
+    // 컴포넌트 구조 생성
+    const components = rootNodes.map(rootNode => 
+        createComponentStructure(rootNode, nodes)
+    );
+
+    // 엣지 변환
+    const connections = edges.map(edge => ({
+        from: edge.source,
+        to: edge.target,
+        text: edge.label || "",
+        type: "line",
+        color: "#000000",
+        direction: true,
+        thickness: "medium"
+    }));
+
+    // 최종 JSON 구조
+    return {
+        file_name: "", // 파일 이름은 별도로 관리 필요
+        summary: "", // 요약 정보는 별도로 관리 필요
+        components,
+        connections
+    };
+}
+
+// 재귀적으로 컴포넌트 구조 생성
+function createComponentStructure(currentNode, allNodes) {
+    // 현재 노드의 직접적인 자식 노드들 찾기
+    const childNodes = allNodes.filter(node => node.parentId === currentNode.id);
+    
+    return {
+        id: currentNode.id,
+        text: currentNode.data.label,
+        node: childNodes.length > 0 
+            ? childNodes.map(childNode => createComponentStructure(childNode, allNodes))
+            : []
+    };
 }
 
 export { parseComponents, parseConnections, parseJSONtoReactFlowData };
