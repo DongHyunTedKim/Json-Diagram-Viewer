@@ -25,7 +25,7 @@ import './styles.css';
 //import initialData from './data/flowData.json';
 import initialData from './data/0001.json';
 
-import { parseJSONtoReactFlowData, createEdge } from './utils/dataUtils';
+import { parseJSONtoReactFlowData, createEdge, convertReactFlowToJSON } from './utils/dataUtils';
 import { applyLayout } from './utils/layoutUtils';
 
 const nodeTypes = {
@@ -132,17 +132,13 @@ function App() {
 
   // 변경된 데이터를 저장하는 함수
   const onSave = () => {
-    const data = {
-      nodes,
-      edges,
-    };
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const jsonData = convertReactFlowToJSON(nodes, edges);
+    const blob = new Blob([JSON.stringify(jsonData, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
 
-    // 다운로드 링크 생성 및 클릭
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'updatedFlowData.json';
+    a.download = 'flowData.json';
     a.click();
     URL.revokeObjectURL(url);
   };
