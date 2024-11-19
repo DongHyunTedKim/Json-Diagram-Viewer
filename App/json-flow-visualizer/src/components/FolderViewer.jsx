@@ -33,39 +33,83 @@ const FolderViewer = ({ onImageSelect, onFilesSelected }) => {
 
   const handleFolderSelect = async () => {
     try {
-      const dirHandle = await window.showDirectoryPicker();
-      setSelectedFolderPath(dirHandle.name);
-      const files = [];
-      const jsonFiles = new Map(); // JSON 파일을 저장할 Map 객체
+      // File System Access API 지원 여부 확인
+      if (!window.showDirectoryPicker) {
+        // 대체 방법: input file을 사용
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.multiple = true;
+        input.webkitdirectory = true;
+        input.directory = true;
+        
+        input.onchange = async (e) => {
+          const files = Array.from(e.target.files);
+          const imageFiles = [];
+          const jsonFiles = new Map();
+          
+          // JSON 파일 먼저 처리
+          files.forEach(file => {
+            if (file.name.endsWith('.json')) {
+              jsonFiles.set(file.name, file);
+            }
+          });
+          
+          // 이미지 파일 처리
+          files.forEach(file => {
+            if (file.name.match(/\.(jpg|jpeg|png|gif|webp|bmp|tiff)$/i)) {
+              const jsonName = file.name.replace(/\.(jpg|jpeg|png|gif|webp|bmp|tiff)$/, '.json');
+              const jsonFile = jsonFiles.get(jsonName);
+              
+              imageFiles.push({
+                name: file.name,
+                path: URL.createObjectURL(file),
+                type: 'image',
+                jsonFile: jsonFile || null
+              });
+            }
+          });
+          
+          setFiles(imageFiles);
+          setSelectedFolderPath(files[0]?.webkitRelativePath.split('/')[0] || 'Selected Folder');
+          setError(null);
+        };
+        
+        input.click();
+      } else {
+        // 기존 showDirectoryPicker 코드 유지
+        const dirHandle = await window.showDirectoryPicker();
+        const files = [];
+        const jsonFiles = new Map(); // JSON 파일을 저장할 Map 객체
 
-      // 먼저 모든 파일을 스캔하여 JSON 파일을 Map에 저장
-      for await (const entry of dirHandle.values()) {
-        if (entry.kind === 'file') {
-          if (entry.name.endsWith('.json')) {
-            const jsonFile = await entry.getFile();
-            jsonFiles.set(entry.name, jsonFile);
+        // 먼저 모든 파일을 스캔하여 JSON 파일을 Map에 저장
+        for await (const entry of dirHandle.values()) {
+          if (entry.kind === 'file') {
+            if (entry.name.endsWith('.json')) {
+              const jsonFile = await entry.getFile();
+              jsonFiles.set(entry.name, jsonFile);
+            }
           }
         }
-      }
 
-      // 이미지 파일을 처리하고 관련 JSON 파일이 있는지 확인
-      for await (const entry of dirHandle.values()) {
-        if (entry.kind === 'file' && entry.name.match(/\.(jpg|jpeg|png|gif|webp|bmp|tiff)$/i)) {
-          const file = await entry.getFile();
-          const jsonName = file.name.replace(/\.(jpg|jpeg|png|gif|webp|bmp|tiff)$/, '.json');
-          const jsonFile = jsonFiles.get(jsonName);
+        // 이미지 파일을 처리하고 관련 JSON 파일이 있는지 확인
+        for await (const entry of dirHandle.values()) {
+          if (entry.kind === 'file' && entry.name.match(/\.(jpg|jpeg|png|gif|webp|bmp|tiff)$/i)) {
+            const file = await entry.getFile();
+            const jsonName = file.name.replace(/\.(jpg|jpeg|png|gif|webp|bmp|tiff)$/, '.json');
+            const jsonFile = jsonFiles.get(jsonName);
 
-          files.push({
-            name: file.name,
-            path: URL.createObjectURL(file),
-            type: 'image',
-            jsonFile: jsonFile || null
-          });
+            files.push({
+              name: file.name,
+              path: URL.createObjectURL(file),
+              type: 'image',
+              jsonFile: jsonFile || null
+            });
+          }
         }
+        
+        setFiles(files);
+        setError(null);
       }
-      
-      setFiles(files);
-      setError(null);
     } catch (err) {
       if (err.name !== 'AbortError') {
         setError('폴더 선택에 실패했습니다.');
@@ -119,7 +163,7 @@ const FolderViewer = ({ onImageSelect, onFilesSelected }) => {
     <div 
       style={{
         position: 'absolute',
-        top: '190px',
+        top: '60px',
         right: isMinimized ? '-270px' : '0px',
         width: '250px',
         backgroundColor: '#fff',
