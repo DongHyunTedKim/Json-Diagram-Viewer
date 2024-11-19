@@ -32,7 +32,7 @@ const ToolboxViewer = () => {
     <div 
       style={{
         position: 'absolute',
-        top: '120px',
+        top: '560px',
         right: isMinimized ? '-270px' : '0px',
         width: '250px',
         backgroundColor: '#fff',
@@ -73,7 +73,7 @@ const ToolboxViewer = () => {
         flexDirection: 'column',
         gap: '10px'
       }}>
-        <h3 style={{ margin: 0, fontSize: '14px' }}>🛠️ 노드 템플릿</h3>
+        <h3 style={{ margin: 0, fontSize: '14px' }}>🛠️ Tool Box</h3>
         <p style={{ fontSize: '12px', color: '#666', margin: 0 }}>
           드래그하여 새 노드를 추가하세요
         </p>

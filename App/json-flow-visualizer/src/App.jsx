@@ -550,7 +550,7 @@ function App() {
                 borderRadius: '4px',
               }}
             >
-              Original Image
+              {currentImage.name}
             </div>
             <button
               onClick={toggleMinimize}
