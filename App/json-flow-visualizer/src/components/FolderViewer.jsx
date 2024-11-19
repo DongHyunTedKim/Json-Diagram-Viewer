@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const FolderViewer = ({ onImageSelect, onFilesSelected }) => {
   const [files, setFiles] = useState([]);
   const [error, setError] = useState(null);
   const [selectedFileName, setSelectedFileName] = useState(null);
-  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     try {
@@ -22,68 +21,6 @@ const FolderViewer = ({ onImageSelect, onFilesSelected }) => {
       console.error('이미지 로딩 에러:', err);
     }
   }, []);
-
-  const processFiles = (files) => {
-    const imageFiles = [];
-    const jsonFiles = [];
-
-    files.forEach(file => {
-      if (file.type.startsWith('image/')) {
-        imageFiles.push(file);
-      } else if (file.type === 'application/json') {
-        jsonFiles.push(file);
-      }
-    });
-
-    onFilesSelected(imageFiles, jsonFiles);
-  };
-
-  const handleDrag = useCallback((e) => {
-    e.preventDefault();
-    e.stopPropagation();
-  }, []);
-
-  const handleDragIn = useCallback((e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(true);
-  }, []);
-
-  const handleDragOut = useCallback((e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(false);
-  }, []);
-
-  const handleDrop = useCallback(async (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(false);
-    
-    // FolderViewer에서 드래그된 파일 처리
-    const draggedFileData = e.dataTransfer.getData('application/json');
-    if (draggedFileData) {
-      try {
-        const fileData = JSON.parse(draggedFileData);
-        const response = await fetch(fileData.path);
-        const blob = await response.blob();
-        const file = new File([blob], fileData.name, { type: 'image/jpeg' });
-        processFiles([file]);
-        return;
-      } catch (err) {
-        console.error('드래그된 파일 처리 중 에러:', err);
-      }
-    }
-    
-    // 일반적인 파일 드롭 처리
-    const files = [...e.dataTransfer.files];
-    processFiles(files);
-  }, []);
-
-  const handleFileSelect = (e) => {
-    const files = [...e.target.files];
-    processFiles(files);
-  };
 
   const handleClick = async (file) => {
     setSelectedFileName(file.name);
@@ -110,35 +47,20 @@ const FolderViewer = ({ onImageSelect, onFilesSelected }) => {
 
   return (
     <div 
-      onDragEnter={handleDragIn}
-      onDragLeave={handleDragOut}
-      onDragOver={handleDrag}
-      onDrop={handleDrop}
       style={{
         position: 'absolute',
         top: '190px',
         right: '20px',
         width: '150px',
-        backgroundColor: isDragging ? '#f0f8ff' : '#fff',
+        backgroundColor: '#fff',
         borderRadius: '4px',
         padding: '15px',
         boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-        border: isDragging ? '2px dashed #0066cc' : '1px solid #eee',
+        border: '1px solid #eee',
         zIndex: 1000
       }}
     >
       <h3 style={{ margin: '0 0 10px 0', fontSize: '14px' }}>@images 폴더</h3>
-      <input
-        type="file"
-        multiple
-        accept="image/jpeg,image/png,image/gif,image/webp,image/bmp,image/tiff,.json"
-        onChange={handleFileSelect}
-        style={{ 
-          marginBottom: '10px',
-          fontSize: '12px',
-          width: '100%'
-        }}
-      />
       {error ? (
         <p style={{ color: 'red', fontSize: '12px' }}>{error}</p>
       ) : (

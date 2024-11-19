@@ -14,29 +14,23 @@ import ReactFlow, {
   ConnectionMode
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-
-import SimpleFloatingEdge from './components/SimpleFloatingEdge';
-import CustomNode from './components/CustomNode';
-//import FileUploader from './components/FileUploader';
-import FolderViewer from './components/FolderViewer';
-
 import './styles.css';
-
-//import initialData from './data/flowData.json';
-import initialData from './data/0001.json';
 
 import { parseJSONtoReactFlowData, createEdge, convertReactFlowToJSON } from './utils/dataUtils';
 import { applyLayout } from './utils/layoutUtils';
+import FolderViewer from './components/FolderViewer';
 
+import initialData from './data/0001.json';
+
+import CustomNode from './components/CustomNode';
 const nodeTypes = {
   custom: CustomNode
 };
 
+import SimpleFloatingEdge from './components/SimpleFloatingEdge';
 const edgeTypes = {
   floating: SimpleFloatingEdge
 };
-
-
 
 // JSON Viewer 컴포넌트
 const JsonViewer = ({ data }) => (
