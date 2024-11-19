@@ -165,7 +165,7 @@ const FolderViewer = ({ onImageSelect, onFilesSelected }) => {
         position: 'absolute',
         top: '60px',
         right: isMinimized ? '-270px' : '0px',
-        width: '250px',
+        width: '200px',
         backgroundColor: '#fff',
         borderRadius: '4px',
         padding: '15px',

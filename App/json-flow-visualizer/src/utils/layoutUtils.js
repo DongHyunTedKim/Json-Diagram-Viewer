@@ -9,7 +9,7 @@ function getNodeDimensions(node) {
     };
 }
 
-export function applyLayout(nodes, edges, direction = 'LR') {
+export function applyLayout(nodes, edges, direction = FLOW_CONSTANTS.NODE.LAYOUT.RANKDIR) {
     const dagreGraph = new dagre.graphlib.Graph();
     
     dagreGraph.setDefaultEdgeLabel(() => ({}));
