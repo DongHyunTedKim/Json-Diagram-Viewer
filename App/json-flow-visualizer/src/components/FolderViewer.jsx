@@ -4,8 +4,13 @@ const FolderViewer = ({ onImageSelect, onFilesSelected }) => {
   const [files, setFiles] = useState([]);
   const [error, setError] = useState(null);
   const [selectedFileName, setSelectedFileName] = useState(null);
+  const [currentPath, setCurrentPath] = useState('/public/data/images');
 
   useEffect(() => {
+    loadImagesFromPath(currentPath);
+  }, [currentPath]);
+
+  const loadImagesFromPath = async (path) => {
     try {
       const images = import.meta.glob('/public/data/images/*.(jpg|jpeg|png|gif|webp|bmp|tiff)');
       
@@ -20,7 +25,33 @@ const FolderViewer = ({ onImageSelect, onFilesSelected }) => {
       setError('이미지 폴더를 불러오는데 실패했습니다.');
       console.error('이미지 로딩 에러:', err);
     }
-  }, []);
+  };
+
+  const handleFolderSelect = async () => {
+    try {
+      const dirHandle = await window.showDirectoryPicker();
+      const files = [];
+      
+      for await (const entry of dirHandle.values()) {
+        if (entry.kind === 'file' && entry.name.match(/\.(jpg|jpeg|png|gif|webp|bmp|tiff)$/i)) {
+          const file = await entry.getFile();
+          files.push({
+            name: file.name,
+            path: URL.createObjectURL(file),
+            type: 'image'
+          });
+        }
+      }
+      
+      setFiles(files);
+      setError(null);
+    } catch (err) {
+      if (err.name !== 'AbortError') {
+        setError('폴더 선택에 실패했습니다.');
+        console.error('폴더 선택 에러:', err);
+      }
+    }
+  };
 
   const handleClick = async (file) => {
     setSelectedFileName(file.name);
@@ -60,7 +91,28 @@ const FolderViewer = ({ onImageSelect, onFilesSelected }) => {
         zIndex: 1000
       }}
     >
-      <h3 style={{ margin: '0 0 10px 0', fontSize: '14px' }}>@images 폴더</h3>
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center',
+        marginBottom: '10px'
+      }}>
+        <h3 style={{ margin: 0, fontSize: '14px' }}>@images 폴더</h3>
+        <button
+          onClick={handleFolderSelect}
+          style={{
+            padding: '4px 8px',
+            fontSize: '12px',
+            backgroundColor: '#0066cc',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer'
+          }}
+        >
+          폴더 선택
+        </button>
+      </div>
       {error ? (
         <p style={{ color: 'red', fontSize: '12px' }}>{error}</p>
       ) : (
