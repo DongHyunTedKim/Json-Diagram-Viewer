@@ -29,6 +29,7 @@ const nodeTypes = {
 };
 
 import SimpleFloatingEdge from './components/SimpleFloatingEdge';
+import { FLOW_CONSTANTS } from './constants/flowConstants';
 const edgeTypes = {
   floating: SimpleFloatingEdge
 };
@@ -310,30 +311,43 @@ function App() {
     jsons: []
   });
 
-  // onDrop 핸들러 추가
+  // 상단에 instance 선언 추가 (useCallback 의존성 문제 해결)
+  const [instance, setInstance] = useState(null);
+
   const onDrop = useCallback(
     (event) => {
       event.preventDefault();
 
-      const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
-      const type = event.dataTransfer.getData('application/reactflow');
+      if (!instance || !reactFlowWrapper.current) return;
 
-      // 마우스 포지션 계산
-      const position = {
-        x: event.clientX - reactFlowBounds.left,
-        y: event.clientY - reactFlowBounds.top
-      };
+      try {
+        const type = event.dataTransfer.getData('application/reactflow');
+        
+        // 노드의 기본 크기 (styles.css에서 정의된 값)
+        const nodeWidth = 150;  // .react-flow__node의 width 값
+        const nodeHeight = 40;  // 예상되는 높이값
 
-      const newNode = {
-        id: `${Date.now()}`,
-        type,
-        position,
-        data: { label: '새 노드' }
-      };
+        // screenToFlowPosition 사용하여 위치 변환
+        const position = instance.screenToFlowPosition({
+          x: event.clientX - FLOW_CONSTANTS.NODE.SIZE.DEFAULT_WIDTH / 2,
+          y: event.clientY - FLOW_CONSTANTS.NODE.SIZE.DEFAULT_HEIGHT / 2
+        });
 
-      setNodes((nds) => nds.concat(newNode));
+        const newNode = {
+          id: `${Date.now()}`,
+          type,
+          position,
+          data: { label: '새 노드' },
+          className: 'custom-node'
+        };
+
+        setNodes((nds) => nds.concat(newNode));
+        console.log('노드 생성 완료:', newNode);
+      } catch (error) {
+        console.error('노드 생성 중 오류 발생:', error);
+      }
     },
-    [setNodes]
+    [instance, setNodes]
   );
 
   const onDragOver = useCallback((event) => {
@@ -368,7 +382,7 @@ function App() {
             edgesUpdatable={true} // 엣지 업데이트 가능
             nodesDraggable={true} // 노드 드래그 가능
             nodesConnectable={true} // 노드 연결 가능
-            snapToGrid={true} // 그리드 맞춤
+            snapToGrid={true} // 그리드 맞
             snapGrid={[15, 15]} // 그리드 크기
             connectionMode={ConnectionMode.Loose}
 
@@ -384,6 +398,7 @@ function App() {
             zoomOnPinch={true}
             panOnScroll={false}
             nodeTypes={nodeTypes}
+            onInit={setInstance}
           >
             <Background variant="dots" gap={12} size={1} />
 
