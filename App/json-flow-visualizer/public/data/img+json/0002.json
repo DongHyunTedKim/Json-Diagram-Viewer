@@ -1,0 +1,114 @@
+{
+    "file_name": "ai_service_structure.jpg",
+    "summary": "This diagram illustrates the structure of the 'AI 안부 든든 서비스', showing the flow of data from individual households to various data centers and services, including AI speakers and emergency response systems.",
+    "node_count": 8,
+    "connection_count": 8,
+    "nodes": [
+        {
+            "id": "1",
+            "text": "1인 가구",
+            "node": []
+        },
+        {
+            "id": "2",
+            "text": "AMI(스마트미터)\n전기 사용정보\n전기 사용패턴",
+            "node": []
+        },
+        {
+            "id": "3",
+            "text": "kepco 데이터 센터\n전기 사용패턴 분석\n이상 감지",
+            "node": []
+        },
+        {
+            "id": "4",
+            "text": "SK telecom 데이터 센터\n이상 감지 정보\n긴급 상황 정보",
+            "node": []
+        },
+        {
+            "id": "5",
+            "text": "kepco\n클라우드\n데이터 분석 및\n이상 감지 정보",
+            "node": []
+        },
+        {
+            "id": "6",
+            "text": "AI전화\n이상 감지 정보\n대처 및 안내",
+            "node": []
+        },
+        {
+            "id": "7",
+            "text": "관계·중증\n대처 및 안내\n응급 상황",
+            "node": []
+        },
+        {
+            "id": "8",
+            "text": "지자체\n응급 상황\n상시 확인",
+            "node": []
+        }
+    ],
+    "connections": [
+        {
+            "from": "1",
+            "to": "2",
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true
+        },
+        {
+            "from": "2",
+            "to": "3",
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true
+        },
+        {
+            "from": "3",
+            "to": "4",
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true
+        },
+        {
+            "from": "4",
+            "to": "5",
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true
+        },
+        {
+            "from": "5",
+            "to": "6",
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true
+        },
+        {
+            "from": "6",
+            "to": "7",
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true
+        },
+        {
+            "from": "7",
+            "to": "8",
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true
+        },
+        {
+            "from": "8",
+            "to": "1",
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true
+        }
+    ]
+}

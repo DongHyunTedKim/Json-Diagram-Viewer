@@ -1,0 +1,160 @@
+{
+    "file_name": "diagram_analysis",
+    "summary": "This diagram outlines a decision-making process involving notifications and applications related to requests. It includes steps for notifying related parties, reviewing information, and making decisions based on the type of request.",
+    "node_count": 9,
+    "connection_count": 9,
+    "nodes": [
+        {
+            "id": "1",
+            "text": "결정\n(청구일로부터 10일 이내에 연장 가능)",
+            "node": []
+        },
+        {
+            "id": "2",
+            "text": "공개 통지",
+            "node": []
+        },
+        {
+            "id": "3",
+            "text": "제3자에게 통지",
+            "node": []
+        },
+        {
+            "id": "4",
+            "text": "부분공개 통지",
+            "node": []
+        },
+        {
+            "id": "5",
+            "text": "비공개 통지",
+            "node": []
+        },
+        {
+            "id": "6",
+            "text": "제3자의 이의신청\n(통지받은 날로부터 7일 이내)",
+            "node": []
+        },
+        {
+            "id": "7",
+            "text": "정보공개 심의회 심의",
+            "node": []
+        },
+        {
+            "id": "8",
+            "text": "이의신청\n(수수료감면결정 또는 비공개 결정통지받은 날로부터 30일 이내)",
+            "node": []
+        },
+        {
+            "id": "9",
+            "text": "결정 및 통지",
+            "node": []
+        },
+        {
+            "id": "10",
+            "text": "청구인 확인",
+            "node": []
+        },
+        {
+            "id": "11",
+            "text": "수수료감수",
+            "node": []
+        },
+        {
+            "id": "12",
+            "text": "통계작성",
+            "node": []
+        }
+    ],
+    "connections": [
+        {
+            "from": "1",
+            "to": "2",
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true,
+            "thickness": 1
+        },
+        {
+            "from": "1",
+            "to": "3",
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true,
+            "thickness": 1
+        },
+        {
+            "from": "1",
+            "to": "4",
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true,
+            "thickness": 1
+        },
+        {
+            "from": "1",
+            "to": "5",
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true,
+            "thickness": 1
+        },
+        {
+            "from": "3",
+            "to": "6",
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true,
+            "thickness": 1
+        },
+        {
+            "from": "4",
+            "to": "7",
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true,
+            "thickness": 1
+        },
+        {
+            "from": "5",
+            "to": "8",
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true,
+            "thickness": 1
+        },
+        {
+            "from": "9",
+            "to": "10",
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true,
+            "thickness": 1
+        },
+        {
+            "from": "9",
+            "to": "11",
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true,
+            "thickness": 1
+        },
+        {
+            "from": "9",
+            "to": "12",
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true,
+            "thickness": 1
+        }
+    ]
+}
