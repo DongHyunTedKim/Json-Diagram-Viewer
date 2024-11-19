@@ -1,0 +1,67 @@
+{
+    "file_name": "diagram_analysis",
+    "summary": "This diagram illustrates a personalized administrative welfare guide using an intelligent agent. It includes steps for user registration, health data collection, and service provision based on user information.",
+    "node_count": 5,
+    "connection_count": 4,
+    "nodes": [
+        {
+            "id": "1",
+            "text": "사용자 등록\n(행정복지센터)",
+            "node": []
+        },
+        {
+            "id": "2",
+            "text": "건강관리데이터\n수집 및 분석",
+            "node": []
+        },
+        {
+            "id": "3",
+            "text": "위험개입\n수요 조사 및 이해",
+            "node": []
+        },
+        {
+            "id": "4",
+            "text": "사용자 정보 기반\n맞춤형 서비스 제공",
+            "node": []
+        },
+        {
+            "id": "5",
+            "text": "건강관리\n서비스 제공",
+            "node": []
+        }
+    ],
+    "connections": [
+        {
+            "from": 1,
+            "to": 2,
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true
+        },
+        {
+            "from": 2,
+            "to": 3,
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true
+        },
+        {
+            "from": 3,
+            "to": 4,
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true
+        },
+        {
+            "from": 4,
+            "to": 5,
+            "text": "",
+            "type": "line",
+            "color": "#000000",
+            "direction": true
+        }
+    ]
+}

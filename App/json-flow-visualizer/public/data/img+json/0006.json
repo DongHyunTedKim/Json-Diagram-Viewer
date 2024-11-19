@@ -1,0 +1,66 @@
+{
+    "file_name": "diagram_analysis",
+    "summary": "This diagram illustrates the process of verifying and providing mobile phone numbers for vulnerable groups through various organizations.",
+    "node_count": 3,
+    "connection_count": 4,
+    "nodes": [
+        {
+            "id": 1,
+            "text": "지자체 (보장기관)\n위기가구 이동전화번호\n제공 요청",
+            "node": []
+        },
+        {
+            "id": 2,
+            "text": "사회보장정보시스템\n(한국사회보장정보원)\n이동전화번호 제공",
+            "node": []
+        },
+        {
+            "id": 3,
+            "text": "한국정보통신진흥협회\n복지위기가구 이동전화번호 확인시스템",
+            "node": []
+        },
+        {
+            "id": 4,
+            "text": "이동통신사\n이동전화번호 확인 요청\n이동전화번호 확인 및 제공",
+            "node": []
+        }
+    ],
+    "connections": [
+        {
+            "from": 1,
+            "to": 2,
+            "text": "제공 요청",
+            "type": "line",
+            "color": "#ff9900",
+            "direction": true,
+            "thickness": 1
+        },
+        {
+            "from": 2,
+            "to": 3,
+            "text": "이동전화번호 제공",
+            "type": "line",
+            "color": "#000000",
+            "direction": true,
+            "thickness": 1
+        },
+        {
+            "from": 3,
+            "to": 4,
+            "text": "이동전화번호 확인 요청",
+            "type": "line",
+            "color": "#ff9900",
+            "direction": true,
+            "thickness": 1
+        },
+        {
+            "from": 4,
+            "to": 3,
+            "text": "이동전화번호 확인 및 제공",
+            "type": "line",
+            "color": "#0000ff",
+            "direction": true,
+            "thickness": 1
+        }
+    ]
+}

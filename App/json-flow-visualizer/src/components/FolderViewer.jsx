@@ -5,6 +5,10 @@ const FolderViewer = ({ onImageSelect, onFilesSelected }) => {
   const [error, setError] = useState(null);
   const [selectedFileName, setSelectedFileName] = useState(null);
   const [currentPath, setCurrentPath] = useState('/public/data/images');
+  const [selectedFolderPath, setSelectedFolderPath] = useState(null);
+  const [selectedImagePath, setSelectedImagePath] = useState(null);
+  const [selectedJsonPath, setSelectedJsonPath] = useState(null);
+  const [isMinimized, setIsMinimized] = useState(false);
 
   useEffect(() => {
     loadImagesFromPath(currentPath);
@@ -30,15 +34,32 @@ const FolderViewer = ({ onImageSelect, onFilesSelected }) => {
   const handleFolderSelect = async () => {
     try {
       const dirHandle = await window.showDirectoryPicker();
+      setSelectedFolderPath(dirHandle.name);
       const files = [];
-      
+      const jsonFiles = new Map(); // JSON 파일을 저장할 Map 객체
+
+      // 먼저 모든 파일을 스캔하여 JSON 파일을 Map에 저장
+      for await (const entry of dirHandle.values()) {
+        if (entry.kind === 'file') {
+          if (entry.name.endsWith('.json')) {
+            const jsonFile = await entry.getFile();
+            jsonFiles.set(entry.name, jsonFile);
+          }
+        }
+      }
+
+      // 이미지 파일을 처리하고 관련 JSON 파일이 있는지 확인
       for await (const entry of dirHandle.values()) {
         if (entry.kind === 'file' && entry.name.match(/\.(jpg|jpeg|png|gif|webp|bmp|tiff)$/i)) {
           const file = await entry.getFile();
+          const jsonName = file.name.replace(/\.(jpg|jpeg|png|gif|webp|bmp|tiff)$/, '.json');
+          const jsonFile = jsonFiles.get(jsonName);
+
           files.push({
             name: file.name,
             path: URL.createObjectURL(file),
-            type: 'image'
+            type: 'image',
+            jsonFile: jsonFile || null
           });
         }
       }
@@ -55,6 +76,13 @@ const FolderViewer = ({ onImageSelect, onFilesSelected }) => {
 
   const handleClick = async (file) => {
     setSelectedFileName(file.name);
+    setSelectedImagePath(file.path);
+    
+    if (file.jsonFile) {
+      setSelectedJsonPath(file.jsonFile.name);
+    } else {
+      setSelectedJsonPath(`/data/jsons/${file.name.replace(/\.(jpg|jpeg|png|gif|webp|bmp|tiff)$/, '.json')}`);
+    }
     
     onImageSelect({
       path: file.path,
@@ -62,17 +90,28 @@ const FolderViewer = ({ onImageSelect, onFilesSelected }) => {
       type: 'image/jpeg'
     });
 
-    const jsonName = file.name.replace(/\.(jpg|jpeg|png|gif|webp|bmp|tiff)$/, '.json');
-    const jsonPath = `/data/jsons/${jsonName}`;
-    
-    try {
-      const response = await fetch(jsonPath);
-      if (response.ok) {
-        const jsonData = await response.json();
-        onFilesSelected([], [new File([JSON.stringify(jsonData)], jsonName, { type: 'application/json' })]);
+    if (file.jsonFile) {
+      try {
+        const jsonText = await file.jsonFile.text();
+        const jsonData = JSON.parse(jsonText);
+        onFilesSelected([], [new File([JSON.stringify(jsonData)], file.name.replace(/\.(jpg|jpeg|png|gif|webp|bmp|tiff)$/, '.json'), { type: 'application/json' })]);
+      } catch (err) {
+        console.error('JSON 파일 로딩 에러:', err);
       }
-    } catch (err) {
-      console.error('JSON 파일 로딩 에러:', err);
+    } else {
+      // 기존 서버 경로에서 JSON 파일을 가져오는 로직 유지
+      const jsonName = file.name.replace(/\.(jpg|jpeg|png|gif|webp|bmp|tiff)$/, '.json');
+      const jsonPath = `/data/jsons/${jsonName}`;
+      
+      try {
+        const response = await fetch(jsonPath);
+        if (response.ok) {
+          const jsonData = await response.json();
+          onFilesSelected([], [new File([JSON.stringify(jsonData)], jsonName, { type: 'application/json' })]);
+        }
+      } catch (err) {
+        console.error('JSON 파일 로딩 에러:', err);
+      }
     }
   };
 
@@ -81,21 +120,46 @@ const FolderViewer = ({ onImageSelect, onFilesSelected }) => {
       style={{
         position: 'absolute',
         top: '190px',
-        right: '20px',
-        width: '150px',
+        right: isMinimized ? '-270px' : '0px',
+        width: '250px',
         backgroundColor: '#fff',
         borderRadius: '4px',
         padding: '15px',
         boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
         border: '1px solid #eee',
-        zIndex: 1000
+        zIndex: 1000,
+        transition: 'right 0.3s ease-in-out'
       }}
     >
+      <button
+        onClick={() => setIsMinimized(!isMinimized)}
+        style={{
+          position: 'absolute',
+          left: '-20px',
+          top: '50%',
+          transform: 'translateY(-50%)',
+          width: '20px',
+          height: '60px',
+          backgroundColor: '#fff',
+          border: '1px solid #eee',
+          borderRight: 'none',
+          borderRadius: '4px 0 0 4px',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: '-2px 0 4px rgba(0,0,0,0.1)',
+          fontSize: '12px'
+        }}
+      >
+        {isMinimized ? '<' : '>'}
+      </button>
+
       <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center',
-        marginBottom: '10px'
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '10px',
+        marginBottom: '15px'
       }}>
         <h3 style={{ margin: 0, fontSize: '14px' }}>@images 폴더</h3>
         <button
@@ -107,11 +171,30 @@ const FolderViewer = ({ onImageSelect, onFilesSelected }) => {
             color: 'white',
             border: 'none',
             borderRadius: '4px',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            width: '100%'
           }}
         >
           폴더 선택
         </button>
+
+        <div style={{
+          fontSize: '11px',
+          backgroundColor: '#f5f5f5',
+          padding: '8px',
+          borderRadius: '4px',
+          border: '1px solid #eee'
+        }}>
+          <div style={{ marginBottom: '6px' }}>
+            <strong>폴더:</strong> {selectedFolderPath || 'None'}
+          </div>
+          <div style={{ marginBottom: '6px' }}>
+            <strong>이미지:</strong> {selectedImagePath || 'None'}
+          </div>
+          <div>
+            <strong>JSON:</strong> {selectedJsonPath || 'None'}
+          </div>
+        </div>
       </div>
       {error ? (
         <p style={{ color: 'red', fontSize: '12px' }}>{error}</p>
