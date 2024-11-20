@@ -7,13 +7,13 @@ export const FLOW_CONSTANTS = {
             DEFAULT_HEIGHT: 40
         },
         PADDING: {
-            HORIZONTAL: 40,
-            VERTICAL: 30
+            HORIZONTAL: 90,
+            VERTICAL: 60
         },
-        CHILD_SPACING: 30,
+        CHILD_SPACING: 40,
         LAYOUT: {
-            RANKDIR: 'LR',
-            RANKSEP: 250,
+            RANKDIR: 'TD',
+            RANKSEP: 50,
             NODESEP: 80,
             MARGIN: {
                 X: 30,

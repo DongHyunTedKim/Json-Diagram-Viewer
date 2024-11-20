@@ -1,5 +1,5 @@
 // src/App.jsx
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import ReactFlow, {
   addEdge,
   MiniMap,
@@ -19,8 +19,9 @@ import './styles.css';
 import { parseJSONtoReactFlowData, createEdge, convertReactFlowToJSON } from './utils/dataUtils';
 import { applyLayout } from './utils/layoutUtils';
 import FolderViewer from './components/FolderViewer';
+import ToolboxViewer from './components/ToolboxViewer';
 
-import initialData from './data/0001.json';
+import initialData from './data/00001.json';
 
 import CustomNode from './components/CustomNode';
 const nodeTypes = {
@@ -28,6 +29,7 @@ const nodeTypes = {
 };
 
 import SimpleFloatingEdge from './components/SimpleFloatingEdge';
+import { FLOW_CONSTANTS } from './constants/flowConstants';
 const edgeTypes = {
   floating: SimpleFloatingEdge
 };
@@ -137,7 +139,7 @@ function App() {
     URL.revokeObjectURL(url);
   };
 
-  // Edge 업데이트 시작 핸들러 추가
+  // Edge 데이트 시작 핸들러 추가
   const onEdgeUpdateStart = useCallback((event, edge) => {
     // 엣지 업데이트 시작 시 필요한 작업을 수행할 수 있습니다
     // 예: 현재 엣지의 상태를 저장하거나, UI 피드백을 제공
@@ -152,8 +154,8 @@ function App() {
   //MARK: 폴더 뷰어
   // 이미지 경로 상태 수정
   const [currentImage, setCurrentImage] = useState({
-    path: '/data/images/0001.jpg',  // 기본 이미지 경로
-    name: '0001.jpg'
+    path: '/images/0000SAMPLE.jpg',  // 기본 이미지 경로
+    name: '0000SAMPLE.jpg'
   });
 
   // ReactFlow 초기화 함수
@@ -309,127 +311,217 @@ function App() {
     jsons: []
   });
 
+  // 상단에 instance 선언 추가 (useCallback 의존성 문제 해결)
+  const [reactFlowInstance, setReactFlowInstance] = useState(null);
+
+  const onDrop = useCallback(
+    (event) => {
+      event.preventDefault();
+
+      if (!reactFlowInstance || !reactFlowWrapper.current) return;
+
+      try {
+        const type = event.dataTransfer.getData('application/reactflow');
+        
+        // 배경색 선택
+        //const backgroundColors = Object.values(FLOW_CONSTANTS.NODE.STYLE.BACKGROUND_COLORS);
+        //const randomColor = backgroundColors[Math.floor(Math.random() * backgroundColors.length)];
+        const staticColor = FLOW_CONSTANTS.NODE.STYLE.BACKGROUND_COLORS.LAYER1;
+
+        const position = reactFlowInstance.screenToFlowPosition({
+          x: event.clientX - FLOW_CONSTANTS.NODE.SIZE.MIN_WIDTH / 2,
+          y: event.clientY - FLOW_CONSTANTS.NODE.SIZE.MIN_HEIGHT / 2
+        });
+
+        const newNode = {
+          id: generateUniqueNodeId(nodes),
+          type: 'custom',
+          position,
+          className: 'custom-node',
+          style: { 
+            //backgroundColor: randomColor,
+            //backgroundColor: staticColor,
+            width: FLOW_CONSTANTS.NODE.SIZE.MIN_WIDTH,
+            height: FLOW_CONSTANTS.NODE.SIZE.MIN_HEIGHT
+          },
+          data: { 
+            label: '새 노드',
+            onNodeLabelChange
+          }
+        };
+
+        setNodes((nds) => nds.concat(newNode));
+        console.log('노드 생성 완료:', newNode);
+      } catch (error) {
+        console.error('노드 생성 중 오류 발생:', error);
+      }
+    },
+    [reactFlowInstance, setNodes, nodes]
+  );
+
+  const onDragOver = useCallback((event) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+  }, []);
+
+  // ref 추가
+  const reactFlowWrapper = useRef(null);
+
+  const onNodeLabelChange = useCallback((nodeId, newLabel) => {
+    setNodes((nds) =>
+      nds.map((node) => {
+        if (node.id === nodeId) {
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              label: newLabel
+            }
+          };
+        }
+        return node;
+      })
+    );
+  }, [setNodes]);
+
+  // 노드 ID 생성 함수
+  const generateUniqueNodeId = (nodes) => {
+    const existingIds = nodes.map(node => parseInt(node.id));
+    const maxId = Math.max(...existingIds, 0);
+    return String(maxId + 1);
+  };
+
+  // onInit 콜백 수정
+  const onInit = useCallback((instance) => {
+    setReactFlowInstance(instance);
+  }, []);
+
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
       <ReactFlowProvider>
-        <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          onConnect={onConnect}
-          onEdgeUpdate={onEdgeUpdate}
-          onEdgeUpdateStart={onEdgeUpdateStart}
-          onKeyDown={onKeyDown}
-          deleteKeyCode="Delete"
-          fitView
-          edgeTypes={edgeTypes}
-          selectNodesOnDrag={false}
-          elementsSelectable={true}
-          edgesFocusable={true} // 엣지 선택 가능 
-          edgesUpdatable={true} // 엣지 업데이트 가능
-          nodesDraggable={true} // 노드 드래그 가능
-          nodesConnectable={true} // 노드 연결 가능
-          snapToGrid={true} // 그리드 맞춤
-          snapGrid={[15, 15]} // 그리드 크기
-          connectionMode={ConnectionMode.Loose}
+        <div ref={reactFlowWrapper} style={{ width: '100%', height: '100%' }}>
+          <ReactFlow
+            nodes={nodes}
+            edges={edges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onConnect={onConnect}
+            onDrop={onDrop}
+            onDragOver={onDragOver}
+            onEdgeUpdate={onEdgeUpdate}
+            onEdgeUpdateStart={onEdgeUpdateStart}
+            onKeyDown={onKeyDown}
+            deleteKeyCode="Delete"
+            fitView
+            edgeTypes={edgeTypes}
+            selectNodesOnDrag={false}
+            elementsSelectable={true}
+            edgesFocusable={true} // 엣지 선택 가능 
+            edgesUpdatable={true} // 엣지 업데이트 가능
+            nodesDraggable={true} // 노드 드래그 가능
+            nodesConnectable={true} // 노드 연결 가능
+            snapToGrid={true} // 그리드 맞
+            snapGrid={[15, 15]} // 그리드 크기
+            connectionMode={ConnectionMode.Loose}
 
-          defaultEdgeOptions={{
-            type: 'floating'
-          }}
-          elevateEdgesOnSelect={true}
-          selectionOnDrag={true}
-          selectionMode="partial"
-          multiSelectionKeyCode="Shift"
-          panOnDrag={[1, 2]}
-          zoomOnScroll={true}
-          zoomOnPinch={true}
-          panOnScroll={false}
-          nodeTypes={nodeTypes}
-        >
-          <Background variant="dots" gap={12} size={1} />
+            defaultEdgeOptions={{
+              type: 'floating'
+            }}
+            elevateEdgesOnSelect={true}
+            selectionOnDrag={true}
+            selectionMode="partial"
+            multiSelectionKeyCode="Shift"
+            panOnDrag={[1, 2]}
+            zoomOnScroll={true}
+            zoomOnPinch={true}
+            panOnScroll={false}
+            nodeTypes={nodeTypes}
+            onInit={onInit}
+          >
+            <Background variant="dots" gap={12} size={1} />
 
-          {/* 도움말 버튼 - MiniMap 위에 배치 */}
-          <div style={{
-            position: 'absolute',
-            right: '45px',
-            bottom: '200px',  // MiniMap 위 공간 확보
-            zIndex: 5
-          }}>
-            <button
-              onClick={() => setShowHelp(!showHelp)}
-              style={{
-                backgroundColor: '#fff',
-                border: '1px solid #ccc',
-                borderRadius: '4px',
-                padding: '5px 10px',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '5px',
-                fontSize: '14px',
-                boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-              }}
-            >
-              <span role="img" aria-label="help">❔</span>
-              사용 방법
-            </button>
-
-            {/* 도움말 패널 */}
-            {showHelp && (
-              <div
+            {/* 도움말 버튼 - MiniMap 위에 배치 */}
+            <div style={{
+              position: 'absolute',
+              right: '45px',
+              bottom: '200px',  // MiniMap 위 공간 확보
+              zIndex: 5
+            }}>
+              <button
+                onClick={() => setShowHelp(!showHelp)}
                 style={{
-                  position: 'absolute',
-                  bottom: '40px',
-                  right: '0px',
-                  width: '350px',
                   backgroundColor: '#fff',
                   border: '1px solid #ccc',
                   borderRadius: '4px',
-                  padding: '15px',
-                  zIndex: 1000,
-                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                  fontSize: '13px',
-                  lineHeight: '1.4'
+                  padding: '5px 10px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '5px',
+                  fontSize: '14px',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
                 }}
               >
-                <h4 style={{ margin: '0 0 10px 0', color: '#333' }}>사용 방법</h4>
-                <ul style={{ margin: 0, paddingLeft: '20px' }}>
-                  <li style={{ marginBottom: '12px' }}>
-                    <strong>화면 이동:</strong>
-                    <ul>
-                      <li>마우스 휠 클릭 후 드래그</li>
-                      <li>또는 마우스 우클릭 후 드래그</li>
-                    </ul>
-                  </li>
+                <span role="img" aria-label="help">❔</span>
+                사용 방법
+              </button>
 
-                  <li style={{ marginBottom: '12px' }}>
-                    <strong>노드 추가:</strong> (개발중) 빈 공간 더블클릭
-                  </li>
+              {/* 도움말 패널 */}
+              {showHelp && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    bottom: '40px',
+                    right: '0px',
+                    width: '350px',
+                    backgroundColor: '#fff',
+                    border: '1px solid #ccc',
+                    borderRadius: '4px',
+                    padding: '15px',
+                    zIndex: 1000,
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                    fontSize: '13px',
+                    lineHeight: '1.4'
+                  }}
+                >
+                  <h4 style={{ margin: '0 0 10px 0', color: '#333' }}>사용 방법</h4>
+                  <ul style={{ margin: 0, paddingLeft: '20px' }}>
+                    <li style={{ marginBottom: '12px' }}>
+                      <strong>화면 이동:</strong>
+                      <ul>
+                        <li>마우스 휠 클릭 후 드래그</li>
+                        <li>또는 마우스 우클릭 후 드래그</li>
+                      </ul>
+                    </li>
 
-                  <li style={{ marginBottom: '12px' }}>
-                    <strong>삭제:</strong>
-                    <ul>
-                      <li>일반 삭제 (Delete): 선택된 노드와 엣지 모두 삭제</li>
-                      <li>엣지만 삭제 (Shift + Delete): 영역 선택된 노드와 엣지 중 엣지만 삭제</li>
-                    </ul>
-                  </li>
+                    <li style={{ marginBottom: '12px' }}>
+                      <strong>노드 추가:</strong> (개발중) 빈 공간 더블클릭
+                    </li>
 
-                  <li style={{ marginBottom: '12px' }}>
-                    <strong>엣지 선택:</strong>
-                    <ul style={{ marginTop: '5px' }}>
-                      <li>단일 엣지 선택: 그룹 내 엣지를 선택하려면 먼저 source노드를 선택해야 합니다</li>
-                      <li>다중 엣지 선택: 영역 선택으로 노드를 선택하면 관련된 모든 엣지가 함께 선택됩니다</li>
-                    </ul>
-                  </li>
-                </ul>
-              </div>
-            )}
-          </div>
+                    <li style={{ marginBottom: '12px' }}>
+                      <strong>삭제:</strong>
+                      <ul>
+                        <li>일반 삭제 (Delete): 선택된 노드와 엣지 모두 삭제</li>
+                        <li>엣지만 삭제 (Shift + Delete): 영역 선택된 노드와 엣지 중 엣지만 삭제</li>
+                      </ul>
+                    </li>
 
-          <Controls />
-          <MiniMap />
-        </ReactFlow>
+                    <li style={{ marginBottom: '12px' }}>
+                      <strong>엣지 선택:</strong>
+                      <ul style={{ marginTop: '5px' }}>
+                        <li>단일 엣지 선택: 그룹 내 엣지를 선택하려면 먼저 source노드를 선택해야 합니다</li>
+                        <li>다중 엣지 선택: 영역 선택으로 노드를 선택하면 관련된 모든 엣지가 함께 선택됩니다</li>
+                      </ul>
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
+
+            <Controls />
+            <MiniMap />
+          </ReactFlow>
+        </div>
       </ReactFlowProvider>
 
       {/* 저장 버튼 */}
@@ -511,7 +603,7 @@ function App() {
                 borderRadius: '4px',
               }}
             >
-              Original Image
+              {currentImage.name}
             </div>
             <button
               onClick={toggleMinimize}
@@ -753,6 +845,14 @@ function App() {
           });
         }} 
         onFilesSelected={handleFilesSelected}
+        fitView={() => reactFlowInstance?.fitView()}
+      />
+      <ToolboxViewer 
+        onLayoutDirectionChange={(direction) => {
+          const layoutedNodes = applyLayout(nodes, edges, direction);
+          setNodes(layoutedNodes);
+        }} 
+        fitView={() => reactFlowInstance?.fitView()}
       />
     </div>
   );

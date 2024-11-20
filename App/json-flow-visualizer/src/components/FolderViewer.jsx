@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const FolderViewer = ({ onImageSelect, onFilesSelected }) => {
+const FolderViewer = ({ onImageSelect, onFilesSelected, fitView }) => {
   const [files, setFiles] = useState([]);
   const [error, setError] = useState(null);
   const [selectedFileName, setSelectedFileName] = useState(null);
@@ -139,6 +139,9 @@ const FolderViewer = ({ onImageSelect, onFilesSelected }) => {
         const jsonText = await file.jsonFile.text();
         const jsonData = JSON.parse(jsonText);
         onFilesSelected([], [new File([JSON.stringify(jsonData)], file.name.replace(/\.(jpg|jpeg|png|gif|webp|bmp|tiff)$/, '.json'), { type: 'application/json' })]);
+        setTimeout(() => {
+          fitView();
+        }, 100);
       } catch (err) {
         console.error('JSON 파일 로딩 에러:', err);
       }
@@ -152,6 +155,9 @@ const FolderViewer = ({ onImageSelect, onFilesSelected }) => {
         if (response.ok) {
           const jsonData = await response.json();
           onFilesSelected([], [new File([JSON.stringify(jsonData)], jsonName, { type: 'application/json' })]);
+          setTimeout(() => {
+            fitView();
+          }, 100);
         }
       } catch (err) {
         console.error('JSON 파일 로딩 에러:', err);
@@ -165,7 +171,7 @@ const FolderViewer = ({ onImageSelect, onFilesSelected }) => {
         position: 'absolute',
         top: '60px',
         right: isMinimized ? '-270px' : '0px',
-        width: '250px',
+        width: '200px',
         backgroundColor: '#fff',
         borderRadius: '4px',
         padding: '15px',

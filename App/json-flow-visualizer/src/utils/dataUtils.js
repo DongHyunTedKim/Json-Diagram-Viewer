@@ -48,7 +48,7 @@ function calculateNodeSize(component) {
     return { width, height };
 }
 
-function parseComponents(data) {
+function parseComponents(data, onNodeLabelChange) {
     // components 또는 nodes 배열 확인
     const componentArray = data.components || data.nodes || [];
     if (!Array.isArray(componentArray)) {
@@ -67,8 +67,10 @@ function parseComponents(data) {
 
         const node = {
             id: String(component.id),
-            //data: { label: component.text + ' (Depth:' + depth + ')' },
-            data: { label: component.text },
+            data: { 
+                label: component.text,
+                onNodeLabelChange
+            },
             position: { x: 0, y: 0 },
             type: 'custom',
             className: `Layer${depth}`,
@@ -142,10 +144,10 @@ export function createEdge({ source, target }) {
  * @param {String} jsonString - JSON 문자열
  * @returns {Object} 초기 노드와 엣지 배열
  */
-function parseJSONtoReactFlowData(jsonString) {
+function parseJSONtoReactFlowData(jsonString, onNodeLabelChange) {
     try {
         const data = JSON.parse(jsonString);
-        const parsedNodes = parseComponents(data);
+        const parsedNodes = parseComponents(data, onNodeLabelChange);
         const parsedEdges = parseConnections(data);
         return { parsedNodes, parsedEdges };
     } catch (error) {
