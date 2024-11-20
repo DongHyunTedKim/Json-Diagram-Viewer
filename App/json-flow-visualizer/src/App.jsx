@@ -139,7 +139,7 @@ function App() {
     URL.revokeObjectURL(url);
   };
 
-  // Edge 업데이트 시작 핸들러 추가
+  // Edge 데이트 시작 핸들러 추가
   const onEdgeUpdateStart = useCallback((event, edge) => {
     // 엣지 업데이트 시작 시 필요한 작업을 수행할 수 있습니다
     // 예: 현재 엣지의 상태를 저장하거나, UI 피드백을 제공
@@ -323,27 +323,30 @@ function App() {
       try {
         const type = event.dataTransfer.getData('application/reactflow');
         
-        // 배경색 랜덤 선택
-        const backgroundColors = Object.values(FLOW_CONSTANTS.NODE.STYLE.BACKGROUND_COLORS);
-        const randomColor = backgroundColors[Math.floor(Math.random() * backgroundColors.length)];
-        
+        // 배경색 선택
+        //const backgroundColors = Object.values(FLOW_CONSTANTS.NODE.STYLE.BACKGROUND_COLORS);
+        //const randomColor = backgroundColors[Math.floor(Math.random() * backgroundColors.length)];
+        const staticColor = FLOW_CONSTANTS.NODE.STYLE.BACKGROUND_COLORS.LAYER1;
+
         const position = instance.screenToFlowPosition({
           x: event.clientX - FLOW_CONSTANTS.NODE.SIZE.MIN_WIDTH / 2,
           y: event.clientY - FLOW_CONSTANTS.NODE.SIZE.MIN_HEIGHT / 2
         });
 
         const newNode = {
-          id: `${Date.now()}`,
+          id: generateUniqueNodeId(nodes),
           type: 'custom',
           position,
           className: 'custom-node',
           style: { 
-            backgroundColor: randomColor,
+            //backgroundColor: randomColor,
+            //backgroundColor: staticColor,
             width: FLOW_CONSTANTS.NODE.SIZE.MIN_WIDTH,
             height: FLOW_CONSTANTS.NODE.SIZE.MIN_HEIGHT
           },
           data: { 
-            label: '새 노드'
+            label: '새 노드',
+            onNodeLabelChange
           }
         };
 
@@ -353,7 +356,7 @@ function App() {
         console.error('노드 생성 중 오류 발생:', error);
       }
     },
-    [instance, setNodes]
+    [instance, setNodes, nodes]
   );
 
   const onDragOver = useCallback((event) => {
@@ -363,6 +366,30 @@ function App() {
 
   // ref 추가
   const reactFlowWrapper = useRef(null);
+
+  const onNodeLabelChange = useCallback((nodeId, newLabel) => {
+    setNodes((nds) =>
+      nds.map((node) => {
+        if (node.id === nodeId) {
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              label: newLabel
+            }
+          };
+        }
+        return node;
+      })
+    );
+  }, [setNodes]);
+
+  // 노드 ID 생성 함수
+  const generateUniqueNodeId = (nodes) => {
+    const existingIds = nodes.map(node => parseInt(node.id));
+    const maxId = Math.max(...existingIds, 0);
+    return String(maxId + 1);
+  };
 
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
