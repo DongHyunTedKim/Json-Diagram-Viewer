@@ -323,11 +323,6 @@ function App() {
       try {
         const type = event.dataTransfer.getData('application/reactflow');
         
-        // 노드의 기본 크기 (styles.css에서 정의된 값)
-        const nodeWidth = 150;  // .react-flow__node의 width 값
-        const nodeHeight = 40;  // 예상되는 높이값
-
-        // screenToFlowPosition 사용하여 위치 변환
         const position = instance.screenToFlowPosition({
           x: event.clientX - FLOW_CONSTANTS.NODE.SIZE.DEFAULT_WIDTH / 2,
           y: event.clientY - FLOW_CONSTANTS.NODE.SIZE.DEFAULT_HEIGHT / 2
@@ -335,10 +330,12 @@ function App() {
 
         const newNode = {
           id: `${Date.now()}`,
-          type,
+          type: 'custom',
           position,
-          data: { label: '새 노드' },
-          className: 'custom-node'
+          style: { backgroundColor: 'rgba(255, 0, 0, 0.2)' },  // 배경색 적용
+          data: { 
+            label: '새 노드'
+          }
         };
 
         setNodes((nds) => nds.concat(newNode));

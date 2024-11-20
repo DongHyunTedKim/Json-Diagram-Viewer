@@ -22,7 +22,7 @@
 }
 
 /* ▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽ */
-/* ==================== NODE STYLES ==================== */
+/* =================== NODE STYLES =================== */
 /* ▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽ */
 /* 기본 노드 스타일 */
 .react-flow__node,
@@ -43,6 +43,24 @@
 .react-flow__node:hover {
   border-color: #ff0072;
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* 노드 선택 상태 */
+.react-flow__node.selected {
+  border: 2px solid #ff0072;
+  box-shadow: 0 0 15px rgba(255, 0, 114, 0.4);
+  transform: scale(1.02);
+  transition: all 0.1s ease;
+}
+
+.react-flow__node.selected:hover {
+  border-color: #ff0072;
+  box-shadow: 0 0 20px rgba(255, 0, 114, 0.6);
+}
+
+/* 노드 내부 컨텐츠가 선택된 상태일 때 */
+.react-flow__node.selected .node-content {
+  background-color: rgba(255, 0, 114, 0.05);
 }
 
 /* ▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽ */

@@ -14,17 +14,8 @@ const ToolboxViewer = () => {
     {
       type: 'custom',
       label: '노드',
-      description: '기본적인 노드 템플릿',
+      description: '드래그하여 새 노드를 추가하세요',
       icon: '📦',
-      data: {
-        label: '새 노드',
-        handles: [
-          { type: 'source', position: Position.Top, id: 'a' },
-          { type: 'source', position: Position.Right, id: 'b' },
-          { type: 'source', position: Position.Bottom, id: 'c' },
-          { type: 'source', position: Position.Left, id: 'd' }
-        ]
-      }
     }
   ];
 
@@ -74,9 +65,6 @@ const ToolboxViewer = () => {
         gap: '10px'
       }}>
         <h3 style={{ margin: 0, fontSize: '14px' }}>🛠️ Tool Box</h3>
-        <p style={{ fontSize: '12px', color: '#666', margin: 0 }}>
-          드래그하여 새 노드를 추가하세요
-        </p>
 
         <div style={{
           display: 'flex',
