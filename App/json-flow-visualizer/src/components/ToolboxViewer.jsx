@@ -2,12 +2,19 @@ import React, { useState } from 'react';
 import { FLOW_CONSTANTS } from '../constants/flowConstants';
 import { Position } from 'reactflow';
 
-const ToolboxViewer = () => {
+const ToolboxViewer = ({ onLayoutDirectionChange }) => {
   const [isMinimized, setIsMinimized] = useState(false);
+  const [layoutDirection, setLayoutDirection] = useState('TD'); // 기본값: Top to Down
 
   const onDragStart = (event, nodeType) => {
     event.dataTransfer.setData('application/reactflow', nodeType);
     event.dataTransfer.effectAllowed = 'move';
+  };
+
+  const toggleLayoutDirection = () => {
+    const newDirection = layoutDirection === 'TD' ? 'LR' : 'TD';
+    setLayoutDirection(newDirection);
+    onLayoutDirectionChange(newDirection);
   };
 
   const nodeTemplates = [
@@ -64,7 +71,30 @@ const ToolboxViewer = () => {
         flexDirection: 'column',
         gap: '10px'
       }}>
-        <h3 style={{ margin: 0, fontSize: '14px' }}>🛠️ Tool Box</h3>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}>
+          <h3 style={{ margin: 0, fontSize: '14px' }}>🛠️ Tool Box</h3>
+          <button
+            onClick={toggleLayoutDirection}
+            style={{
+              padding: '4px 8px',
+              backgroundColor: '#f0f0f0',
+              border: '1px solid #ddd',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontSize: '12px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px'
+            }}
+          >
+            {layoutDirection === 'TD' ? '↓' : '→'} 
+            {layoutDirection === 'TD' ? '상하 배치' : '좌우 배치'}
+          </button>
+        </div>
 
         <div style={{
           display: 'flex',

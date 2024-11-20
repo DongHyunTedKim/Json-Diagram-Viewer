@@ -841,7 +841,10 @@ function App() {
         }} 
         onFilesSelected={handleFilesSelected}
       />
-      <ToolboxViewer />
+      <ToolboxViewer onLayoutDirectionChange={(direction) => {
+        const layoutedNodes = applyLayout(nodes, edges, direction);
+        setNodes(layoutedNodes);
+      }} />
     </div>
   );
 }
