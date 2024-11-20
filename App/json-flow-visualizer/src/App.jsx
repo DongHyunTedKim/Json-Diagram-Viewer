@@ -323,16 +323,25 @@ function App() {
       try {
         const type = event.dataTransfer.getData('application/reactflow');
         
+        // 배경색 랜덤 선택
+        const backgroundColors = Object.values(FLOW_CONSTANTS.NODE.STYLE.BACKGROUND_COLORS);
+        const randomColor = backgroundColors[Math.floor(Math.random() * backgroundColors.length)];
+        
         const position = instance.screenToFlowPosition({
-          x: event.clientX - FLOW_CONSTANTS.NODE.SIZE.DEFAULT_WIDTH / 2,
-          y: event.clientY - FLOW_CONSTANTS.NODE.SIZE.DEFAULT_HEIGHT / 2
+          x: event.clientX - FLOW_CONSTANTS.NODE.SIZE.MIN_WIDTH / 2,
+          y: event.clientY - FLOW_CONSTANTS.NODE.SIZE.MIN_HEIGHT / 2
         });
 
         const newNode = {
           id: `${Date.now()}`,
           type: 'custom',
           position,
-          style: { backgroundColor: 'rgba(255, 0, 0, 0.2)' },  // 배경색 적용
+          className: 'custom-node',
+          style: { 
+            backgroundColor: randomColor,
+            width: FLOW_CONSTANTS.NODE.SIZE.MIN_WIDTH,
+            height: FLOW_CONSTANTS.NODE.SIZE.MIN_HEIGHT
+          },
           data: { 
             label: '새 노드'
           }
