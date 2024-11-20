@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FLOW_CONSTANTS } from '../constants/flowConstants';
 import { Position } from 'reactflow';
 
-const ToolboxViewer = ({ onLayoutDirectionChange }) => {
+const ToolboxViewer = ({ onLayoutDirectionChange, fitView }) => {
   const [isMinimized, setIsMinimized] = useState(false);
   const [layoutDirection, setLayoutDirection] = useState('TD'); // 기본값: Top to Down
 
@@ -15,6 +15,9 @@ const ToolboxViewer = ({ onLayoutDirectionChange }) => {
     const newDirection = layoutDirection === 'TD' ? 'LR' : 'TD';
     setLayoutDirection(newDirection);
     onLayoutDirectionChange(newDirection);
+    setTimeout(() => {
+      fitView();
+    }, 50);
   };
 
   const nodeTemplates = [

@@ -312,13 +312,13 @@ function App() {
   });
 
   // 상단에 instance 선언 추가 (useCallback 의존성 문제 해결)
-  const [instance, setInstance] = useState(null);
+  const [reactFlowInstance, setReactFlowInstance] = useState(null);
 
   const onDrop = useCallback(
     (event) => {
       event.preventDefault();
 
-      if (!instance || !reactFlowWrapper.current) return;
+      if (!reactFlowInstance || !reactFlowWrapper.current) return;
 
       try {
         const type = event.dataTransfer.getData('application/reactflow');
@@ -328,7 +328,7 @@ function App() {
         //const randomColor = backgroundColors[Math.floor(Math.random() * backgroundColors.length)];
         const staticColor = FLOW_CONSTANTS.NODE.STYLE.BACKGROUND_COLORS.LAYER1;
 
-        const position = instance.screenToFlowPosition({
+        const position = reactFlowInstance.screenToFlowPosition({
           x: event.clientX - FLOW_CONSTANTS.NODE.SIZE.MIN_WIDTH / 2,
           y: event.clientY - FLOW_CONSTANTS.NODE.SIZE.MIN_HEIGHT / 2
         });
@@ -356,7 +356,7 @@ function App() {
         console.error('노드 생성 중 오류 발생:', error);
       }
     },
-    [instance, setNodes, nodes]
+    [reactFlowInstance, setNodes, nodes]
   );
 
   const onDragOver = useCallback((event) => {
@@ -390,6 +390,11 @@ function App() {
     const maxId = Math.max(...existingIds, 0);
     return String(maxId + 1);
   };
+
+  // onInit 콜백 수정
+  const onInit = useCallback((instance) => {
+    setReactFlowInstance(instance);
+  }, []);
 
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
@@ -431,7 +436,7 @@ function App() {
             zoomOnPinch={true}
             panOnScroll={false}
             nodeTypes={nodeTypes}
-            onInit={setInstance}
+            onInit={onInit}
           >
             <Background variant="dots" gap={12} size={1} />
 
@@ -840,11 +845,15 @@ function App() {
           });
         }} 
         onFilesSelected={handleFilesSelected}
+        fitView={() => reactFlowInstance?.fitView()}
       />
-      <ToolboxViewer onLayoutDirectionChange={(direction) => {
-        const layoutedNodes = applyLayout(nodes, edges, direction);
-        setNodes(layoutedNodes);
-      }} />
+      <ToolboxViewer 
+        onLayoutDirectionChange={(direction) => {
+          const layoutedNodes = applyLayout(nodes, edges, direction);
+          setNodes(layoutedNodes);
+        }} 
+        fitView={() => reactFlowInstance?.fitView()}
+      />
     </div>
   );
 }
