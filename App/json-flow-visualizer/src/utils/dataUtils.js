@@ -49,7 +49,6 @@ function calculateNodeSize(component) {
 }
 
 function parseComponents(data, onNodeLabelChange) {
-    // components 또는 nodes 배열 확인
     const componentArray = data.components || data.nodes || [];
     if (!Array.isArray(componentArray)) {
         throw new Error("유효한 components 또는 nodes 배열이 필요합니다.");
@@ -62,7 +61,6 @@ function parseComponents(data, onNodeLabelChange) {
             throw new Error("각 구성 요소는 고유한 id와 text를 가져야 합니다.");
         }
 
-        // 노드 크기 계산
         const { width, height } = calculateNodeSize(component);
 
         const node = {

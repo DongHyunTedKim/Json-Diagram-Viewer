@@ -63,6 +63,25 @@ function App() {
     [setNodes]
   );
 
+  
+  const onNodeLabelChange = useCallback((nodeId, newLabel) => {
+    setNodes((nds) =>
+      nds.map((node) => {
+        if (node.id === nodeId) {
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              label: newLabel,
+              onNodeLabelChange
+            }
+          };
+        }
+        return node;
+      })
+    );
+  }, [setNodes]);
+
   // 새로운 연결이 추가될 때 호출되는 콜백
   const onConnect = useCallback(
     (params) => {
@@ -139,7 +158,7 @@ function App() {
     URL.revokeObjectURL(url);
   };
 
-  // Edge 데이트 시작 핸들러 추가
+  // Edge 업데이트 시작 핸들러 추가
   const onEdgeUpdateStart = useCallback((event, edge) => {
     // 엣지 업데이트 시작 시 필요한 작업을 수행할 수 있습니다
     // 예: 현재 엣지의 상태를 저장하거나, UI 피드백을 제공
@@ -161,19 +180,16 @@ function App() {
   // ReactFlow 초기화 함수
   const initializeFlowData = (jsonData) => {
     try {
-      // 먼저 노드와 엣지 초기화
       setNodes([]);
       setEdges([]);
       
-      // JSON Viewer 데이터도 초기화
       setJsonViewData({
         original: jsonData,
         parsed: { nodes: [], edges: [] }
       });
 
-      // 잠시 대기 후 새로운 데이터로 파싱 및 렌더링
       setTimeout(() => {
-        const { parsedNodes, parsedEdges } = parseJSONtoReactFlowData(JSON.stringify(jsonData));
+        const { parsedNodes, parsedEdges } = parseJSONtoReactFlowData(JSON.stringify(jsonData), onNodeLabelChange);
         const layoutedNodes = applyLayout(parsedNodes, parsedEdges);
 
         setNodes(layoutedNodes);
@@ -287,20 +303,15 @@ function App() {
   // MARK: - 레이아웃
   // 컴포넌트가 처음 렌더링될 때 실행
   useEffect(() => {
-    const { parsedNodes, parsedEdges } = parseJSONtoReactFlowData(JSON.stringify(initialData));
-    const layoutedNodes = applyLayout(parsedNodes, parsedEdges); // 레이아웃 적용
-
-    console.log('Initial Data:', initialData);
-    console.log('Parsed Nodes:', parsedNodes);
-    console.log('Parsed Edges:', parsedEdges);
-
-    setNodes(layoutedNodes); // 노드 상태 업데트
-    setEdges(parsedEdges); // 엣지 상태 업데이트
-    setJsonViewData(prev => ({ // JSON Viewer 데이터 업데이트
+    const { parsedNodes, parsedEdges } = parseJSONtoReactFlowData(JSON.stringify(initialData), onNodeLabelChange);
+    const layoutedNodes = applyLayout(parsedNodes, parsedEdges);
+    setNodes(layoutedNodes);
+    setEdges(parsedEdges);
+    setJsonViewData(prev => ({
       ...prev,
       parsed: { nodes: layoutedNodes, edges: parsedEdges }
     }));
-  }, []);
+  }, [onNodeLabelChange]);
 
   // 상단에 상태 추가
   const [showHelp, setShowHelp] = useState(false);
@@ -367,22 +378,6 @@ function App() {
   // ref 추가
   const reactFlowWrapper = useRef(null);
 
-  const onNodeLabelChange = useCallback((nodeId, newLabel) => {
-    setNodes((nds) =>
-      nds.map((node) => {
-        if (node.id === nodeId) {
-          return {
-            ...node,
-            data: {
-              ...node.data,
-              label: newLabel
-            }
-          };
-        }
-        return node;
-      })
-    );
-  }, [setNodes]);
 
   // 노드 ID 생성 함수
   const generateUniqueNodeId = (nodes) => {
@@ -495,7 +490,7 @@ function App() {
                     </li>
 
                     <li style={{ marginBottom: '12px' }}>
-                      <strong>노드 추가:</strong> (개발중) 빈 공간 더블클릭
+                      <strong>노 추가:</strong> (개발중) 빈 공간 더블클릭
                     </li>
 
                     <li style={{ marginBottom: '12px' }}>
