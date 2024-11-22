@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FLOW_CONSTANTS } from '../constants/flowConstants';
 import { Position } from 'reactflow';
 
-const ToolboxViewer = ({ onLayoutDirectionChange, fitView }) => {
+const ToolboxViewer = ({ onLayoutDirectionChange, fitView, backgroundImageOpacity, setBackgroundImageOpacity }) => {
   const [isMinimized, setIsMinimized] = useState(false);
   const [layoutDirection, setLayoutDirection] = useState('TD'); // 기본값: Top to Down
 
@@ -136,6 +136,37 @@ const ToolboxViewer = ({ onLayoutDirectionChange, fitView }) => {
               </div>
             </div>
           ))}
+        </div>
+
+        <div style={{
+          marginTop: '10px',
+          padding: '10px',
+          backgroundColor: '#f8f9fa',
+          borderRadius: '4px',
+          border: '1px solid #eee'
+        }}>
+          <div style={{
+            fontSize: '12px',
+            marginBottom: '5px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}>
+            <span>배경 이미지 투명도</span>
+            <span>{Math.round(backgroundImageOpacity * 100)}%</span>
+          </div>
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.1"
+            value={backgroundImageOpacity}
+            onChange={(e) => setBackgroundImageOpacity(parseFloat(e.target.value))}
+            style={{
+              width: '100%',
+              accentColor: '#666'
+            }}
+          />
         </div>
       </div>
     </div>

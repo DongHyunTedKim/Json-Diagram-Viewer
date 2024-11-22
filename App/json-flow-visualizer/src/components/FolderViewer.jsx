@@ -170,7 +170,7 @@ const FolderViewer = ({ onImageSelect, onFilesSelected, fitView }) => {
       style={{
         position: 'absolute',
         top: '60px',
-        right: isMinimized ? '-270px' : '0px',
+        right: isMinimized ? '-220px' : '0px',
         width: '200px',
         backgroundColor: '#fff',
         borderRadius: '4px',
