@@ -145,17 +145,32 @@ export function createEdge({ source, target }) {
 function parseJSONtoReactFlowData(jsonString, onNodeLabelChange) {
     try {
         const data = JSON.parse(jsonString);
+        const metadata = {
+            file_name: data.file_name || "",
+            summary: data.summary || ""
+        };
         const parsedNodes = parseComponents(data, onNodeLabelChange);
         const parsedEdges = parseConnections(data);
-        return { parsedNodes, parsedEdges };
+        return { 
+            metadata,
+            parsedNodes, 
+            parsedEdges
+        };
     } catch (error) {
         console.error("JSON 파싱 에러:", error.message);
-        return { parsedNodes: [], parsedEdges: [] };
+        return { 
+            metadata: {
+                file_name: "",
+                summary: ""
+            },
+            parsedNodes: [], 
+            parsedEdges: []
+        };
     }
 }
 
 // ReactFlow 데이터를 원본 JSON 형식으로 변환하는 함수
-export function convertReactFlowToJSON(nodes, edges) {
+export function convertReactFlowToJSON(metadata, nodes, edges) {
     // 최상위 노드들 찾기 (parentId가 없는 노드들)
     const rootNodes = nodes.filter(node => !node.parentId);
     
@@ -177,8 +192,8 @@ export function convertReactFlowToJSON(nodes, edges) {
 
     // 최종 JSON 구조
     return {
-        file_name: "", // 파일 이름은 별도로 관리 필요
-        summary: "", // 요약 정보는 별도로 관리 필요
+        file_name: metadata.file_name,
+        summary: metadata.summary,
         components,
         connections
     };

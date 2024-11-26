@@ -52,8 +52,13 @@ const JsonViewer = ({ data }) => (
 
 function App() {
 
-  //MARK: - 필수 기능
-  // 노드와 엣지 상태 관리
+  //MARK: - 필수 기능 
+
+  // metadata, 노드와 엣지 상태 관리
+  const [metadata, setMetadata] = useState({
+    file_name: "",
+    summary: ""
+  });
   const [nodes, setNodes] = useNodesState([]);
   const [edges, setEdges] = useEdgesState([]);
 
@@ -63,7 +68,7 @@ function App() {
     [setNodes]
   );
 
-  
+
   const onNodeLabelChange = useCallback((nodeId, newLabel) => {
     setNodes((nds) =>
       nds.map((node) => {
@@ -147,7 +152,7 @@ function App() {
 
   // 변경된 데이터를 저장하는 함수
   const onSave = () => {
-    const jsonData = convertReactFlowToJSON(nodes, edges);
+    const jsonData = convertReactFlowToJSON(metadata, nodes, edges);
     const blob = new Blob([JSON.stringify(jsonData, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
 
@@ -182,21 +187,26 @@ function App() {
     try {
       setNodes([]);
       setEdges([]);
-      
+
       setJsonViewData({
         original: jsonData,
         parsed: { nodes: [], edges: [] }
       });
 
       setTimeout(() => {
-        const { parsedNodes, parsedEdges } = parseJSONtoReactFlowData(JSON.stringify(jsonData), onNodeLabelChange);
+        const { parsedNodes, parsedEdges, metadata } = parseJSONtoReactFlowData(JSON.stringify(jsonData), onNodeLabelChange);
         const layoutedNodes = applyLayout(parsedNodes, parsedEdges);
 
         setNodes(layoutedNodes);
         setEdges(parsedEdges);
+        setMetadata(metadata); // metadata 상태 업데이트
         setJsonViewData(prev => ({
           ...prev,
-          parsed: { nodes: layoutedNodes, edges: parsedEdges }
+          parsed: {
+            metadata,
+            nodes: layoutedNodes,
+            edges: parsedEdges
+          }
         }));
       }, 100);
 
@@ -303,17 +313,20 @@ function App() {
   // MARK: - 레이아웃
   // 컴포넌트가 처음 렌더링될 때 실행
   useEffect(() => {
-    const { parsedNodes, parsedEdges } = parseJSONtoReactFlowData(JSON.stringify(initialData), onNodeLabelChange);
+    const { parsedNodes, parsedEdges, metadata } = parseJSONtoReactFlowData(JSON.stringify(initialData), onNodeLabelChange);
     const layoutedNodes = applyLayout(parsedNodes, parsedEdges);
     setNodes(layoutedNodes);
     setEdges(parsedEdges);
+    setMetadata(metadata); // metadata 상태 업데이트
     setJsonViewData(prev => ({
       ...prev,
-      parsed: { nodes: layoutedNodes, edges: parsedEdges }
+      parsed: { 
+        metadata,
+        nodes: layoutedNodes, 
+        edges: parsedEdges 
+      }
     }));
-  }, [onNodeLabelChange]);
-
-  // 상단에 상태 추가
+  }, [onNodeLabelChange]);  // 상단에 상태 추가
   const [showHelp, setShowHelp] = useState(false);
 
   // App.jsx에 추가할 부분
@@ -333,7 +346,7 @@ function App() {
 
       try {
         const type = event.dataTransfer.getData('application/reactflow');
-        
+
         // 배경색 선택
         //const backgroundColors = Object.values(FLOW_CONSTANTS.NODE.STYLE.BACKGROUND_COLORS);
         //const randomColor = backgroundColors[Math.floor(Math.random() * backgroundColors.length)];
@@ -349,13 +362,13 @@ function App() {
           type: 'custom',
           position,
           className: 'custom-node',
-          style: { 
+          style: {
             //backgroundColor: randomColor,
             //backgroundColor: staticColor,
             width: FLOW_CONSTANTS.NODE.SIZE.MIN_WIDTH,
             height: FLOW_CONSTANTS.NODE.SIZE.MIN_HEIGHT
           },
-          data: { 
+          data: {
             label: '새 노드',
             onNodeLabelChange
           }
@@ -624,7 +637,7 @@ function App() {
                 position: 'absolute',
                 bottom: '5px', // top에서 bottom으로 변경
                 right: '5px',
-                cursor: 'se-resize', 
+                cursor: 'se-resize',
                 color: '#fff',
                 display: 'flex',
                 alignItems: 'center',
@@ -832,21 +845,21 @@ function App() {
           </div>
         )}
       </div>
-      <FolderViewer 
+      <FolderViewer
         onImageSelect={(file) => {
           setCurrentImage({
             path: file.path,
             name: file.name
           });
-        }} 
+        }}
         onFilesSelected={handleFilesSelected}
         fitView={() => reactFlowInstance?.fitView()}
       />
-      <ToolboxViewer 
+      <ToolboxViewer
         onLayoutDirectionChange={(direction) => {
           const layoutedNodes = applyLayout(nodes, edges, direction);
           setNodes(layoutedNodes);
-        }} 
+        }}
         fitView={() => reactFlowInstance?.fitView()}
       />
     </div>
@@ -854,3 +867,4 @@ function App() {
 }
 
 export default App;
+
