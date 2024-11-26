@@ -21,7 +21,7 @@ import { applyLayout } from './utils/layoutUtils';
 import FolderViewer from './components/FolderViewer';
 import ToolboxViewer from './components/ToolboxViewer';
 
-import initialData from './data/00001.json';
+import initialData from './data/0157.json';
 
 import CustomNode from './components/CustomNode';
 const nodeTypes = {
@@ -178,7 +178,7 @@ function App() {
   //MARK: 폴더 뷰어
   // 이미지 경로 상태 수정
   const [currentImage, setCurrentImage] = useState({
-    path: '/images/0000SAMPLE.jpg',  // 기본 이미지 경로
+    path: '/images/0157.jpg',  // 기본 이미지 경로
     name: '0000SAMPLE.jpg'
   });
 
@@ -442,6 +442,10 @@ function App() {
             panOnScroll={false}
             nodeTypes={nodeTypes}
             onInit={onInit}
+            defaultEdgeOptions={{
+              type: 'floating',
+              animated: false
+            }}
           >
             <Background variant="dots" gap={12} size={1} />
 
