@@ -160,7 +160,13 @@ function App() {
 
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'flowData.json';
+    
+    // 파일 이름 동적 생성
+    const fileName = metadata.file_name
+        ? metadata.file_name.replace(/\.(jpg|jpeg|png|gif)$/i, '.json')  // 이미지 확장자를 json으로 변경
+        : 'flowData.json';  // metadata.file_name이 없을 경우 기본값
+        
+    a.download = fileName;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -181,7 +187,7 @@ function App() {
   // 이미지 경로 상태 수정
   const [currentImage, setCurrentImage] = useState({
     path: '/images/0157.jpg',  // 기본 이미지 경로
-    name: '0000SAMPLE.jpg'
+    name: 'sample.jpg'
   });
 
   // ReactFlow 초기화 함수

@@ -122,23 +122,16 @@ const FolderViewer = ({ onImageSelect, onFilesSelected, fitView }) => {
     setSelectedFileName(file.name);
     setSelectedImagePath(file.path);
     
+    const jsonName = file.name.replace(/\.(jpg|jpeg|png|gif|webp|bmp|tiff)$/i, '.json');
+    
     if (file.jsonFile) {
       setSelectedJsonPath(file.jsonFile.name);
-    } else {
-      setSelectedJsonPath(`/data/jsons/${file.name.replace(/\.(jpg|jpeg|png|gif|webp|bmp|tiff)$/, '.json')}`);
-    }
-    
-    onImageSelect({
-      path: file.path,
-      name: file.name,
-      type: 'image/jpeg'
-    });
-
-    if (file.jsonFile) {
       try {
         const jsonText = await file.jsonFile.text();
         const jsonData = JSON.parse(jsonText);
-        onFilesSelected([], [new File([JSON.stringify(jsonData)], file.name.replace(/\.(jpg|jpeg|png|gif|webp|bmp|tiff)$/, '.json'), { type: 'application/json' })]);
+        // JSON 데이터의 file_name을 현재 선택된 이미지 파일 이름으로 업데이트
+        jsonData.file_name = file.name;
+        onFilesSelected([], [new File([JSON.stringify(jsonData)], jsonName, { type: 'application/json' })]);
         setTimeout(() => {
           fitView();
         }, 100);
@@ -146,14 +139,13 @@ const FolderViewer = ({ onImageSelect, onFilesSelected, fitView }) => {
         console.error('JSON 파일 로딩 에러:', err);
       }
     } else {
-      // 기존 서버 경로에서 JSON 파일을 가져오는 로직 유지
-      const jsonName = file.name.replace(/\.(jpg|jpeg|png|gif|webp|bmp|tiff)$/, '.json');
-      const jsonPath = `/data/jsons/${jsonName}`;
-      
+      setSelectedJsonPath(`/data/jsons/${jsonName}`);
       try {
-        const response = await fetch(jsonPath);
+        const response = await fetch(`/data/jsons/${jsonName}`);
         if (response.ok) {
           const jsonData = await response.json();
+          // JSON 데이터의 file_name을 현재 선택된 이미지 파일 이름으로 업데이트
+          jsonData.file_name = file.name;
           onFilesSelected([], [new File([JSON.stringify(jsonData)], jsonName, { type: 'application/json' })]);
           setTimeout(() => {
             fitView();
@@ -163,6 +155,12 @@ const FolderViewer = ({ onImageSelect, onFilesSelected, fitView }) => {
         console.error('JSON 파일 로딩 에러:', err);
       }
     }
+    
+    onImageSelect({
+      path: file.path,
+      name: file.name,
+      type: 'image/jpeg'
+    });
   };
 
   return (
