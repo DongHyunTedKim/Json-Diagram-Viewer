@@ -65,7 +65,7 @@ function parseComponents(data, onNodeLabelChange) {
 
         const node = {
             id: String(component.id),
-            data: { 
+            data: {
                 label: component.text,
                 onNodeLabelChange
             },
@@ -112,20 +112,33 @@ function parseConnections(data) {
         throw new Error("유효한 connections 배열이 필요합니다.");
     }
 
-    return data.connections.map(({ from, to }) => {
+    return data.connections.map(({ from, to, text }) => {
         if (!from || !to) {
             throw new Error("각 연결은 'from'과 'to' 필드를 가져야 합니다.");
         }
 
-        return createEdge({ source: from, target: to });
+        return createEdge({
+            source: from,
+            target: to,
+            label: text || ""
+        });
     });
 }
 
-export function createEdge({ source, target }) {
+export function createEdge({ source, target, label }) {
     return {
         id: `${source}-${target}`,
         source: String(source),
         target: String(target),
+        label: label,
+        labelStyle: { // label 스타일 추가
+            fill: '#444',
+            fontWeight: 500,
+            fontSize: 12,
+            background: 'white',
+            padding: '4px 8px',
+            borderRadius: '4px'
+        },
         type: 'floating',
         markerEnd: {
             type: MarkerType.ArrowClosed,
@@ -133,7 +146,7 @@ export function createEdge({ source, target }) {
             height: 10,
             color: '#444',
             strokeWidth: 2,
-        },
+        }
     };
 }
 
@@ -151,19 +164,19 @@ function parseJSONtoReactFlowData(jsonString, onNodeLabelChange) {
         };
         const parsedNodes = parseComponents(data, onNodeLabelChange);
         const parsedEdges = parseConnections(data);
-        return { 
+        return {
             metadata,
-            parsedNodes, 
+            parsedNodes,
             parsedEdges
         };
     } catch (error) {
         console.error("JSON 파싱 에러:", error.message);
-        return { 
+        return {
             metadata: {
                 file_name: "",
                 summary: ""
             },
-            parsedNodes: [], 
+            parsedNodes: [],
             parsedEdges: []
         };
     }
@@ -173,9 +186,9 @@ function parseJSONtoReactFlowData(jsonString, onNodeLabelChange) {
 export function convertReactFlowToJSON(metadata, nodes, edges) {
     // 최상위 노드들 찾기 (parentId가 없는 노드들)
     const rootNodes = nodes.filter(node => !node.parentId);
-    
+
     // 컴포넌트 구조 생성
-    const components = rootNodes.map(rootNode => 
+    const components = rootNodes.map(rootNode =>
         createComponentStructure(rootNode, nodes)
     );
 
@@ -203,11 +216,11 @@ export function convertReactFlowToJSON(metadata, nodes, edges) {
 function createComponentStructure(currentNode, allNodes) {
     // 현재 노드의 직접적인 자식 노드들 찾기
     const childNodes = allNodes.filter(node => node.parentId === currentNode.id);
-    
+
     return {
         id: currentNode.id,
         text: currentNode.data.label,
-        node: childNodes.length > 0 
+        node: childNodes.length > 0
             ? childNodes.map(childNode => createComponentStructure(childNode, allNodes))
             : []
     };

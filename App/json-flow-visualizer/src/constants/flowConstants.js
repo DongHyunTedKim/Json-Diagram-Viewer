@@ -10,14 +10,14 @@ export const FLOW_CONSTANTS = {
             HORIZONTAL: 90,
             VERTICAL: 60
         },
-        CHILD_SPACING: 40,
+        CHILD_SPACING: 180,
         LAYOUT: {
             RANKDIR: 'TD',
-            RANKSEP: 50,
+            RANKSEP: 100,
             NODESEP: 80,
             MARGIN: {
                 X: 30,
-                Y: 50
+                Y: 100
             }
         },
         STYLE: {

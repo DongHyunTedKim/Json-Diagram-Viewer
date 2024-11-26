@@ -1,5 +1,5 @@
 // src/App.jsx
-import React, { useCallback, useEffect, useState, useRef } from 'react';
+import React, { useCallback, useEffect, useState, useRef, useMemo } from 'react';
 import ReactFlow, {
   addEdge,
   MiniMap,
@@ -21,7 +21,7 @@ import { applyLayout } from './utils/layoutUtils';
 import FolderViewer from './components/FolderViewer';
 import ToolboxViewer from './components/ToolboxViewer';
 
-import initialData from './data/00001.json';
+import initialData from './data/0157.json';
 
 import CustomNode from './components/CustomNode';
 const nodeTypes = {
@@ -30,9 +30,6 @@ const nodeTypes = {
 
 import SimpleFloatingEdge from './components/SimpleFloatingEdge';
 import { FLOW_CONSTANTS } from './constants/flowConstants';
-const edgeTypes = {
-  floating: SimpleFloatingEdge
-};
 
 // JSON Viewer 컴포넌트
 const JsonViewer = ({ data }) => (
@@ -61,6 +58,11 @@ function App() {
   });
   const [nodes, setNodes] = useNodesState([]);
   const [edges, setEdges] = useEdgesState([]);
+
+  // edgeTypes를 useMemo로 메모이제이션
+  const edgeTypes = useMemo(() => ({
+    floating: (props) => <SimpleFloatingEdge {...props} setEdges={setEdges} />
+  }), [setEdges]);
 
   // 노드 변경 시 호출되는 콜백
   const onNodesChange = useCallback(
@@ -178,7 +180,7 @@ function App() {
   //MARK: 폴더 뷰어
   // 이미지 경로 상태 수정
   const [currentImage, setCurrentImage] = useState({
-    path: '/images/0000SAMPLE.jpg',  // 기본 이미지 경로
+    path: '/images/0157.jpg',  // 기본 이미지 경로
     name: '0000SAMPLE.jpg'
   });
 
@@ -247,8 +249,9 @@ function App() {
 
   // 이미지 뷰어 - 크기와 스크롤 위치 상태 추가
   const [imageViewerSize, setImageViewerSize] = useState(() => {
-    const saved = localStorage.getItem('imageViewerSize');
-    return saved ? JSON.parse(saved) : { width: 300, height: 200 };
+    //const saved = localStorage.getItem('imageViewerSize');
+    //console.log('imageViewerSize', saved);
+    return { width: 300, height: 200 };
   });
 
   const [imageViewerScroll, setImageViewerScroll] = useState(() => {
@@ -311,7 +314,7 @@ function App() {
   //
   //
   // MARK: - 레이아웃
-  // 컴포넌트가 처음 렌더링될 때 실행
+  // 컴넌트가 처음 렌더링될 때 실행
   useEffect(() => {
     const { parsedNodes, parsedEdges, metadata } = parseJSONtoReactFlowData(JSON.stringify(initialData), onNodeLabelChange);
     const layoutedNodes = applyLayout(parsedNodes, parsedEdges);
@@ -427,14 +430,10 @@ function App() {
             edgesFocusable={true} // 엣지 선택 가능 
             edgesUpdatable={true} // 엣지 업데이트 가능
             nodesDraggable={true} // 노드 드래그 가능
-            nodesConnectable={true} // 노드 연결 가능
+            nodesConnectable={true} // 노드 연결 가
             snapToGrid={true} // 그리드 맞
             snapGrid={[15, 15]} // 그리드 크기
             connectionMode={ConnectionMode.Loose}
-
-            defaultEdgeOptions={{
-              type: 'floating'
-            }}
             elevateEdgesOnSelect={true}
             selectionOnDrag={true}
             selectionMode="partial"
@@ -445,6 +444,10 @@ function App() {
             panOnScroll={false}
             nodeTypes={nodeTypes}
             onInit={onInit}
+            defaultEdgeOptions={{
+              type: 'floating',
+              animated: false
+            }}
           >
             <Background variant="dots" gap={12} size={1} />
 
@@ -580,12 +583,12 @@ function App() {
               border: '1px solid #ccc',
               borderRadius: '4px',
               overflow: 'hidden',
-              resize: 'both', // 크기 조절 가능하도록 설정
+              resize: 'both', // 크기 조절 가능도록 설정
               pointerEvents: 'auto',
               minWidth: `${window.innerWidth * 0.25}px`, // 최소 너비를 화면 너비의 25%로 설정
-              maxWidth: `${window.innerWidth * 0.75}px`, // 최대 너비를 화면 너비의 75%로 설정
+              maxWidth: `${window.innerWidth * 0.95}px`, // 최대 너비를 화면 너비의 75%로 설정
               minHeight: `${window.innerHeight * 0.25}px`, // 최소 높이를 화면 높이의 25%로 설정
-              maxHeight: `${window.innerHeight * 0.75}px`, // 최대 높이를 화면 높이의 75%로 설정
+              maxHeight: `${window.innerHeight * 0.95}px`, // 최대 높이를 화면 높이의 75%로 설정
             }}
             onScroll={handleImageViewerScroll}
           >

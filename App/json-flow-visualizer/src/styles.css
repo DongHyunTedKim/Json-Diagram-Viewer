@@ -203,6 +203,43 @@
   filter: drop-shadow(0 0 8px rgba(255, 0, 114, 1));
 }
 
+/* Edge 라벨 스타일 */
+.react-flow__edge-label {
+    background: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #444;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.react-flow__edge:hover .react-flow__edge-label {
+    background: #f8f8f8;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.react-flow__edge.selected .react-flow__edge-label {
+    background: #fff3f7;
+    color: #ff0072;
+    box-shadow: 0 0 8px rgba(255, 0, 114, 0.3);
+}
+
+.edge-label-input {
+  background: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  padding: 4px 8px;
+  outline: none;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+  width: auto;
+  min-width: 80px;
+}
+
+.edge-label-input:focus {
+  box-shadow: 0 0 0 2px #ff0072;
+}
+
 /* ▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽ */
 /* ===========FILE UPLOADER & FOLDER VIEWER ========== */
 /* ▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽ */  
