@@ -1,5 +1,5 @@
 // src/App.jsx
-import React, { useCallback, useEffect, useState, useRef } from 'react';
+import React, { useCallback, useEffect, useState, useRef, useMemo } from 'react';
 import ReactFlow, {
   addEdge,
   MiniMap,
@@ -30,9 +30,6 @@ const nodeTypes = {
 
 import SimpleFloatingEdge from './components/SimpleFloatingEdge';
 import { FLOW_CONSTANTS } from './constants/flowConstants';
-const edgeTypes = {
-  floating: SimpleFloatingEdge
-};
 
 // JSON Viewer 컴포넌트
 const JsonViewer = ({ data }) => (
@@ -61,6 +58,11 @@ function App() {
   });
   const [nodes, setNodes] = useNodesState([]);
   const [edges, setEdges] = useEdgesState([]);
+
+  // edgeTypes를 useMemo로 메모이제이션
+  const edgeTypes = useMemo(() => ({
+    floating: (props) => <SimpleFloatingEdge {...props} setEdges={setEdges} />
+  }), [setEdges]);
 
   // 노드 변경 시 호출되는 콜백
   const onNodesChange = useCallback(
@@ -312,7 +314,7 @@ function App() {
   //
   //
   // MARK: - 레이아웃
-  // 컴포넌트가 처음 렌더링될 때 실행
+  // 컴넌트가 처음 렌더링될 때 실행
   useEffect(() => {
     const { parsedNodes, parsedEdges, metadata } = parseJSONtoReactFlowData(JSON.stringify(initialData), onNodeLabelChange);
     const layoutedNodes = applyLayout(parsedNodes, parsedEdges);
@@ -428,7 +430,7 @@ function App() {
             edgesFocusable={true} // 엣지 선택 가능 
             edgesUpdatable={true} // 엣지 업데이트 가능
             nodesDraggable={true} // 노드 드래그 가능
-            nodesConnectable={true} // 노드 연결 가능
+            nodesConnectable={true} // 노드 연결 가
             snapToGrid={true} // 그리드 맞
             snapGrid={[15, 15]} // 그리드 크기
             connectionMode={ConnectionMode.Loose}
@@ -581,7 +583,7 @@ function App() {
               border: '1px solid #ccc',
               borderRadius: '4px',
               overflow: 'hidden',
-              resize: 'both', // 크기 조절 가능하도록 설정
+              resize: 'both', // 크기 조절 가능도록 설정
               pointerEvents: 'auto',
               minWidth: `${window.innerWidth * 0.25}px`, // 최소 너비를 화면 너비의 25%로 설정
               maxWidth: `${window.innerWidth * 0.95}px`, // 최대 너비를 화면 너비의 75%로 설정

@@ -224,6 +224,22 @@
     box-shadow: 0 0 8px rgba(255, 0, 114, 0.3);
 }
 
+.edge-label-input {
+  background: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  padding: 4px 8px;
+  outline: none;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+  width: auto;
+  min-width: 80px;
+}
+
+.edge-label-input:focus {
+  box-shadow: 0 0 0 2px #ff0072;
+}
+
 /* ▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽ */
 /* ===========FILE UPLOADER & FOLDER VIEWER ========== */
 /* ▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽ */  
