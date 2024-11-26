@@ -47,6 +47,9 @@ const JsonViewer = ({ data }) => (
   </pre>
 );
 
+// 사용 방법 뷰어
+import HelpViewer from './components/HelpViewer';
+
 function App() {
 
   //MARK: - 필수 기능 
@@ -456,85 +459,7 @@ function App() {
             }}
           >
             <Background variant="dots" gap={12} size={1} />
-
-            {/* 도움말 버튼 - MiniMap 위에 배치 */}
-            <div style={{
-              position: 'absolute',
-              right: '45px',
-              bottom: '200px',  // MiniMap 위 공간 확보
-              zIndex: 5
-            }}>
-              <button
-                onClick={() => setShowHelp(!showHelp)}
-                style={{
-                  backgroundColor: '#fff',
-                  border: '1px solid #ccc',
-                  borderRadius: '4px',
-                  padding: '5px 10px',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '5px',
-                  fontSize: '14px',
-                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-                }}
-              >
-                <span role="img" aria-label="help">❔</span>
-                사용 방법
-              </button>
-
-              {/* 도움말 패널 */}
-              {showHelp && (
-                <div
-                  style={{
-                    position: 'absolute',
-                    bottom: '40px',
-                    right: '0px',
-                    width: '350px',
-                    backgroundColor: '#fff',
-                    border: '1px solid #ccc',
-                    borderRadius: '4px',
-                    padding: '15px',
-                    zIndex: 1000,
-                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                    fontSize: '13px',
-                    lineHeight: '1.4'
-                  }}
-                >
-                  <h4 style={{ margin: '0 0 10px 0', color: '#333' }}>사용 방법</h4>
-                  <ul style={{ margin: 0, paddingLeft: '20px' }}>
-                    <li style={{ marginBottom: '12px' }}>
-                      <strong>화면 이동:</strong>
-                      <ul>
-                        <li>마우스 휠 클릭 후 드래그</li>
-                        <li>또는 마우스 우클릭 후 드래그</li>
-                      </ul>
-                    </li>
-
-                    <li style={{ marginBottom: '12px' }}>
-                      <strong>노 추가:</strong> (개발중) 빈 공간 더블클릭
-                    </li>
-
-                    <li style={{ marginBottom: '12px' }}>
-                      <strong>삭제:</strong>
-                      <ul>
-                        <li>일반 삭제 (Delete): 선택된 노드와 엣지 모두 삭제</li>
-                        <li>엣지만 삭제 (Shift + Delete): 영역 선택된 노드와 엣지 중 엣지만 삭제</li>
-                      </ul>
-                    </li>
-
-                    <li style={{ marginBottom: '12px' }}>
-                      <strong>엣지 선택:</strong>
-                      <ul style={{ marginTop: '5px' }}>
-                        <li>단일 엣지 선택: 그룹 내 엣지를 선택하려면 먼저 source노드를 선택해야 합니다</li>
-                        <li>다중 엣지 선택: 영역 선택으로 노드를 선택하면 관련된 모든 엣지가 함께 선택됩니다</li>
-                      </ul>
-                    </li>
-                  </ul>
-                </div>
-              )}
-            </div>
-
+            <HelpViewer showHelp={showHelp} setShowHelp={setShowHelp} />
             <Controls />
             <MiniMap />
           </ReactFlow>
