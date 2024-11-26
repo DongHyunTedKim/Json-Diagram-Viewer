@@ -247,8 +247,9 @@ function App() {
 
   // 이미지 뷰어 - 크기와 스크롤 위치 상태 추가
   const [imageViewerSize, setImageViewerSize] = useState(() => {
-    const saved = localStorage.getItem('imageViewerSize');
-    return saved ? JSON.parse(saved) : { width: 300, height: 200 };
+    //const saved = localStorage.getItem('imageViewerSize');
+    //console.log('imageViewerSize', saved);
+    return { width: 300, height: 200 };
   });
 
   const [imageViewerScroll, setImageViewerScroll] = useState(() => {
@@ -431,10 +432,6 @@ function App() {
             snapToGrid={true} // 그리드 맞
             snapGrid={[15, 15]} // 그리드 크기
             connectionMode={ConnectionMode.Loose}
-
-            defaultEdgeOptions={{
-              type: 'floating'
-            }}
             elevateEdgesOnSelect={true}
             selectionOnDrag={true}
             selectionMode="partial"
@@ -583,9 +580,9 @@ function App() {
               resize: 'both', // 크기 조절 가능하도록 설정
               pointerEvents: 'auto',
               minWidth: `${window.innerWidth * 0.25}px`, // 최소 너비를 화면 너비의 25%로 설정
-              maxWidth: `${window.innerWidth * 0.75}px`, // 최대 너비를 화면 너비의 75%로 설정
+              maxWidth: `${window.innerWidth * 0.95}px`, // 최대 너비를 화면 너비의 75%로 설정
               minHeight: `${window.innerHeight * 0.25}px`, // 최소 높이를 화면 높이의 25%로 설정
-              maxHeight: `${window.innerHeight * 0.75}px`, // 최대 높이를 화면 높이의 75%로 설정
+              maxHeight: `${window.innerHeight * 0.95}px`, // 최대 높이를 화면 높이의 75%로 설정
             }}
             onScroll={handleImageViewerScroll}
           >

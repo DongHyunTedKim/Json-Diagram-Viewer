@@ -1,0 +1,143 @@
+{
+    "file_name": "diagram_analysis",
+    "summary": "이 다이어그램은 입법예고와 심사 과정을 설명하는 흐름도입니다. 주요 단계는 방침결정, 입법예고, 조례안 작성, 1차 심사, 2차 심사, 자치법규 입법방침결재, 조례규칙 심의회 의결, 자치법규안 확정, 시의회 의결, 도 사전보고, 공포(공보게재)로 구성되어 있습니다.",
+    "components": [
+        {
+            "id": "1",
+            "text": "방침결정\n주관과",
+            "node": []
+        },
+        {
+            "id": "2",
+            "text": "입법예고(20일 이상)\n주관과",
+            "node": []
+        },
+        {
+            "id": "3",
+            "text": "조례안 작성\n주관과",
+            "node": []
+        },
+        {
+            "id": "4",
+            "text": "1차 심사\n법제팀",
+            "node": []
+        },
+        {
+            "id": "5",
+            "text": "2차 심사\n법제팀",
+            "node": []
+        },
+        {
+            "id": "6",
+            "text": "자치법규 입법방침결재\n주관과",
+            "node": []
+        },
+        {
+            "id": "7",
+            "text": "조례규칙 심의회 의결\n법제팀",
+            "node": []
+        },
+        {
+            "id": "8",
+            "text": "자치법규안 확정\n주관과",
+            "node": []
+        },
+        {
+            "id": "9",
+            "text": "시의회 의결",
+            "node": []
+        },
+        {
+            "id": "10",
+            "text": "도 사전보고\n법제팀",
+            "node": []
+        },
+        {
+            "id": "11",
+            "text": "공포(공보게재)\n법제팀",
+            "node": []
+        }
+    ],
+    "connections": [
+        {
+            "from": "1",
+            "to": "2",
+            "text": "입법예고의 의뢰",
+            "type": "line",
+            "color": "#000000",
+            "direction": true
+        },
+        {
+            "from": "2",
+            "to": "5",
+            "text": "심사의뢰",
+            "type": "line",
+            "color": "#000000",
+            "direction": true
+        },
+        {
+            "from": "5",
+            "to": "6",
+            "text": "심의요구",
+            "type": "line",
+            "color": "#000000",
+            "direction": true
+        },
+        {
+            "from": "6",
+            "to": "7",
+            "text": "심의결과 통보",
+            "type": "line",
+            "color": "#000000",
+            "direction": true
+        },
+        {
+            "from": "7",
+            "to": "10",
+            "text": "이송",
+            "type": "line",
+            "color": "#000000",
+            "direction": true
+        },
+        {
+            "from": "10",
+            "to": "11",
+            "text": "이송 후 5일 이내",
+            "type": "line",
+            "color": "#000000",
+            "direction": true
+        },
+        {
+            "from": "11",
+            "to": "8",
+            "text": "재의요구(이송 후 20일 이내)",
+            "type": "line",
+            "color": "#000000",
+            "direction": true
+        },
+        {
+            "from": "3",
+            "to": "4",
+            "text": "보안",
+            "type": "line",
+            "color": "#000000",
+            "direction": true
+        },
+        {
+            "from": "4",
+            "to": "3",
+            "text": "보안",
+            "type": "line",
+            "color": "#000000",
+            "direction": true
+        },
+        {
+            "from": "8",
+            "to": "9",
+            "text": "조례안 제출",
+            "type": "line",
+            "color": "#000000",
+            "direction": true
+        }
+    ]
+}
