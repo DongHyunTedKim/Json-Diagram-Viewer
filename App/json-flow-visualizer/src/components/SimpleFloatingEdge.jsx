@@ -1,6 +1,7 @@
 import { useCallback, useState, useRef, useEffect } from 'react';
 import { useStore, getBezierPath, EdgeLabelRenderer } from 'reactflow';
 import { getEdgeParams } from '../utils/utils_simple';
+import EdgeToolbar from './EdgeToolbar';
 
 function SimpleFloatingEdge({ id, source, target, markerEnd, style, selected, label, data, setEdges }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -68,6 +69,24 @@ function SimpleFloatingEdge({ id, source, target, markerEnd, style, selected, la
         markerEnd={markerEnd}
         style={style}
       />
+      <EdgeLabelRenderer>
+        <div
+          style={{
+            position: 'absolute',
+            transform: `translate(-50%, -50%) translate(${labelX}px,${labelY - 40}px)`,
+            pointerEvents: 'all',
+            zIndex: 1001
+          }}
+        >
+          {selected && (
+            <EdgeToolbar
+              edge={{ id, source, target, markerEnd, style }}
+              setEdges={setEdges}
+              position={{ x: labelX, y: labelY }}
+            />
+          )}
+        </div>
+      </EdgeLabelRenderer>
       <EdgeLabelRenderer>
         <div
           style={{

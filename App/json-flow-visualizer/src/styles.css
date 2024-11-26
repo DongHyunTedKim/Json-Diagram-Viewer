@@ -224,6 +224,7 @@
     box-shadow: 0 0 8px rgba(255, 0, 114, 0.3);
 }
 
+/* 엣지 라벨 입력 필드 스타일 */
 .edge-label-input {
   background: white;
   border: none;
@@ -236,8 +237,79 @@
   min-width: 80px;
 }
 
+/* 엣지 라벨 입력 필드 포커스 상태 */
 .edge-label-input:focus {
   box-shadow: 0 0 0 2px #ff0072;
+}
+
+/* 엣지 툴바 컨테이너 */
+.edge-toolbar {
+  position: absolute;
+  background-color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  display: flex;
+  gap: 4px;
+  z-index: 1001;
+  transform: translateY(-100%);
+  left: 50%;
+  margin-left: -95px;
+  width: 190px;
+  justify-content: center;
+  align-items: center;
+  height: 24px;
+}
+
+/* 엣지 툴바 선택 박스 (선 타입, 두께 선택) */
+.edge-toolbar-select {
+  width: 45px;
+  height: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 10px;
+  padding: 0 2px;
+}
+
+/* 엣지 툴바 버튼 */
+.edge-toolbar-button {
+  height: 20px;
+  font-size: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: white;
+  padding: 0 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 색상 선택 버튼 */
+.color-picker-button {
+  width: 20px;
+  height: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* 색상 선택기 컨테이너 */
+.color-picker-container {
+  height: 20px;
+  display: flex;
+  align-items: center;
+}
+
+/* 색상 선택기 팝업 */
+.color-picker-popup {
+  position: absolute;
+  z-index: 1001;
+}
+
+.color-picker-popup .react-colorful {
+  width: 100px;
+  height: 100px;
 }
 
 /* ▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽ */
