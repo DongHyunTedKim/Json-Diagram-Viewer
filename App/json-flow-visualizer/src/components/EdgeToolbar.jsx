@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { HexColorPicker } from 'react-colorful';
+import { MarkerType } from 'reactflow';
 
 const EdgeToolbar = ({ edge, setEdges, position }) => {
   const [showColorPicker, setShowColorPicker] = useState(false);
@@ -21,6 +22,17 @@ const EdgeToolbar = ({ edge, setEdges, position }) => {
     );
   };
 
+  const getCurrentLineType = () => {
+    const dashArray = edge.style?.strokeDasharray;
+    if (dashArray === '5,5') return 'dashed';
+    if (dashArray === '2,2') return 'dotted';
+    return 'solid';
+  };
+
+  const getCurrentThickness = () => {
+    return edge.style?.strokeWidth || '2';
+  };
+
   const lineTypes = [
     { label: '실선', value: 'solid' },
     { label: '점선', value: 'dashed' },
@@ -37,9 +49,11 @@ const EdgeToolbar = ({ edge, setEdges, position }) => {
     <div className="edge-toolbar" onClick={(e) => e.stopPropagation()}>
       {/* 선 타입 선택 */}
       <select
+        value={getCurrentLineType()}
         onChange={(e) => updateEdgeStyle('strokeDasharray', 
           e.target.value === 'dashed' ? '5,5' : 
-          e.target.value === 'dotted' ? '2,2' : 'none'
+          e.target.value === 'dotted' ? '2,2' : 
+          'none'
         )}
         className="edge-toolbar-select"
       >
@@ -52,6 +66,7 @@ const EdgeToolbar = ({ edge, setEdges, position }) => {
 
       {/* 선 두께 선택 */}
       <select
+        value={getCurrentThickness()}
         onChange={(e) => updateEdgeStyle('strokeWidth', e.target.value)}
         className="edge-toolbar-select"
       >
@@ -87,7 +102,12 @@ const EdgeToolbar = ({ edge, setEdges, position }) => {
               if (e.id === edge.id) {
                 return {
                   ...e,
-                  markerEnd: e.markerEnd ? null : {
+                  markerEnd: e.markerEnd?.type === 'arrowclosed' ? {
+                    type: MarkerType.Arrow,
+                    width: 0,
+                    height: 0,
+                    color: 'transparent'
+                  } : {
                     type: 'arrowclosed',
                     width: 10,
                     height: 10,
@@ -98,10 +118,11 @@ const EdgeToolbar = ({ edge, setEdges, position }) => {
               return e;
             })
           );
+          console.log(edge.markerEnd)
         }}
         className="edge-toolbar-button"
       >
-        {edge.markerEnd ? '방향 제거' : '방향 추가'}
+        방향
       </button>
     </div>
   );

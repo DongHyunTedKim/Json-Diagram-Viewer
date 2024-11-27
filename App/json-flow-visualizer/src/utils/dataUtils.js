@@ -112,16 +112,35 @@ function parseConnections(data) {
         throw new Error("유효한 connections 배열이 필요합니다.");
     }
 
-    return data.connections.map(({ from, to, text }) => {
+    return data.connections.map(({ from, to, text, color, direction, thickness, type }) => {
         if (!from || !to) {
             throw new Error("각 연결은 'from'과 'to' 필드를 가져야 합니다.");
         }
 
-        return createEdge({
-            source: from,
-            target: to,
-            label: text || ""
-        });
+        return {
+            id: `${from}-${to}`,
+            source: String(from),
+            target: String(to),
+            label: text || "",
+            type: 'floating',
+            style: {
+                stroke: color || '#555555',
+                strokeWidth: thickness || '2',
+                strokeDasharray: type === 'dashed' ? '5,5' :
+                    type === 'dotted' ? '2,2' : 'none'
+            },
+            markerEnd: direction ? {
+                type: 'arrowclosed',
+                width: 10,
+                height: 10,
+                color: color || '#000000'
+            } : {
+                width: direction ? 10 : 0,
+                height: direction ? 10 : 0,
+                color: direction ? (color || '#000000') : 'transparent'
+            }
+
+        };
     });
 }
 
@@ -150,6 +169,7 @@ export function createEdge({ source, target, label }) {
     };
 }
 
+//MARK: - IMPORT
 /**
  * JSON_TEMPLATE.json 파일을 파싱하여 초기 그래프 데이터를 생성하는 함수
  * @param {String} jsonString - JSON 문자열
@@ -182,6 +202,7 @@ function parseJSONtoReactFlowData(jsonString, onNodeLabelChange) {
     }
 }
 
+//MARK: - EXPORT
 // ReactFlow 데이터를 원본 JSON 형식으로 변환하는 함수
 export function convertReactFlowToJSON(metadata, nodes, edges) {
     // 최상위 노드들 찾기 (parentId가 없는 노드들)
@@ -197,10 +218,11 @@ export function convertReactFlowToJSON(metadata, nodes, edges) {
         from: edge.source,
         to: edge.target,
         text: edge.label || "",
-        type: "line",
-        color: "#000000",
-        direction: true,
-        thickness: "medium"
+        type: edge.style?.strokeDasharray === '5,5' ? 'dashed' :
+            edge.style?.strokeDasharray === '2,2' ? 'dotted' : 'solid',
+        color: edge.style?.stroke || "#555555",
+        direction: edge.markerEnd?.width > 0 && edge.markerEnd?.type === 'arrowclosed',
+        thickness: edge.style?.strokeWidth || "2"
     }));
 
     // 최종 JSON 구조

@@ -80,7 +80,14 @@ function SimpleFloatingEdge({ id, source, target, markerEnd, style, selected, la
         >
           {selected && (
             <EdgeToolbar
-              edge={{ id, source, target, markerEnd, style }}
+              edge={{ 
+                id, 
+                source, 
+                target, 
+                markerEnd, 
+                style,
+                direction: markerEnd?.width === 10 && markerEnd?.type === 'arrowclosed'
+              }}
               setEdges={setEdges}
               position={{ x: labelX, y: labelY }}
             />
