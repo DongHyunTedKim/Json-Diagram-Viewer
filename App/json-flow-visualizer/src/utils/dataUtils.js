@@ -112,7 +112,12 @@ function parseConnections(data) {
         throw new Error("유효한 connections 배열이 필요합니다.");
     }
 
-    return data.connections.map(({ from, to, text, color, direction, thickness, type }) => {
+    // connections 배열을 from 값 기준으로 숫자 정렬
+    const sortedConnections = [...data.connections].sort((a, b) => {
+        return parseInt(a.from) - parseInt(b.from);
+    });
+
+    return sortedConnections.map(({ from, to, text, color, direction, thickness, type }) => {
         if (!from || !to) {
             throw new Error("각 연결은 'from'과 'to' 필드를 가져야 합니다.");
         }
@@ -213,17 +218,19 @@ export function convertReactFlowToJSON(metadata, nodes, edges) {
         createComponentStructure(rootNode, nodes)
     );
 
-    // 엣지 변환
-    const connections = edges.map(edge => ({
-        from: edge.source,
-        to: edge.target,
-        text: edge.label || "",
-        type: edge.style?.strokeDasharray === '5,5' ? 'dashed' :
-            edge.style?.strokeDasharray === '2,2' ? 'dotted' : 'solid',
-        color: edge.style?.stroke || "#555555",
-        direction: edge.markerEnd?.width > 0 && edge.markerEnd?.type === 'arrowclosed',
-        thickness: edge.style?.strokeWidth || "2"
-    }));
+    // 엣지 변환 및 숫자 기반 정렬
+    const connections = edges
+        .map(edge => ({
+            from: edge.source,
+            to: edge.target,
+            text: edge.label || "",
+            type: edge.style?.strokeDasharray === '5,5' ? 'dashed' :
+                edge.style?.strokeDasharray === '2,2' ? 'dotted' : 'solid',
+            color: edge.style?.stroke || "#555555",
+            direction: edge.markerEnd?.width > 0 && edge.markerEnd?.type === 'arrowclosed',
+            thickness: edge.style?.strokeWidth || "2"
+        }))
+        .sort((a, b) => parseInt(a.from) - parseInt(b.from));
 
     // 최종 JSON 구조
     return {
