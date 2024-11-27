@@ -128,7 +128,7 @@
 /* ▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽ */
 /* 기본 엣지 스타일 */
 .react-flow__edge-path.floating {
-  stroke: #555;
+  stroke: #000000;
   stroke-width: 2px;
   
 }
@@ -187,7 +187,7 @@
 
 /* 기본 마커 스타일 */
 .edge-marker-default {
-  fill: #555;
+  fill: #000000;
   transition: all 0.3s ease;
 }
 
@@ -254,8 +254,8 @@
   z-index: 1001;
   transform: translateY(-100%);
   left: 50%;
-  margin-left: -95px;
-  width: 190px;
+  margin-left: -75px;
+  width: 150px;
   justify-content: center;
   align-items: center;
   height: 24px;
