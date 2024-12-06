@@ -225,7 +225,7 @@ export function convertReactFlowToJSON(metadata, nodes, edges) {
             to: edge.target,
             text: edge.label || "",
             type: edge.style?.strokeDasharray === '5,5' ? 'dashed' :
-                edge.style?.strokeDasharray === '2,2' ? 'dotted' : 'solid',
+                edge.style?.strokeDasharray === '2,2' ? 'dotted' : 'line',
             color: edge.style?.stroke || "#555555",
             direction: edge.markerEnd?.width > 0 && edge.markerEnd?.type === 'arrowclosed',
             thickness: edge.style?.strokeWidth || "2"
