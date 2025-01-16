@@ -7,7 +7,7 @@
 - **JSON 입력 지원**: 직관적인 CodeMirror 에디터를 통해 JSON 데이터를 쉽게 입력 및 수정할 수 있습니다. (개발중)
 - **실시간 다이어그램 렌더링**: 입력된 JSON 데이터를 기반으로 React Flow 다이어그램을 실시간으로 생성 및 미리보기 합니다.
 
-## git branch structure
+## 깃 브랜치 구조
 
 - base branch: develop
 - branch to deploy: master
@@ -16,8 +16,28 @@
 ## 설치 방법
 
 1. Clone a Repo:
-   - 
+   ```bash
+   git clone [repository-url]
+   cd [project-folder]
+   ```
 
+2. 의존성 패키지 설치:
+   ```bash
+   npm install
+   ```
+
+3. 개발 서버 실행:
+   ```bash
+   npm run dev
+   ```
+
+4. 브라우저에서 확인:
+   - 기본적으로 `http://localhost:5173`에서 실행됩니다
+   - (포트는 다를 수 있습니다. 터미널에 표시된 URL을 확인해주세요)
+
+  #### 필요 사항
+- Node.js가 설치되어 있어야 합니다
+- npm(Node Package Manager)이 설치되어 있어야 합니다
 
 ## 사용 방법
 
