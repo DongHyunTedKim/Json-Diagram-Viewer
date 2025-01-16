@@ -1,5 +1,5 @@
 // src/App.jsx
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useRef, useMemo } from 'react';
 import ReactFlow, {
   addEdge,
   MiniMap,
@@ -14,29 +14,22 @@ import ReactFlow, {
   ConnectionMode
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-
-import SimpleFloatingEdge from './components/SimpleFloatingEdge';
-import CustomNode from './components/CustomNode';
-//import FileUploader from './components/FileUploader';
-import FolderViewer from './components/FolderViewer';
-
 import './styles.css';
-
-//import initialData from './data/flowData.json';
-import initialData from './data/0001.json';
 
 import { parseJSONtoReactFlowData, createEdge, convertReactFlowToJSON } from './utils/dataUtils';
 import { applyLayout } from './utils/layoutUtils';
+import FolderViewer from './components/FolderViewer';
+import ToolboxViewer from './components/ToolboxViewer';
 
+import initialData from './data/0157.json';
+
+import CustomNode from './components/CustomNode';
 const nodeTypes = {
   custom: CustomNode
 };
 
-const edgeTypes = {
-  floating: SimpleFloatingEdge
-};
-
-
+import SimpleFloatingEdge from './components/SimpleFloatingEdge';
+import { FLOW_CONSTANTS } from './constants/flowConstants';
 
 // JSON Viewer 컴포넌트
 const JsonViewer = ({ data }) => (
@@ -54,18 +47,50 @@ const JsonViewer = ({ data }) => (
   </pre>
 );
 
+// 사용 방법 뷰어
+import HelpViewer from './components/HelpViewer';
+
 function App() {
 
-  //MARK: - 필수 기능
-  // 노드와 엣지 상태 관리
+  //MARK: - 필수 기능 
+
+  // metadata, 노드와 엣지 상태 관리
+  const [metadata, setMetadata] = useState({
+    file_name: "",
+    summary: ""
+  });
   const [nodes, setNodes] = useNodesState([]);
   const [edges, setEdges] = useEdgesState([]);
+
+  // edgeTypes를 useMemo로 메모이제이션
+  const edgeTypes = useMemo(() => ({
+    floating: (props) => <SimpleFloatingEdge {...props} setEdges={setEdges} />
+  }), [setEdges]);
 
   // 노드 변경 시 호출되는 콜백
   const onNodesChange = useCallback(
     (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
     [setNodes]
   );
+
+
+  const onNodeLabelChange = useCallback((nodeId, newLabel) => {
+    setNodes((nds) =>
+      nds.map((node) => {
+        if (node.id === nodeId) {
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              label: newLabel,
+              onNodeLabelChange
+            }
+          };
+        }
+        return node;
+      })
+    );
+  }, [setNodes]);
 
   // 새로운 연결이 추가될 때 호출되는 콜백
   const onConnect = useCallback(
@@ -132,13 +157,19 @@ function App() {
 
   // 변경된 데이터를 저장하는 함수
   const onSave = () => {
-    const jsonData = convertReactFlowToJSON(nodes, edges);
+    const jsonData = convertReactFlowToJSON(metadata, nodes, edges);
     const blob = new Blob([JSON.stringify(jsonData, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
 
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'flowData.json';
+    
+    // 파일 이름 동적 생성
+    const fileName = metadata.file_name
+        ? metadata.file_name.replace(/\.(jpg|jpeg|png|gif)$/i, '.json')  // 이미지 확장자를 json으로 변경
+        : 'flowData.json';  // metadata.file_name이 없을 경우 기본값
+        
+    a.download = fileName;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -158,33 +189,35 @@ function App() {
   //MARK: 폴더 뷰어
   // 이미지 경로 상태 수정
   const [currentImage, setCurrentImage] = useState({
-    path: '/data/images/0001.jpg',  // 기본 이미지 경로
-    name: '0001.jpg'
+    path: '/images/0157.jpg',  // 기본 이미지 경로
+    name: 'sample.jpg'
   });
 
   // ReactFlow 초기화 함수
   const initializeFlowData = (jsonData) => {
     try {
-      // 먼저 노드와 엣지 초기화
       setNodes([]);
       setEdges([]);
-      
-      // JSON Viewer 데이터도 초기화
+
       setJsonViewData({
         original: jsonData,
         parsed: { nodes: [], edges: [] }
       });
 
-      // 잠시 대기 후 새로운 데이터로 파싱 및 렌더링
       setTimeout(() => {
-        const { parsedNodes, parsedEdges } = parseJSONtoReactFlowData(JSON.stringify(jsonData));
+        const { parsedNodes, parsedEdges, metadata } = parseJSONtoReactFlowData(JSON.stringify(jsonData), onNodeLabelChange);
         const layoutedNodes = applyLayout(parsedNodes, parsedEdges);
 
         setNodes(layoutedNodes);
         setEdges(parsedEdges);
+        setMetadata(metadata); // metadata 상태 업데이트
         setJsonViewData(prev => ({
           ...prev,
-          parsed: { nodes: layoutedNodes, edges: parsedEdges }
+          parsed: {
+            metadata,
+            nodes: layoutedNodes,
+            edges: parsedEdges
+          }
         }));
       }, 100);
 
@@ -225,8 +258,9 @@ function App() {
 
   // 이미지 뷰어 - 크기와 스크롤 위치 상태 추가
   const [imageViewerSize, setImageViewerSize] = useState(() => {
-    const saved = localStorage.getItem('imageViewerSize');
-    return saved ? JSON.parse(saved) : { width: 300, height: 200 };
+    //const saved = localStorage.getItem('imageViewerSize');
+    //console.log('imageViewerSize', saved);
+    return { width: 300, height: 200 };
   });
 
   const [imageViewerScroll, setImageViewerScroll] = useState(() => {
@@ -289,24 +323,22 @@ function App() {
   //
   //
   // MARK: - 레이아웃
-  // 컴포넌트가 처음 렌더링될 때 실행
+  // 컴넌트가 처음 렌더링될 때 실행
   useEffect(() => {
-    const { parsedNodes, parsedEdges } = parseJSONtoReactFlowData(JSON.stringify(initialData));
-    const layoutedNodes = applyLayout(parsedNodes, parsedEdges); // 레이아웃 적용
-
-    console.log('Initial Data:', initialData);
-    console.log('Parsed Nodes:', parsedNodes);
-    console.log('Parsed Edges:', parsedEdges);
-
-    setNodes(layoutedNodes); // 노드 상태 업데트
-    setEdges(parsedEdges); // 엣지 상태 업데이트
-    setJsonViewData(prev => ({ // JSON Viewer 데이터 업데이트
+    const { parsedNodes, parsedEdges, metadata } = parseJSONtoReactFlowData(JSON.stringify(initialData), onNodeLabelChange);
+    const layoutedNodes = applyLayout(parsedNodes, parsedEdges);
+    setNodes(layoutedNodes);
+    setEdges(parsedEdges);
+    setMetadata(metadata); // metadata 상태 업데이트
+    setJsonViewData(prev => ({
       ...prev,
-      parsed: { nodes: layoutedNodes, edges: parsedEdges }
+      parsed: { 
+        metadata,
+        nodes: layoutedNodes, 
+        edges: parsedEdges 
+      }
     }));
-  }, []);
-
-  // 상단에 상태 추가
+  }, [onNodeLabelChange]);  // 상단에 상태 추가
   const [showHelp, setShowHelp] = useState(false);
 
   // App.jsx에 추가할 부분
@@ -315,127 +347,123 @@ function App() {
     jsons: []
   });
 
+  // 상단에 instance 선언 추가 (useCallback 의존성 문제 해결)
+  const [reactFlowInstance, setReactFlowInstance] = useState(null);
+
+  const onDrop = useCallback(
+    (event) => {
+      event.preventDefault();
+
+      if (!reactFlowInstance || !reactFlowWrapper.current) return;
+
+      try {
+        const type = event.dataTransfer.getData('application/reactflow');
+
+        // 배경색 선택
+        //const backgroundColors = Object.values(FLOW_CONSTANTS.NODE.STYLE.BACKGROUND_COLORS);
+        //const randomColor = backgroundColors[Math.floor(Math.random() * backgroundColors.length)];
+        const staticColor = FLOW_CONSTANTS.NODE.STYLE.BACKGROUND_COLORS.LAYER1;
+
+        const position = reactFlowInstance.screenToFlowPosition({
+          x: event.clientX - FLOW_CONSTANTS.NODE.SIZE.MIN_WIDTH / 2,
+          y: event.clientY - FLOW_CONSTANTS.NODE.SIZE.MIN_HEIGHT / 2
+        });
+
+        const newNode = {
+          id: generateUniqueNodeId(nodes),
+          type: 'custom',
+          position,
+          className: 'custom-node',
+          style: {
+            //backgroundColor: randomColor,
+            //backgroundColor: staticColor,
+            width: FLOW_CONSTANTS.NODE.SIZE.MIN_WIDTH,
+            height: FLOW_CONSTANTS.NODE.SIZE.MIN_HEIGHT
+          },
+          data: {
+            label: '새 노드',
+            onNodeLabelChange
+          }
+        };
+
+        setNodes((nds) => nds.concat(newNode));
+        console.log('노드 생성 완료:', newNode);
+      } catch (error) {
+        console.error('노드 생성 중 오류 발생:', error);
+      }
+    },
+    [reactFlowInstance, setNodes, nodes]
+  );
+
+  const onDragOver = useCallback((event) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+  }, []);
+
+  // ref 추가
+  const reactFlowWrapper = useRef(null);
+
+
+  // 노드 ID 생성 함수
+  const generateUniqueNodeId = (nodes) => {
+    const existingIds = nodes.map(node => parseInt(node.id));
+    const maxId = Math.max(...existingIds, 0);
+    return String(maxId + 1);
+  };
+
+  // onInit 콜백 수정
+  const onInit = useCallback((instance) => {
+    setReactFlowInstance(instance);
+  }, []);
+
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
       <ReactFlowProvider>
-        <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          onConnect={onConnect}
-          onEdgeUpdate={onEdgeUpdate}
-          onEdgeUpdateStart={onEdgeUpdateStart}
-          onKeyDown={onKeyDown}
-          deleteKeyCode="Delete"
-          fitView
-          edgeTypes={edgeTypes}
-          selectNodesOnDrag={false}
-          elementsSelectable={true}
-          edgesFocusable={true} // 엣지 선택 가능 
-          edgesUpdatable={true} // 엣지 업데이트 가능
-          nodesDraggable={true} // 노드 드래그 가능
-          nodesConnectable={true} // 노드 연결 가능
-          snapToGrid={true} // 그리드 맞춤
-          snapGrid={[15, 15]} // 그리드 크기
-          connectionMode={ConnectionMode.Loose}
-
-          defaultEdgeOptions={{
-            type: 'floating'
-          }}
-          elevateEdgesOnSelect={true}
-          selectionOnDrag={true}
-          selectionMode="partial"
-          multiSelectionKeyCode="Shift"
-          panOnDrag={[1, 2]}
-          zoomOnScroll={true}
-          zoomOnPinch={true}
-          panOnScroll={false}
-          nodeTypes={nodeTypes}
-        >
-          <Background variant="dots" gap={12} size={1} />
-
-          {/* 도움말 버튼 - MiniMap 위에 배치 */}
-          <div style={{
-            position: 'absolute',
-            right: '45px',
-            bottom: '200px',  // MiniMap 위 공간 확보
-            zIndex: 5
-          }}>
-            <button
-              onClick={() => setShowHelp(!showHelp)}
-              style={{
-                backgroundColor: '#fff',
-                border: '1px solid #ccc',
-                borderRadius: '4px',
-                padding: '5px 10px',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '5px',
-                fontSize: '14px',
-                boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-              }}
-            >
-              <span role="img" aria-label="help">❔</span>
-              사용 방법
-            </button>
-
-            {/* 도움말 패널 */}
-            {showHelp && (
-              <div
-                style={{
-                  position: 'absolute',
-                  bottom: '40px',
-                  right: '0px',
-                  width: '350px',
-                  backgroundColor: '#fff',
-                  border: '1px solid #ccc',
-                  borderRadius: '4px',
-                  padding: '15px',
-                  zIndex: 1000,
-                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                  fontSize: '13px',
-                  lineHeight: '1.4'
-                }}
-              >
-                <h4 style={{ margin: '0 0 10px 0', color: '#333' }}>사용 방법</h4>
-                <ul style={{ margin: 0, paddingLeft: '20px' }}>
-                  <li style={{ marginBottom: '12px' }}>
-                    <strong>화면 이동:</strong>
-                    <ul>
-                      <li>마우스 휠 클릭 후 드래그</li>
-                      <li>또는 마우스 우클릭 후 드래그</li>
-                    </ul>
-                  </li>
-
-                  <li style={{ marginBottom: '12px' }}>
-                    <strong>노드 추가:</strong> (개발중) 빈 공간 더블클릭
-                  </li>
-
-                  <li style={{ marginBottom: '12px' }}>
-                    <strong>삭제:</strong>
-                    <ul>
-                      <li>일반 삭제 (Delete): 선택된 노드와 엣지 모두 삭제</li>
-                      <li>엣지만 삭제 (Shift + Delete): 영역 선택된 노드와 엣지 중 엣지만 삭제</li>
-                    </ul>
-                  </li>
-
-                  <li style={{ marginBottom: '12px' }}>
-                    <strong>엣지 선택:</strong>
-                    <ul style={{ marginTop: '5px' }}>
-                      <li>단일 엣지 선택: 그룹 내 엣지를 선택하려면 먼저 source노드를 선택해야 합니다</li>
-                      <li>다중 엣지 선택: 영역 선택으로 노드를 선택하면 관련된 모든 엣지가 함께 선택됩니다</li>
-                    </ul>
-                  </li>
-                </ul>
-              </div>
-            )}
-          </div>
-
-          <Controls />
-          <MiniMap />
-        </ReactFlow>
+        <div ref={reactFlowWrapper} style={{ width: '100%', height: '100%' }}>
+          <ReactFlow
+            nodes={nodes}
+            edges={edges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onConnect={onConnect}
+            onDrop={onDrop}
+            onDragOver={onDragOver}
+            onEdgeUpdate={onEdgeUpdate}
+            onEdgeUpdateStart={onEdgeUpdateStart}
+            onKeyDown={onKeyDown}
+            deleteKeyCode="Delete"
+            fitView
+            edgeTypes={edgeTypes}
+            selectNodesOnDrag={false}
+            elementsSelectable={true}
+            edgesFocusable={true} // 엣지 선택 가능 
+            edgesUpdatable={true} // 엣지 업데이트 가능
+            nodesDraggable={true} // 노드 드래그 가능
+            nodesConnectable={true} // 노드 연결 가
+            snapToGrid={true} // 그리드 맞
+            snapGrid={[15, 15]} // 그리드 크기
+            connectionMode={ConnectionMode.Loose}
+            elevateEdgesOnSelect={true}
+            selectionOnDrag={true}
+            selectionMode="partial"
+            multiSelectionKeyCode="Shift"
+            panOnDrag={[1, 2]}
+            zoomOnScroll={true}
+            zoomOnPinch={true}
+            panOnScroll={false}
+            nodeTypes={nodeTypes}
+            onInit={onInit}
+            defaultEdgeOptions={{
+              type: 'floating',
+              animated: false
+            }}
+          >
+            <Background variant="dots" gap={12} size={1} />
+            <HelpViewer showHelp={showHelp} setShowHelp={setShowHelp} />
+            <Controls />
+            <MiniMap />
+          </ReactFlow>
+        </div>
       </ReactFlowProvider>
 
       {/* 저장 버튼 */}
@@ -486,12 +514,12 @@ function App() {
               border: '1px solid #ccc',
               borderRadius: '4px',
               overflow: 'hidden',
-              resize: 'both', // 크기 조절 가능하도록 설정
+              resize: 'both', // 크기 조절 가능도록 설정
               pointerEvents: 'auto',
               minWidth: `${window.innerWidth * 0.25}px`, // 최소 너비를 화면 너비의 25%로 설정
-              maxWidth: `${window.innerWidth * 0.75}px`, // 최대 너비를 화면 너비의 75%로 설정
+              maxWidth: `${window.innerWidth * 0.95}px`, // 최대 너비를 화면 너비의 75%로 설정
               minHeight: `${window.innerHeight * 0.25}px`, // 최소 높이를 화면 높이의 25%로 설정
-              maxHeight: `${window.innerHeight * 0.75}px`, // 최대 높이를 화면 높이의 75%로 설정
+              maxHeight: `${window.innerHeight * 0.95}px`, // 최대 높이를 화면 높이의 75%로 설정
             }}
             onScroll={handleImageViewerScroll}
           >
@@ -517,7 +545,7 @@ function App() {
                 borderRadius: '4px',
               }}
             >
-              Original Image
+              {currentImage.name}
             </div>
             <button
               onClick={toggleMinimize}
@@ -543,7 +571,7 @@ function App() {
                 position: 'absolute',
                 bottom: '5px', // top에서 bottom으로 변경
                 right: '5px',
-                cursor: 'se-resize', 
+                cursor: 'se-resize',
                 color: '#fff',
                 display: 'flex',
                 alignItems: 'center',
@@ -751,17 +779,26 @@ function App() {
           </div>
         )}
       </div>
-      <FolderViewer 
+      <FolderViewer
         onImageSelect={(file) => {
           setCurrentImage({
             path: file.path,
             name: file.name
           });
-        }} 
+        }}
         onFilesSelected={handleFilesSelected}
+        fitView={() => reactFlowInstance?.fitView()}
+      />
+      <ToolboxViewer
+        onLayoutDirectionChange={(direction) => {
+          const layoutedNodes = applyLayout(nodes, edges, direction);
+          setNodes(layoutedNodes);
+        }}
+        fitView={() => reactFlowInstance?.fitView()}
       />
     </div>
   );
 }
 
 export default App;
+
