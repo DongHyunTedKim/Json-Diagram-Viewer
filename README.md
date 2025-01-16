@@ -7,6 +7,18 @@
 - **JSON 입력 지원**: 직관적인 CodeMirror 에디터를 통해 JSON 데이터를 쉽게 입력 및 수정할 수 있습니다. (개발중)
 - **실시간 다이어그램 렌더링**: 입력된 JSON 데이터를 기반으로 React Flow 다이어그램을 실시간으로 생성 및 미리보기 합니다.
 
+## git branch structure
+
+- base branch: develop
+- branch to deploy: master
+- branch to dev features: feature-*
+
+## 설치 방법
+
+1. Clone a Repo:
+   - 
+
+
 ## 사용 방법
 
 1. **파일 불러오기**:
